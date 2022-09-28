@@ -39,7 +39,6 @@ namespace Minecraft.Controller
             playerController.Moved += World.OrderByPlayerPosition;
 
             renderer.OnRendering += worldRendererer.CreateMeshesInQueue;
-            renderer.OnRendering += playerController.UpdatePlayerCamera;
             renderer.OnRendering += worldGenerator.AddGeneratedChunksToWorld;
             renderer.Scene = new Scene(Player.Camera, World, worldRendererer);
 

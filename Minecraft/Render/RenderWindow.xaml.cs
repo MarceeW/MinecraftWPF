@@ -28,6 +28,7 @@ namespace Minecraft
         {
             InitializeComponent();
 
+            Title = "Minecraft";
             Width = 1600;
             Height = 900;
             WindowState = System.Windows.WindowState.Maximized;
@@ -35,8 +36,8 @@ namespace Minecraft
 
             var settings = new GLWpfControlSettings
             {
-                MajorVersion = 3,
-                MinorVersion = 1,
+                MajorVersion = 4,
+                MinorVersion = 2,
             };
             OpenTkControl.Start(settings);
 
@@ -71,7 +72,6 @@ namespace Minecraft
             if (ShouldClose)
                 Close();
 
-            Title = (1.0 / delta.TotalSeconds).ToString();
             renderer.RenderFrame();
         }
     }

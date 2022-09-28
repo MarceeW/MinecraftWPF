@@ -43,6 +43,7 @@ namespace Minecraft.Render
         }
         public void Render()
         {
+            camera.UpdateViewMatrix();
             skybox.Render();
             worldRenderer.RenderWorld();
         }

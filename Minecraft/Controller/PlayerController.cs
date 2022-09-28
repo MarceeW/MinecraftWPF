@@ -26,10 +26,6 @@ namespace Minecraft.Controller
 
             player.Camera.Front = Vector3.UnitX;
         }
-        public void UpdatePlayerCamera()
-        {
-            playerLogic.UpdateCamera();
-        }
         public void InitPlayerCamera()
         {
             player.Camera.Init();

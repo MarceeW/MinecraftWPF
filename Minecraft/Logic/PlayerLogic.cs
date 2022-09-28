@@ -39,10 +39,10 @@ namespace Minecraft.Logic
         }
         public void Update()
         {
-            Vector3 deltaPos = new Vector3();
-            force.Apply(ref deltaPos);
-            //Collision(ref deltaPos);
-            player.Camera.ModPosition(deltaPos);
+            //Vector3 deltaPos = new Vector3();
+            //force.Apply(ref deltaPos);
+            ////Collision(ref deltaPos);
+            //player.Camera.ModPosition(deltaPos);
         }
         public void Move(Direction dir,float delta)
         {
@@ -76,10 +76,6 @@ namespace Minecraft.Logic
 
             player.Camera.ModPosition(deltaPos);
         }
-        public void UpdateCamera()
-        {
-            player.Camera.UpdateViewMatrix();
-        }
         public void ChangeView()
         {
             player.Camera.ChangePitch(-MathHelper.DegreesToRadians(MouseController.DeltaY) * mouseSpeed);
@@ -96,7 +92,6 @@ namespace Minecraft.Logic
             front.Z = (float)(Math.Cos(player.Camera.Pitch) * Math.Sin(player.Camera.Yaw));
 
             player.Camera.Front = Vector3.Normalize(front);
-            player.Camera.UpdateViewMatrix();
         }
         private bool Collision(ref Vector3 deltaPos)
         {
