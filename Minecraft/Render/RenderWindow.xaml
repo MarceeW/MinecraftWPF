@@ -10,6 +10,15 @@
     <Grid>
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
-            Render="OpenTkControl_OnRender"/>
+            Render="OpenTkControl_OnRender">
+            <glWpfControl:GLWpfControl.OpacityMask>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="White" Offset="1"/>
+                </LinearGradientBrush>
+            </glWpfControl:GLWpfControl.OpacityMask>
+        </glWpfControl:GLWpfControl>
+        <Label x:Name="fpsCounter" HorizontalAlignment="Left" Margin="40,38,0,0" VerticalAlignment="Top" Background="{x:Null}" Foreground="White" FontSize="14" FontFamily="Century Gothic"/>
+        <Ellipse x:Name="crosshair" HorizontalAlignment="Center" Height="8" Stroke="White" VerticalAlignment="Center" Width="8" Opacity="0.7"/>
     </Grid>
 </Window>

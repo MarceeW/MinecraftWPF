@@ -23,6 +23,8 @@ namespace Minecraft.Render
         }
         public void SetupRenderer(int width,int height)
         {
+            GL.Enable(EnableCap.Multisample);
+
             GL.Enable(EnableCap.DepthTest);
             GL.DepthFunc(DepthFunction.Less);
 

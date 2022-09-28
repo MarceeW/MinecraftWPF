@@ -27,9 +27,10 @@ namespace Minecraft.Render
         }
         public void RenderWorld()
         {
-            AtlasTexturesData.Atlas.Use();
+
             world.OrderByPlayerPosition(camera.Position.Xz - camera.Front.Xz * Chunk.Size);
 
+            AtlasTexturesData.Atlas.Use();
             foreach (var chunk in world.Chunks.Values)
             {
                 chunk.Mesh.Render(Shader);

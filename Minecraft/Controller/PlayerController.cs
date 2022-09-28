@@ -51,6 +51,7 @@ namespace Minecraft.Controller
             if (Keyboard.IsKeyDown(Key.A))
                 playerLogic.Move(Direction.Left, delta);
             if (Keyboard.IsKeyDown(Key.Space))
+                //playerLogic.Jump();
                 playerLogic.Move(Direction.Up, delta);
             if (Keyboard.IsKeyDown(Key.LeftShift))
                 playerLogic.Move(Direction.Down, delta);
@@ -84,7 +85,7 @@ namespace Minecraft.Controller
                 Moved?.Invoke(playerPos);
             }
 
-            playerLogic.Update();
+            playerLogic.Update(delta);
             playerLogic.ChangeView();
         }
     }

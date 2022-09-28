@@ -28,6 +28,7 @@ namespace Minecraft.Logic
         private const float sprintSpeed = 50.0f;
         private const float mouseSpeed = 0.125f;
         private const float playerHeight = 2.0f;
+        private bool jumping = false;
         private Force force;
         public PlayerLogic(Player player,World world)
         {
@@ -37,12 +38,20 @@ namespace Minecraft.Logic
             force = new Force();
             force.SetForceType(ForceType.Rise);
         }
-        public void Update()
+        public void Jump()
+        {
+            if (!jumping)
+            {
+                jumping = true;
+                force.SetForceType(ForceType.Rise);
+            }
+        }
+        public void Update(float updateDelta)
         {
             //Vector3 deltaPos = new Vector3();
-            //force.Apply(ref deltaPos);
+            //force.Apply(ref deltaPos,ref jumping);
             ////Collision(ref deltaPos);
-            //player.Camera.ModPosition(deltaPos);
+            //player.Camera.ModPosition(deltaPos * updateDelta);
         }
         public void Move(Direction dir,float delta)
         {
@@ -71,9 +80,6 @@ namespace Minecraft.Logic
                     deltaPos = Vector3.Normalize(Vector3.Cross(player.Camera.Front, player.Camera.Up)) * speed * delta;
                     break;
             }
-            force.Apply(ref deltaPos);
-            Collision(ref deltaPos);
-
             player.Camera.ModPosition(deltaPos);
         }
         public void ChangeView()

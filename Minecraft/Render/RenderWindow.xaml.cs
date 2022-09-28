@@ -72,6 +72,7 @@ namespace Minecraft
             if (ShouldClose)
                 Close();
 
+            fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);
             renderer.RenderFrame();
         }
     }
