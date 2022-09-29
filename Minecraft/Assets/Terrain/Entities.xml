@@ -1,0 +1,19 @@
+<entities>
+    <entity name="Tree" width="5" height="5" depth="5">
+        <block blockType="OakTrunk">
+            <x>3</x>
+            <y>0</y>
+            <z>3</z>
+        </block>
+        <block blockType="OakTrunk">
+            <x>3</x>
+            <y>1</y>
+            <z>3</z>
+        </block>
+        <block blockType="OakTrunk">
+            <x>3</x>
+            <y>2</y>
+            <z>3</z>
+        </block>
+    </entity>
+</entities>

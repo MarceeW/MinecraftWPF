@@ -48,10 +48,10 @@ namespace Minecraft.Logic
         }
         public void Update(float updateDelta)
         {
-            //Vector3 deltaPos = new Vector3();
-            //force.Apply(ref deltaPos,ref jumping);
-            ////Collision(ref deltaPos);
-            //player.Camera.ModPosition(deltaPos * updateDelta);
+            Vector3 deltaPos = new Vector3();
+            force.Apply(ref deltaPos,ref jumping);
+            //Collision(ref deltaPos);
+            player.Camera.ModPosition(deltaPos * updateDelta);
         }
         public void Move(Direction dir,float delta)
         {

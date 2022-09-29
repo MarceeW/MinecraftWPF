@@ -17,20 +17,6 @@ namespace Minecraft.Terrain
         {
             Chunks.TryAdd(pos, chunk);
         }
-        public void PlaceEntity(EntityType entity,Vector2 pos)
-        {
-            //var entityBlocks = Entity.EntityPositions[entity];
-            //
-            //int x = (int)pos.X % Chunk.ChunkSize;
-            //int z = (int)pos.Y % Chunk.ChunkSize;
-            //int y = 0;
-            //
-            //while (selectedChunk.Blocks.ContainsKey(new Vector3(x, y, z)))
-            //    y++;
-            //
-            //foreach(var block in entity)
-            //    selectedChunk.Blocks.Add(new Vector3(x, y, z),new Block(true,blockType));
-        }
         public void PlaceBlock(Vector3 pos)
         {
             int selectedChunkX = (int)(pos.X / Chunk.Size);

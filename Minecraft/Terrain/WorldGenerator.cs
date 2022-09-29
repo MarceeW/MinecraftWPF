@@ -3,7 +3,6 @@ using Minecraft.Logic;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Minecraft.Terrain.Noise;
 
 namespace Minecraft.Terrain
@@ -32,7 +31,7 @@ namespace Minecraft.Terrain
             noise = new FastNoise();
 
             noise.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
-            noise.SetInterp(FastNoise.Interp.Hermite);
+            noise.SetInterp(FastNoise.Interp.Linear);
             noise.SetFractalOctaves(4);
             noise.SetFrequency(0.005f);
             noise.SetFractalGain(0.55f);

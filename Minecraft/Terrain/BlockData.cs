@@ -1,4 +1,6 @@
-﻿namespace Minecraft.Terrain
+﻿using System;
+
+namespace Minecraft.Terrain
 {
     internal enum BlockType
     {
@@ -15,6 +17,15 @@
             return (BlockType)type == BlockType.Water ||
                    (BlockType)type == BlockType.Glass ||
                    (BlockType)type == BlockType.Air;
+        }
+        public static BlockType GetBlockTypeByName(string name)
+        {
+            foreach(var type in (BlockType[])Enum.GetValues(typeof(BlockType)))
+            {
+                if (type.ToString() == name)
+                    return type;
+            }
+            throw new Exception($"Blocktype '{name}' was not found");
         }
     }
 }
