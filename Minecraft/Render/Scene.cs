@@ -32,9 +32,15 @@ namespace Minecraft.Render
             camera.ViewMatrixChange += worldRenderer.Shader.SetMat4;
             ProjectionMatrixChange += worldRenderer.Shader.SetMat4;
 
-            camera.PositionChange += skyboxShader.SetVec3;
             camera.ViewMatrixChange += skyboxShader.SetMat4;
             ProjectionMatrixChange += skyboxShader.SetMat4;
+
+            camera.ViewMatrixChange += Cube.GetShader().SetMat4;
+            ProjectionMatrixChange += Cube.GetShader().SetMat4;
+
+            WireFrame.InitShader();
+            camera.ViewMatrixChange += WireFrame.Shader.SetMat4;
+            ProjectionMatrixChange += WireFrame.Shader.SetMat4;
         }
         public void OnProjectionMatrixChange(float aspectRatio)
         {
@@ -44,6 +50,7 @@ namespace Minecraft.Render
         public void Render()
         {
             camera.UpdateViewMatrix();
+            skybox.Reposition(camera.Position);
             skybox.Render();
             worldRenderer.RenderWorld();
         }

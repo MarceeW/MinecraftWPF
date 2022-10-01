@@ -1,7 +1,12 @@
-﻿using Minecraft.Graphics;
+﻿using Minecraft.Game;
+using Minecraft.Graphics;
+using Minecraft.Graphics.Shapes;
 using Minecraft.Terrain;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System.Collections.Generic;
+using System.Diagnostics;
+using Chunk = Minecraft.Terrain.Chunk;
 
 namespace Minecraft.Render
 {
@@ -12,7 +17,6 @@ namespace Minecraft.Render
         private Camera camera;
         public Shader Shader { get; }
         private World world;
-
         public WorldRenderer(World world,Camera camera)
         {
             this.world = world;
@@ -27,7 +31,6 @@ namespace Minecraft.Render
         }
         public void RenderWorld()
         {
-
             world.OrderByPlayerPosition(camera.Position.Xz - camera.Front.Xz * Chunk.Size);
 
             AtlasTexturesData.Atlas.Use();
@@ -35,6 +38,8 @@ namespace Minecraft.Render
             {
                 chunk.Mesh.Render(Shader);
             }
+            RenderSelectedBlockFrame();
+
             CreateMeshesInQueue();
         }
         public void CreateMeshesInQueue()
@@ -44,6 +49,15 @@ namespace Minecraft.Render
                 var chunk = renderQueue.Dequeue();
                     ChunkMesh.CreateMesh(world, chunk);
             }             
+        }
+        private void RenderSelectedBlockFrame()
+        {
+            var blockHitPos = Ray.Cast(camera, world, out bool hit, out FaceDirection hitFace);
+
+            if (hit)
+            {
+                WireFrame.Render(blockHitPos, hitFace, new Vector3(0.0f));
+            }
         }
     }
 }

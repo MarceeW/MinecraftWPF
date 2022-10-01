@@ -15,6 +15,10 @@ namespace Minecraft.Graphics
             Shader = shader;
             Shader.SetInt("skybox", Texture.GetTexUnitId());
         }
+        public void Reposition(Vector3 pos)
+        {
+            Shader.SetVec3("model", pos);
+        }
         public void Render()
         {
             Shader.Use();

@@ -117,8 +117,10 @@ namespace Minecraft.Graphics.Shapes
                 shader?.SetVec3("color", (Vector3)color);
                 shader?.SetInt("hasTexture", 0);
             }
+            GL.Disable(EnableCap.CullFace);
             GL.BindVertexArray(VAO);
             GL.DrawArrays(PrimitiveType.Triangles, 0, 36);
+            GL.Enable(EnableCap.CullFace);
         }
     }
 }

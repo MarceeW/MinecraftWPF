@@ -18,8 +18,31 @@ namespace Minecraft.Terrain
 
             Mesh = new ChunkMesh();
         }
-        public void AddBlock(Vector3 pos,BlockType type)
+        public void AddBlock(Vector3 pos,BlockType block)
         {
+            if (pos.Y >= 256)
+                return;
+
+            int x = (int)pos.X % Size;
+            int y = (int)pos.Y;
+            int z = (int)pos.Z % Size;
+
+            if (x < 0)
+                x += Size;
+            
+            if (z < 0)
+                z += Size;
+
+            if (y > TopBlockPositions[x, z])
+                TopBlockPositions[x, z] = y;
+
+            Blocks[x, y, z] = (byte)block;
+        }
+        public void RemoveBlock(Vector3 pos)
+        {
+            if (pos.Y <= 1)
+                return;
+
             int x = (int)pos.X % Size;
             int y = (int)pos.Y;
             int z = (int)pos.Z % Size;
@@ -30,10 +53,22 @@ namespace Minecraft.Terrain
             if (z < 0)
                 z += Size;
 
-            if (y > TopBlockPositions[x, z])
-                TopBlockPositions[x, z] = y;
+            var block = GetBlock(new Vector3(pos.X,pos.Y + 1,pos.Z));
 
-            Blocks[x, y, z] = (byte)type;
+            if (block != null && !BlockData.IsBlockSolid(block))
+            {
+                Blocks[x, y, z] = (byte)block;
+            }
+            else
+                Blocks[x, y, z] = 0;
+
+            if (TopBlockPositions[x,z] == y)
+            {
+                while (y > 0 && Blocks[x, y, z] > 0)
+                    y--;
+
+                TopBlockPositions[x, z] = y;
+            }
         }
         public short GetBlock(int x,int y,int z)
         {
@@ -46,7 +81,7 @@ namespace Minecraft.Terrain
 
                 if (xs < 0)
                     xs += Size;
-
+                
                 if (zs < 0)
                     zs += Size;
 
@@ -55,10 +90,8 @@ namespace Minecraft.Terrain
 
             return block;
         }
-        public short GetBlock(Vector3 pos)
+        public BlockType? GetBlock(Vector3 pos)
         {
-            short block = -1;
-
             if(pos.Y >= 0 && pos.Y < 256)
             {
                 int x = (int)pos.X % Size;
@@ -66,13 +99,13 @@ namespace Minecraft.Terrain
 
                 if (x < 0)
                     x += Size;
-
+                
                 if (z < 0)
                     z += Size;
 
-                return Blocks[x, (int)pos.Y, z];
+                return (BlockType)Blocks[x, (int)pos.Y, z];
             }
-            return block;
+            return null;
         }
         public bool IsBlockInChunk(Vector3 pos)
         {

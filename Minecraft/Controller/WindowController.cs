@@ -1,5 +1,7 @@
 ﻿using OpenTK.Graphics.OpenGL;
 using OpenTK.Windowing.Common;
+using OpenTK.Windowing.GraphicsLibraryFramework;
+using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Minecraft.Controller
@@ -9,8 +11,7 @@ namespace Minecraft.Controller
         public static RenderWindow? Window { get;set; }
         public static bool ShowGrids {get; private set;}
         private static bool needsToResetMouse = true;
-
-        public static void ChekForKeyPress()
+        public static void CheckForKeyPress()
         {
             if(Window != null)
             {

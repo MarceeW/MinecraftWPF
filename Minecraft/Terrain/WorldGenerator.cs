@@ -42,9 +42,13 @@ namespace Minecraft.Terrain
         }
         public void InitWorld()
         {
-            for (int x = -WorldRenderer.RenderDistance; x < WorldRenderer.RenderDistance; x++)
-                for (int z = -WorldRenderer.RenderDistance; z < WorldRenderer.RenderDistance; z++)
+            for (int x = -WorldRenderer.RenderDistance; x <= WorldRenderer.RenderDistance; x++)
+                for (int z = -WorldRenderer.RenderDistance; z <= WorldRenderer.RenderDistance; z++)
                     AddChunk(new Vector2(x, z));
+
+            //for (int x = 0; x < WorldRenderer.RenderDistance; x++)
+            //    for (int z = 0; z < WorldRenderer.RenderDistance; z++)
+            //        AddChunk(new Vector2(x, z));
         }
         public void AddGeneratedChunksToWorld()
         {

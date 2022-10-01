@@ -7,7 +7,7 @@
         xmlns:local="clr-namespace:Minecraft"
         mc:Ignorable="d"
         Title="MainWindow" Height="900" Width="1600">
-    <Grid>
+    <Grid Name="RenderCanvas">
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
             Render="OpenTkControl_OnRender">

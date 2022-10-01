@@ -4,10 +4,6 @@ using System.Xml.Linq;
 
 namespace Minecraft.Terrain
 {
-    internal enum EntityType
-    {
-        Tree
-    }
     class Entity
     {
         int Width { get; }

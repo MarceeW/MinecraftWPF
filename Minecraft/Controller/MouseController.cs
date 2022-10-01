@@ -1,4 +1,5 @@
 ﻿using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,6 +14,7 @@ namespace Minecraft.Controller
     {
         internal static int DeltaX { get; private set; }
         internal static int DeltaY { get; private set; }
+
         internal static void ShowMouse()
         {
             Cursor.Show();

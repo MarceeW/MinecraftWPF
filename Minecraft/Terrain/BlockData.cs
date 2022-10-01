@@ -4,19 +4,19 @@ namespace Minecraft.Terrain
 {
     internal enum BlockType
     {
-        Air, Grass, Stone, Dirt, Leaves, OakTrunk, Glass, Sand, Water, Bedrock, Cobblestone
+        Air, Grass, Stone, Dirt, Leaves, OakTrunk, Glass, Sand, Water, Bedrock, Cobblestone, WoodPlank
     }
     internal static class BlockData
     {
-        public static bool IsBlockSolid(int type)
+        public static bool IsBlockSolid(BlockType? type)
         {
-            return (BlockType)type != BlockType.Water || (BlockType)type != BlockType.Air;
+            return type != BlockType.Water && type != BlockType.Air && type != null;
         }
-        public static bool IsBolckTransparent(int type)
+        public static bool IsBolckTransparent(BlockType? type)
         {
-            return (BlockType)type == BlockType.Water ||
-                   (BlockType)type == BlockType.Glass ||
-                   (BlockType)type == BlockType.Air;
+            return type == BlockType.Water ||
+                   type == BlockType.Glass ||
+                   type == BlockType.Air;
         }
         public static BlockType GetBlockTypeByName(string name)
         {

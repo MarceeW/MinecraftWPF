@@ -1,6 +1,8 @@
-﻿using OpenTK.Mathematics;
+﻿using Minecraft.Graphics;
+using OpenTK.Mathematics;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Documents;
 
 namespace Minecraft.Terrain
 {
@@ -13,20 +15,54 @@ namespace Minecraft.Terrain
         {
             Chunks = new Dictionary<Vector2, Chunk>();
         }
+        public Chunk? GetChunk(Vector3 pos)
+        {
+            int chunkPosX = (int)(pos.X / Chunk.Size);
+            int chunkPosZ = (int)(pos.Z / Chunk.Size);
+
+            if (pos.X < 0 && (int)pos.X % Chunk.Size != 0)
+                chunkPosX--;
+            if (pos.Z < 0 && (int)pos.Z % Chunk.Size != 0)
+                chunkPosZ--;
+
+            return Chunks.GetValueOrDefault(new Vector2(chunkPosX, chunkPosZ));
+        }
+        public BlockType? GetBlock(Vector3 pos)
+        {
+
+            var chunk = GetChunk(pos);
+
+            if(chunk != null)
+            {
+                return chunk.GetBlock(pos);
+            }
+
+            return null;
+        }
         public void AddChunk(Vector2 pos,Chunk chunk)
         {
             Chunks.TryAdd(pos, chunk);
         }
-        public void PlaceBlock(Vector3 pos)
+        public void RemoveBlock(Vector3 pos)
         {
-            int selectedChunkX = (int)(pos.X / Chunk.Size);
-            int selectedChunkZ = (int)(pos.Y / Chunk.Size);
+            var chunk = GetChunk(pos);
 
-            var selectedChunk = Chunks[new Vector2(selectedChunkX, selectedChunkZ)];
+            if (chunk != null)
+            {
+                chunk.RemoveBlock(pos);
+                ChunkMesh.CreateMesh(this, chunk.Position);
+            }
+        }
+        public void AddBlock(Vector3 pos,BlockType block)
+        {
+            var chunk = GetChunk(pos);
 
-            int x = (int)pos.X % Chunk.Size;
-            int y = (int)pos.Y;
-            int z = (int)pos.Z % Chunk.Size;
+            if (chunk != null)
+            {
+                chunk.AddBlock(pos, block);
+                ChunkMesh.CreateMesh(this, chunk.Position);
+            }
+
         }
         public void OrderByPlayerPosition(Vector2 position)
         {

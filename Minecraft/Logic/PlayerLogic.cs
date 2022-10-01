@@ -1,10 +1,11 @@
 ﻿using Minecraft.Controller;
 using Minecraft.Game;
+using Minecraft.Graphics;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Minecraft.Logic
 {
@@ -19,12 +20,12 @@ namespace Minecraft.Logic
     }
     internal class PlayerLogic
     {
-        public bool Sprint = false;
+        public bool Sprint = false;     
 
         private World world;
         private Player player;
 
-        private const float moveSpeed = 25.0f;
+        private const float moveSpeed = 10.0f;
         private const float sprintSpeed = 50.0f;
         private const float mouseSpeed = 0.125f;
         private const float playerHeight = 2.0f;
@@ -48,10 +49,7 @@ namespace Minecraft.Logic
         }
         public void Update(float updateDelta)
         {
-            Vector3 deltaPos = new Vector3();
-            force.Apply(ref deltaPos,ref jumping);
-            //Collision(ref deltaPos);
-            player.Camera.ModPosition(deltaPos * updateDelta);
+            
         }
         public void Move(Direction dir,float delta)
         {
@@ -84,6 +82,7 @@ namespace Minecraft.Logic
         }
         public void ChangeView()
         {
+            //needs to move out from here
             player.Camera.ChangePitch(-MathHelper.DegreesToRadians(MouseController.DeltaY) * mouseSpeed);
             player.Camera.ChangeYaw(MathHelper.DegreesToRadians(MouseController.DeltaX) * mouseSpeed);
 

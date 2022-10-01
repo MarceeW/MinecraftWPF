@@ -14,7 +14,6 @@ namespace Minecraft.Graphics
         public float Yaw { get; private set; }
 
         public event ShaderMat4Handler ViewMatrixChange;
-        public event ShaderVec3Handler PositionChange;
 
         public Camera(Vector3 startPos)
         {
@@ -24,7 +23,6 @@ namespace Minecraft.Graphics
         public void Init()
         {
             UpdateViewMatrix();
-            PositionChange?.Invoke("model", Position);
         }
         public void SetPosition(Vector3 position)
         {
@@ -33,7 +31,6 @@ namespace Minecraft.Graphics
         public void ModPosition(Vector3 change)
         {
             Position += change;
-            PositionChange?.Invoke("model", Position);
         }
         public void ChangeFront(Vector3 front)
         {
@@ -55,7 +52,6 @@ namespace Minecraft.Graphics
         public void UpdateViewMatrix()
         {
             //remove
-            PositionChange?.Invoke("model", Position);
             View = Matrix4.LookAt(Position, Position + Front, Up);
             ViewMatrixChange?.Invoke("view",View);
         }

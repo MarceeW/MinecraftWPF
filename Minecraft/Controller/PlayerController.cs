@@ -3,7 +3,6 @@ using Minecraft.Logic;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
-using OpenTK.Windowing.Common;
 using System.Windows.Input;
 using System.Diagnostics;
 

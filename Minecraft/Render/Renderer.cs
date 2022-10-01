@@ -1,4 +1,5 @@
-﻿using Minecraft.Controller;
+﻿using Assimp;
+using Minecraft.Controller;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
@@ -11,15 +12,11 @@ namespace Minecraft.Render
     {
         public event Action? OnRendering;
 
-        public Scene Scene { get; set; }
-        private Stopwatch stopwatch;
-        public Renderer()
-        {
-            stopwatch = new Stopwatch();
-        }
+        public Scene? Scene { get; set; }
+        public static Stopwatch Stopwatch = new Stopwatch();
         public void Dispose()
         {
-            Scene.Dispose();
+            Scene?.Dispose();
         }
         public void SetupRenderer(int width,int height)
         {
@@ -35,9 +32,9 @@ namespace Minecraft.Render
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            Scene.OnProjectionMatrixChange((float)width / height);
+            Scene?.OnProjectionMatrixChange((float)width / height);
 
-            stopwatch.Start();
+            Stopwatch.Start();
         }
         public void RenderFrame()
         {
@@ -49,7 +46,7 @@ namespace Minecraft.Render
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            Scene.Render();
+            Scene?.Render();
         }
     }
 }

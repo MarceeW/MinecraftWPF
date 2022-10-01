@@ -1,6 +1,7 @@
 ﻿using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace Minecraft.Graphics
 {
@@ -34,18 +35,16 @@ namespace Minecraft.Graphics
     {
         public const int SingleFaceVertexCount = 54;
         public static int SingleVertexFloats = 9;
-        public static float[] GetBlockFaceVertices(short block, FaceDirection face, Vector3 position)
+        public static float[] GetBlockFaceVertices(BlockType? block, FaceDirection face, Vector3 position)
         {
-            if((BlockType)block == BlockType.Air)
+            if(block == BlockType.Air || block == null)
                 return new float[0];
 
             var texCoords = AtlasTexturesData.GetTextureCoords((BlockType)block, face);
 
-            //0 = bot x
-            //1 = bot y
-            //2 = top x
-            //3 = top y
-            if ((BlockType)block == BlockType.Water)
+            position += new Vector3(0.5f);
+
+            if (block == BlockType.Water)
                 position.Y -= 0.2f;
 
             if (face == FaceDirection.Top)
@@ -113,6 +112,138 @@ namespace Minecraft.Graphics
                      0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[2],  texCoords[3],  0.7f,
                     -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[3],  0.7f,
                     -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[1],  0.7f
+                };
+        }
+        //public static float[] GetBlockFaceWireFrames(FaceDirection face, Vector3 position)
+        //{
+        //    position += new Vector3(0.5f);
+
+        //    if (face == FaceDirection.Top)
+        //        return
+        //        new float[6 * 3]
+        //        {  //Positions                                                 
+        //            -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+        //             0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+        //             0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+        //             0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+        //            -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+        //            -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+        //        };
+        //    else if (face == FaceDirection.Bot)
+        //        return
+        //        new float[6 * 3]
+        //        {  //Positions                                                 
+        //            -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+        //            -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+        //             0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+        //             0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+        //             0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+        //            -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+        //        };
+        //    else if (face == FaceDirection.Right)
+        //        return
+        //        new float[6 * 3]
+        //        {  //Positions                                                 
+        //             0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+        //             0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+        //             0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+        //             0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+        //             0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+        //             0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+        //        };
+        //    else if (face == FaceDirection.Left)
+        //        return
+        //        new float[6 * 3]
+        //        {  //Positions                                                 
+        //            -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+        //            -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+        //            -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+        //            -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+        //            -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+        //            -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+        //        };
+        //    else if (face == FaceDirection.Front)
+        //        return
+        //        new float[6 * 3]
+        //        {  //Positions                                                 
+        //            -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
+        //            -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
+        //             0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
+        //             0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
+        //             0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
+        //            -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z
+        //        };
+        //    else
+        //        return
+        //        new float[6 * 3]
+        //        {  //Positions                                                 
+        //            -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
+        //             0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
+        //             0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
+        //             0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
+        //            -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
+        //            -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z
+        //        };
+        //}
+        public static float[] GetBlockFaceWireFrames(FaceDirection face, Vector3 position)
+        {
+            position += new Vector3(0.5f);
+                return
+                new float[]
+                {  //Positions                                                
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+                                            
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+                                               
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+                                               
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,
+                                              
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
+                                             
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z
                 };
         }
     }

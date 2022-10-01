@@ -1,14 +1,11 @@
 ﻿using Minecraft.Controller;
 using Minecraft.Render;
 using OpenTK.Mathematics;
-using OpenTK.Graphics;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Input;
 using OpenTK.Wpf;
 using System;
 using OpenTK.Windowing.Common;
-using System.Windows.Input;
 using System.Windows;
+using System.Windows.Forms;
 using System.Diagnostics;
 
 namespace Minecraft
@@ -21,9 +18,7 @@ namespace Minecraft
         public event Action<float> RenderSizeChange;
 
         private Renderer renderer;
-
         public bool ShouldClose { get; set; }
-
         public RenderWindow()
         {
             InitializeComponent();
@@ -44,7 +39,7 @@ namespace Minecraft
             renderer = new Renderer();
             new GameController(renderer, this);
 
-            var resolution = System.Windows.Forms.Screen.PrimaryScreen.Bounds;
+            var resolution = Screen.PrimaryScreen.Bounds;
 
             Left = resolution.Width / 2 - Width / 2;
             Top = resolution.Height / 2 - Height / 2;

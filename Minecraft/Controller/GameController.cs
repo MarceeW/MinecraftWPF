@@ -1,12 +1,12 @@
 ﻿using Minecraft.Game;
+using Minecraft.Graphics;
 using Minecraft.Render;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
-using System.Windows.Input;
+using System.Windows.Forms;
 
 namespace Minecraft.Controller
 {
@@ -17,15 +17,16 @@ namespace Minecraft.Controller
         public WorldRenderer worldRendererer { get; }
         public bool IsGameRunning { get; private set; }
 
-
         private PlayerController playerController;
         private WorldGenerator worldGenerator;
 
         private Thread updateThread;
         private Stopwatch gameStopwatch;
 
+        MouseListener mouseListener;
         public GameController(Renderer renderer,RenderWindow renderWindow)
         {
+
             World = new World();
             Player = new Player(new Vector3(0, 64, 0));
             
@@ -54,6 +55,53 @@ namespace Minecraft.Controller
             gameStopwatch = new Stopwatch();
 
             MouseController.HideMouse();
+
+            mouseListener = new MouseListener();
+            mouseListener.RightMouseClick += () =>
+            {
+                var blockHit = Ray.Cast(Player.Camera, World, out bool hit, out FaceDirection hitFace);
+
+                if (hit)
+                {
+                    switch (hitFace)
+                    {
+                        case FaceDirection.Top:
+                            blockHit.Y++;
+                            break;
+                        case FaceDirection.Bot:
+                            blockHit.Y--;
+                            break;
+                        case FaceDirection.Right:
+                            blockHit.X++;
+                            break;
+                        case FaceDirection.Left:
+                            blockHit.X--;
+                            break;
+                        case FaceDirection.Front:
+                            blockHit.Z++;
+                            break;
+                        case FaceDirection.Back:
+                            blockHit.Z--;
+                            break;
+                        default:
+                            break;
+                    }
+
+                    World.AddBlock(blockHit, BlockType.WoodPlank);
+                }
+            };
+
+            mouseListener.LeftMouseClick += () =>
+            {
+                var blockHit = Ray.Cast(Player.Camera, World, out bool hit, out FaceDirection hitFace);
+
+                if (hit)
+                {
+                    World.RemoveBlock(blockHit);
+                }
+            };
+
+            renderWindow.MouseDown += mouseListener.OnMouseDown;
 
             renderWindow.Loaded += (object sender, RoutedEventArgs e) =>
             { 
@@ -103,13 +151,12 @@ namespace Minecraft.Controller
 
                 while (accumulator > updateStep)
                 {
-                    WindowController.ChekForKeyPress();
+                    WindowController.CheckForKeyPress();
                     WindowController.ResetMousePosition();
 
                     worldGenerator.GenerateChunksToQueue();
                     playerController.Update((float)updateStep / 1000.0f);
                     accumulator -= updateStep;
-                    //Debug.WriteLine("Tickrate: " + TickRate);
                 }
 
                 Thread.Sleep(0);

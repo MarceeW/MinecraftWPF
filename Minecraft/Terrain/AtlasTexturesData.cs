@@ -38,6 +38,8 @@ namespace Minecraft.Terrain
             new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,2) },
             //Cobblestone
             new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,8) },
+            //WoodPlank
+            new AtlasTexturePosition[1]{ new AtlasTexturePosition(1,6) },
 
         };
         public static readonly int TextureSize = 16;

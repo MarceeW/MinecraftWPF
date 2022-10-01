@@ -1,6 +1,7 @@
 ﻿using Minecraft.Terrain;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 
 namespace Minecraft.Graphics
@@ -9,6 +10,7 @@ namespace Minecraft.Graphics
     {
         private int nVAO,tVAO, nVBO,tVBO;
         private int nFaceCount = 0, tFaceCount = 0;
+        private bool hasData = false;
         public void Render(Shader shader)
         {
             shader.Use();
@@ -21,6 +23,10 @@ namespace Minecraft.Graphics
             GL.BindVertexArray(tVAO);
             GL.DrawArrays(PrimitiveType.Triangles, 0, tFaceCount * 6);
             GL.Enable(EnableCap.CullFace);
+        }
+        public void LoadMeshToGPU()
+        {
+
         }
         public static void CreateMesh(World world,Vector2 target)
         {
@@ -37,6 +43,7 @@ namespace Minecraft.Graphics
                     for (int y = 0; y <= chunk.TopBlockPositions[x, z]; y++)
                     {
                         Vector3 blockPos = new Vector3(x + Chunk.Size * target.X, y, z + Chunk.Size * target.Y);
+
                         var block = chunk.GetBlock(blockPos);
 
                         if (block == 0)
@@ -52,12 +59,13 @@ namespace Minecraft.Graphics
                                 {
                                     var neighborBlock = chunk.GetBlock(neighborPos);
 
-                                    if(neighborBlock == -1 || (BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block)))
+                                    if(neighborBlock == null || (BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block)))
                                     {
+
                                         nVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
                                         chunk.Mesh.nFaceCount++;
                                     }
-                                    else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0)
+                                    else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block==BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                     {
                                         tVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
                                         chunk.Mesh.tFaceCount++;
@@ -101,12 +109,12 @@ namespace Minecraft.Graphics
                             {
                                 var neighborBlock = chunk.GetBlock(neighborPos);
                                 
-                                if (neighborBlock == -1 || BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block))
+                                if (neighborBlock == null || BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block))
                                 {
                                     nVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
                                     chunk.Mesh.nFaceCount++;
                                 }
-                                else if (BlockData.IsBolckTransparent(block) && neighborBlock == 0)
+                                else if (BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block == BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                 {
                                     tVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
                                     chunk.Mesh.tFaceCount++;
@@ -115,8 +123,14 @@ namespace Minecraft.Graphics
                         }
                     }
 
-            chunk.Mesh.nVBO = GL.GenBuffer();
-            chunk.Mesh.nVAO = GL.GenVertexArray();
+            if (!chunk.Mesh.hasData)
+            {
+                chunk.Mesh.nVBO = GL.GenBuffer();
+                chunk.Mesh.nVAO = GL.GenVertexArray();
+
+                chunk.Mesh.tVBO = GL.GenBuffer();
+                chunk.Mesh.tVAO = GL.GenVertexArray();
+            }
 
             GL.BindVertexArray(chunk.Mesh.nVAO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, chunk.Mesh.nVBO);
@@ -135,8 +149,6 @@ namespace Minecraft.Graphics
             GL.VertexAttribPointer(3, 1, VertexAttribPointerType.Float, false, 9 * sizeof(float), 8 * sizeof(float));
             GL.EnableVertexAttribArray(3);
 
-            chunk.Mesh.tVBO = GL.GenBuffer();
-            chunk.Mesh.tVAO = GL.GenVertexArray();
 
             GL.BindVertexArray(chunk.Mesh.tVAO);
             GL.BindBuffer(BufferTarget.ArrayBuffer, chunk.Mesh.tVBO);
@@ -154,8 +166,10 @@ namespace Minecraft.Graphics
 
             GL.VertexAttribPointer(3, 1, VertexAttribPointerType.Float, false, 9 * sizeof(float), 8 * sizeof(float));
             GL.EnableVertexAttribArray(3);
+
+            chunk.Mesh.hasData = true;
         }
-        private static bool BlockIsOnBorder(Vector2 chunkPos,Vector3 blockPos)
+        public static bool BlockIsOnBorder(Vector2 chunkPos,Vector3 blockPos)
         {
             float chunkLeftCorner =   chunkPos.X * Chunk.Size;
             float chunkRightCorner = (chunkPos.X + 1) * Chunk.Size - 1;
