@@ -7,7 +7,7 @@ namespace Minecraft.Game
 {
     internal static class Ray
     {
-        public static double MaxLength { get; set; } = 8.0;
+        public static int MaxLength { get; set; } = 10;
         public static Vector3 Cast(Camera camera, World world, out bool hit,out FaceDirection hitFace)
         {
             double xDeltaDist = Math.Abs(1 / camera.Front.X);

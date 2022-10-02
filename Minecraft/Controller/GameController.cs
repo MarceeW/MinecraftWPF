@@ -32,7 +32,7 @@ namespace Minecraft.Controller
             
             worldGenerator = new WorldGenerator(World);
             worldRendererer = new WorldRenderer(World,Player.Camera);
-            worldGenerator.OnChunkAdded += worldRendererer.AddToQueue;
+            worldGenerator.ChunkAdded += worldRendererer.AddToQueue;
             worldGenerator.InitWorld();
 
             playerController = new PlayerController(Player, World);

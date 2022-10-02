@@ -6,15 +6,17 @@ namespace Minecraft.Terrain
 {
     class Entity
     {
-        int Width { get; }
-        int Height { get; }
-        int Depth { get; }
-        KeyValuePair<Vector3, BlockType>[] Blocks { get; }
-        public Entity(XElement entity)
+        public Entity(int width, int height, int depth, Block[] blocks)
         {
-            var blocks = entity.DescendantNodes();
-            ;
-            //Blocks = new KeyValuePair<Vector3, BlockType>[];
+            Width = width;
+            Height = height;
+            Depth = depth;
+            Blocks = blocks;
         }
+
+        public int Width { get; }
+        public int Height { get; }
+        public int Depth { get; }
+        public Block[] Blocks { get; }
     }
 }

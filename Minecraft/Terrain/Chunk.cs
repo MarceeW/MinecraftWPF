@@ -18,7 +18,7 @@ namespace Minecraft.Terrain
 
             Mesh = new ChunkMesh();
         }
-        public void AddBlock(Vector3 pos,BlockType block)
+        public void AddBlock(Vector3 pos,BlockType block,bool overWrite)
         {
             if (pos.Y >= 256)
                 return;
@@ -36,7 +36,8 @@ namespace Minecraft.Terrain
             if (y > TopBlockPositions[x, z])
                 TopBlockPositions[x, z] = y;
 
-            Blocks[x, y, z] = (byte)block;
+            if(Blocks[x, y, z] == 0 || overWrite)
+                Blocks[x, y, z] = (byte)block;
         }
         public void RemoveBlock(Vector3 pos)
         {
@@ -107,7 +108,7 @@ namespace Minecraft.Terrain
             }
             return null;
         }
-        public bool IsBlockInChunk(Vector3 pos)
+        public bool IsBlockPosInChunk(Vector3 pos)
         {
             int bx = (int)Position.X * Size;
             int bz = (int)Position.Y * Size;

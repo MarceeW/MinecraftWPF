@@ -9,7 +9,7 @@ namespace Minecraft.Terrain
 {
     internal class WorldGenerator
     {
-        public event Action<Vector2>? OnChunkAdded;
+        public event Action<Vector2>? ChunkAdded;
 
         private FastNoise noise;
 
@@ -19,6 +19,7 @@ namespace Minecraft.Terrain
         private World world;
         private PriorityQueue<Vector2,float> generatorQueue;
         private Queue<KeyValuePair<Vector2, Chunk>> generatedChunks;
+        private static Random random = new Random();
 
         public WorldGenerator(World world)
         {
@@ -44,11 +45,8 @@ namespace Minecraft.Terrain
         {
             for (int x = -WorldRenderer.RenderDistance; x <= WorldRenderer.RenderDistance; x++)
                 for (int z = -WorldRenderer.RenderDistance; z <= WorldRenderer.RenderDistance; z++)
-                    AddChunk(new Vector2(x, z));
-
-            //for (int x = 0; x < WorldRenderer.RenderDistance; x++)
-            //    for (int z = 0; z < WorldRenderer.RenderDistance; z++)
-            //        AddChunk(new Vector2(x, z));
+                    lock(world)
+                        AddChunk(new Vector2(x, z));
         }
         public void AddGeneratedChunksToWorld()
         {
@@ -56,7 +54,7 @@ namespace Minecraft.Terrain
             {
                 var chunk = generatedChunks.Dequeue();
                 world.AddChunk(chunk.Key, chunk.Value);
-                OnChunkAdded?.Invoke(chunk.Key);
+                ChunkAdded?.Invoke(chunk.Key);
             }
         }
         public void GenerateChunksToQueue()
@@ -147,12 +145,19 @@ namespace Minecraft.Terrain
                             y++;
 
                         for (int waterY = y + 1; waterY < worldDepth - 10; waterY++)
-                            chunk.AddBlock(new Vector3(x, waterY, z), BlockType.Water);
+                            chunk.AddBlock(new Vector3(x, waterY, z), BlockType.Water, true);
                     }
 
                     for (; y >= 0; y--)
                     {
-                        chunk.AddBlock(new Vector3(x, y, z), GetBlockAtHeight(y, depth));
+                        var block = GetBlockAtHeight(y, depth);
+                        chunk.AddBlock(new Vector3(x, y, z), block, true);
+
+                        if(block == BlockType.Grass && random.NextDouble() <= 0.02)
+                        {
+                            world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.Tree,chunk);
+                        }
+
                         depth++;
                     }       
                 }

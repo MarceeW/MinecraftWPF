@@ -11,18 +11,26 @@ namespace Minecraft.Graphics
         private int nVAO,tVAO, nVBO,tVBO;
         private int nFaceCount = 0, tFaceCount = 0;
         private bool hasData = false;
-        public void Render(Shader shader)
+        public void RenderSolidMesh(Shader shader)
         {
             shader.Use();
             shader?.SetInt("tex", AtlasTexturesData.Atlas.GetTexUnitId());
 
             GL.BindVertexArray(nVAO);
             GL.DrawArrays(PrimitiveType.Triangles, 0, nFaceCount * 6);
+        }
+        public void RenderTransparentMesh(Shader shader)
+        {
+            shader.Use();
+            shader?.SetInt("tex", AtlasTexturesData.Atlas.GetTexUnitId());
 
-            GL.Disable(EnableCap.CullFace);
-            GL.BindVertexArray(tVAO);
-            GL.DrawArrays(PrimitiveType.Triangles, 0, tFaceCount * 6);
-            GL.Enable(EnableCap.CullFace);
+            if (tFaceCount > 0) //TODO!!
+            {
+                GL.Disable(EnableCap.CullFace);
+                GL.BindVertexArray(tVAO);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, tFaceCount * 6);
+                GL.Enable(EnableCap.CullFace);
+            }
         }
         public void LoadMeshToGPU()
         {
@@ -55,7 +63,7 @@ namespace Minecraft.Graphics
 
                             if (BlockIsOnBorder(target, blockPos))
                             {
-                                if (chunk.IsBlockInChunk(neighborPos))
+                                if (chunk.IsBlockPosInChunk(neighborPos))
                                 {
                                     var neighborBlock = chunk.GetBlock(neighborPos);
 
@@ -149,23 +157,25 @@ namespace Minecraft.Graphics
             GL.VertexAttribPointer(3, 1, VertexAttribPointerType.Float, false, 9 * sizeof(float), 8 * sizeof(float));
             GL.EnableVertexAttribArray(3);
 
+            if(tVertices.Count > 0)
+            {
+                GL.BindVertexArray(chunk.Mesh.tVAO);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, chunk.Mesh.tVBO);
 
-            GL.BindVertexArray(chunk.Mesh.tVAO);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, chunk.Mesh.tVBO);
+                GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * tVertices.Count, tVertices.ToArray(), BufferUsageHint.StaticDraw);
 
-            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * tVertices.Count, tVertices.ToArray(), BufferUsageHint.StaticDraw);
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 9 * sizeof(float), 0);
+                GL.EnableVertexAttribArray(0);
 
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 9 * sizeof(float), 0);
-            GL.EnableVertexAttribArray(0);
+                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 9 * sizeof(float), 3 * sizeof(float));
+                GL.EnableVertexAttribArray(1);
 
-            GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 9 * sizeof(float), 3 * sizeof(float));
-            GL.EnableVertexAttribArray(1);
+                GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 9 * sizeof(float), 6 * sizeof(float));
+                GL.EnableVertexAttribArray(2);
 
-            GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 9 * sizeof(float), 6 * sizeof(float));
-            GL.EnableVertexAttribArray(2);
-
-            GL.VertexAttribPointer(3, 1, VertexAttribPointerType.Float, false, 9 * sizeof(float), 8 * sizeof(float));
-            GL.EnableVertexAttribArray(3);
+                GL.VertexAttribPointer(3, 1, VertexAttribPointerType.Float, false, 9 * sizeof(float), 8 * sizeof(float));
+                GL.EnableVertexAttribArray(3);
+            }    
 
             chunk.Mesh.hasData = true;
         }

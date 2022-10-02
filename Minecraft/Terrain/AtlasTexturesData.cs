@@ -2,6 +2,10 @@
 
 namespace Minecraft.Terrain
 {
+    internal enum BlockType
+    {
+        Air, Grass, Stone, Dirt, Leaves, OakTrunk, Glass, Sand, Water, Bedrock, Cobblestone, WoodPlank
+    }
     internal struct AtlasTexturePosition
     {
         public int column, row;
@@ -27,7 +31,7 @@ namespace Minecraft.Terrain
             //Leaves
             new AtlasTexturePosition[1]{ new AtlasTexturePosition(1,4) },
             //OakTrunk
-            new AtlasTexturePosition[3]{ new AtlasTexturePosition(1,3), new AtlasTexturePosition(1, 5), new AtlasTexturePosition(1, 4), },
+            new AtlasTexturePosition[3]{ new AtlasTexturePosition(1,3), new AtlasTexturePosition(1, 3), new AtlasTexturePosition(1, 1), },
             //Glass
             new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,-0) },
             //Sand

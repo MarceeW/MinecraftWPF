@@ -1,3 +1,2 @@
-﻿Megírni az entites json-t
-Update thread
-IOC használata
+﻿fák átlógása a szomszédos chunk-ba
+ha eltünik az összes átlátszó block a chunkbol hiba lép fel

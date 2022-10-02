@@ -1,11 +1,8 @@
 ﻿using Minecraft.Game;
 using Minecraft.Graphics;
-using Minecraft.Graphics.Shapes;
 using Minecraft.Terrain;
-using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Chunk = Minecraft.Terrain.Chunk;
 
 namespace Minecraft.Render
@@ -31,15 +28,15 @@ namespace Minecraft.Render
         }
         public void RenderWorld()
         {
-            world.OrderByPlayerPosition(camera.Position.Xz - camera.Front.Xz * Chunk.Size);
-
             AtlasTexturesData.Atlas.Use();
-            foreach (var chunk in world.Chunks.Values)
-            {
-                chunk.Mesh.Render(Shader);
-            }
-            RenderSelectedBlockFrame();
 
+            foreach (var chunk in world.Chunks.Values)
+                chunk.Mesh.RenderSolidMesh(Shader);
+
+            foreach (var chunk in world.Chunks.Values)
+                chunk.Mesh.RenderTransparentMesh(Shader);
+
+            RenderSelectedBlockFrame();
             CreateMeshesInQueue();
         }
         public void CreateMeshesInQueue()
