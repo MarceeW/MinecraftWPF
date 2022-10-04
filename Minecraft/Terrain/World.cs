@@ -47,14 +47,14 @@ namespace Minecraft.Terrain
         {  
             if(Chunks.TryAdd(pos, chunk))
             {
-                if (blocksWaitingForChunk.ContainsKey(pos))
-                {
-                    foreach (var block in blocksWaitingForChunk[pos])
-                    {
-                        AddBlock(block.Position, block.Type);
-                    }
-                    blocksWaitingForChunk.Remove(pos);
-                }
+                //if (blocksWaitingForChunk.ContainsKey(pos))
+                //{
+                //    foreach (var block in blocksWaitingForChunk[pos])
+                //    {
+                //        AddBlock(block.Position, block.Type);
+                //    }
+                //    blocksWaitingForChunk.Remove(pos);
+                //}
             }
         }
         public void RemoveBlock(Vector3 pos)
@@ -87,20 +87,7 @@ namespace Minecraft.Terrain
                     chunk.AddBlock(block.Position + position, block.Type, false);
                 else
                 {
-                    var neighborChunk = GetChunk(block.Position, out Vector2 chunkPos);
-                
-                    if(neighborChunk != null)
-                    {
-                        neighborChunk.AddBlock(block.Position + position, block.Type, false);
-                    }
-                    //else
-                    //{
-                    //    if (!blocksWaitingForChunk.ContainsKey(chunkPos))
-                    //    {
-                    //        blocksWaitingForChunk.Add(chunkPos, new List<Block>());
-                    //    }
-                    //    blocksWaitingForChunk[chunkPos].Add(new Block(block.Position + position,block.Type));
-                    //} 
+                    
                 }
             }
         }

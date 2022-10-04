@@ -84,7 +84,7 @@ namespace Minecraft.Terrain
             else if (depth >= 1)
                 return BlockType.Dirt;
             else
-                return BlockType.Grass;
+                return BlockType.GrassBlock;
         }
         public void ExpandWorld(Direction dir,Vector2 position)
         {
@@ -153,11 +153,16 @@ namespace Minecraft.Terrain
                         var block = GetBlockAtHeight(y, depth);
                         chunk.AddBlock(new Vector3(x, y, z), block, true);
 
-                        if(block == BlockType.Grass && random.NextDouble() <= 0.02)
+                        var chance = random.NextDouble();
+
+                        if (block == BlockType.GrassBlock && chance <= 0.02)
                         {
                             world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.Tree,chunk);
                         }
-
+                        //else if(block == BlockType.GrassBlock && chance > 0.2 && chance <= 0.4)
+                        //{
+                        //    chunk.AddBlock(new Vector3(x,y + 1,z), BlockType.Grass, false);
+                        //}
                         depth++;
                     }       
                 }

@@ -28,7 +28,7 @@ namespace Minecraft.Controller
         {
 
             World = new World();
-            Player = new Player(new Vector3(0, 64, 0));
+            Player = new Player(new Vector3(0, 40, 0));
             
             worldGenerator = new WorldGenerator(World);
             worldRendererer = new WorldRenderer(World,Player.Camera);
@@ -87,7 +87,7 @@ namespace Minecraft.Controller
                             break;
                     }
 
-                    World.AddBlock(blockHit, BlockType.WoodPlank);
+                    World.AddBlock(blockHit, BlockType.Cobblestone);
                 }
             };
 
@@ -116,7 +116,7 @@ namespace Minecraft.Controller
             double TickRate;
 
             double updatePerSec = MAX_TPS;
-            double updateStep = 1000 / updatePerSec; // milliseconds
+            double updateStep = 1000 / updatePerSec;
             double accumulator = 0;
 
             gameStopwatch.Start();

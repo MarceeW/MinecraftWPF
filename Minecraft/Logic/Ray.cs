@@ -7,7 +7,7 @@ namespace Minecraft.Game
 {
     internal static class Ray
     {
-        public static int MaxLength { get; set; } = 10;
+        public static int MaxDistance { get; } = 6;
         public static Vector3 Cast(Camera camera, World world, out bool hit,out FaceDirection hitFace)
         {
             double xDeltaDist = Math.Abs(1 / camera.Front.X);
@@ -70,7 +70,9 @@ namespace Minecraft.Game
             hit = false;
             hitFace = FaceDirection.Bot;
 
-            while (!hit && rayDistance < MaxLength)
+            Vector3 currentBlock = new Vector3(mapX, mapY, mapZ);
+
+            while (!hit && (camera.Position - currentBlock).Length < MaxDistance)
             {
                 if(xRayDist < yRayDist && xRayDist < zRayDist)
                 {
@@ -105,12 +107,13 @@ namespace Minecraft.Game
                     else
                         hitFace = FaceDirection.Back;
                 }
-                var block = world.GetBlock(new Vector3(mapX, mapY, mapZ));
+                currentBlock = new Vector3(mapX, mapY, mapZ);
+                var block = world.GetBlock(currentBlock);
 
                 hit = BlockData.IsBlockSolid(block);
             }
 
-            return new Vector3(mapX, mapY, mapZ);
+            return currentBlock;
         }
     }
 }

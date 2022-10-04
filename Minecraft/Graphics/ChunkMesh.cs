@@ -10,6 +10,8 @@ namespace Minecraft.Graphics
     {
         private int nVAO,tVAO, nVBO,tVBO;
         private int nFaceCount = 0, tFaceCount = 0;
+        private int vegetationElementFaces = 0;
+
         private bool hasData = false;
         public void RenderSolidMesh(Shader shader)
         {
@@ -28,7 +30,7 @@ namespace Minecraft.Graphics
             {
                 GL.Disable(EnableCap.CullFace);
                 GL.BindVertexArray(tVAO);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, tFaceCount * 6);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, tFaceCount * 6 + vegetationElementFaces * 2);
                 GL.Enable(EnableCap.CullFace);
             }
         }
@@ -67,9 +69,8 @@ namespace Minecraft.Graphics
                                 {
                                     var neighborBlock = chunk.GetBlock(neighborPos);
 
-                                    if(neighborBlock == null || (BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block)))
+                                    if (neighborBlock == null || (BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block)))
                                     {
-
                                         nVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
                                         chunk.Mesh.nFaceCount++;
                                     }
@@ -116,7 +117,7 @@ namespace Minecraft.Graphics
                             else
                             {
                                 var neighborBlock = chunk.GetBlock(neighborPos);
-                                
+
                                 if (neighborBlock == null || BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block))
                                 {
                                     nVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));

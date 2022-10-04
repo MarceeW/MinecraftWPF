@@ -9,7 +9,7 @@ namespace Minecraft.Render
 {
     internal class WorldRenderer
     {
-        public static int RenderDistance = 16;
+        public static int RenderDistance = 12;
         private PriorityQueue<Vector2,float> renderQueue;
         private Camera camera;
         public Shader Shader { get; }

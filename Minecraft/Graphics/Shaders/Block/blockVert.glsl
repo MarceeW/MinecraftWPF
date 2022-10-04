@@ -13,7 +13,7 @@ out float visibility;
 uniform mat4 view;
 uniform mat4 projection;
 
-float density = 0.004;
+float density = 0.005;
 float gradient = 8.0;
 
 void main(void)

@@ -6,6 +6,7 @@ namespace Minecraft.Terrain
     internal class Chunk
     {
         public const int Size = 16;
+        public const int Height = 256;
         public Vector2 Position { get; private set; }
         public ChunkMesh Mesh { get; }
         public byte[,,] Blocks { get; private set; }
@@ -13,14 +14,14 @@ namespace Minecraft.Terrain
         public Chunk(Vector2 pos)
         {
             Position = pos;
-            Blocks = new byte[Size, 256, Size];
+            Blocks = new byte[Size, Height, Size];
             TopBlockPositions = new int[Size, Size];
 
             Mesh = new ChunkMesh();
         }
         public void AddBlock(Vector3 pos,BlockType block,bool overWrite)
         {
-            if (pos.Y >= 256)
+            if (pos.Y >= Height)
                 return;
 
             int x = (int)pos.X % Size;
@@ -75,7 +76,7 @@ namespace Minecraft.Terrain
         {
             short block = -1;
 
-            if (y >= 0 || y < 256)
+            if (y >= 0 || y < Height)
             {
                 int xs = x % Size;
                 int zs = z % Size;
@@ -93,7 +94,7 @@ namespace Minecraft.Terrain
         }
         public BlockType? GetBlock(Vector3 pos)
         {
-            if(pos.Y >= 0 && pos.Y < 256)
+            if(pos.Y >= 0 && pos.Y < Height)
             {
                 int x = (int)pos.X % Size;
                 int z = (int)pos.Z % Size;

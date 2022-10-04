@@ -4,7 +4,7 @@ namespace Minecraft.Terrain
 {
     internal enum BlockType
     {
-        Air, Grass, Stone, Dirt, Leaves, OakTrunk, Glass, Sand, Water, Bedrock, Cobblestone, WoodPlank
+        Air, GrassBlock, Stone, Dirt, Leaves, OakTrunk, Glass, Sand, Water, Bedrock, Cobblestone, WoodPlank, Grass
     }
     internal struct AtlasTexturePosition
     {
@@ -33,7 +33,7 @@ namespace Minecraft.Terrain
             //OakTrunk
             new AtlasTexturePosition[3]{ new AtlasTexturePosition(1,3), new AtlasTexturePosition(1, 3), new AtlasTexturePosition(1, 1), },
             //Glass
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,-0) },
+            new AtlasTexturePosition[1]{ new AtlasTexturePosition(2,0) },
             //Sand
             new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,12) },
             //Water
@@ -44,6 +44,8 @@ namespace Minecraft.Terrain
             new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,8) },
             //WoodPlank
             new AtlasTexturePosition[1]{ new AtlasTexturePosition(1,6) },
+            //Grass
+            new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,10) },
 
         };
         public static readonly int TextureSize = 16;
@@ -59,7 +61,7 @@ namespace Minecraft.Terrain
             }
         }
         private static Texture? atlas;
-        public static float[] GetTextureCoords(BlockType type, FaceDirection face)
+        public static float[] GetTextureCoords(BlockType type, FaceDirection? face)
         {
             var TexturePosition = TexturePositions[(int)type];
 

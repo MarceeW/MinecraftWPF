@@ -7,6 +7,13 @@ namespace Minecraft.Game
     internal class Player
     {
         public Camera Camera { get; private set; }
+        public Vector3 Position
+        {
+            get
+            {
+                return Camera.Position;
+            }
+        }
 
         public bool IsFlying { get; private set; }
         public Force Force { get; private set; }

@@ -12,8 +12,13 @@ namespace Minecraft.Terrain
         {
             return type == BlockType.Water ||
                    type == BlockType.Glass ||
-                   type == BlockType.Leaves ||
+                   type == BlockType.Leaves||
+                   type == BlockType.Grass ||
                    type == BlockType.Air;
+        }
+        public static bool IsVegetationBlock(BlockType? type)
+        {
+            return type == BlockType.Grass;
         }
         public static BlockType GetBlockTypeByName(string name)
         {
