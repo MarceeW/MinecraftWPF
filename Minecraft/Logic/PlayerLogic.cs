@@ -29,7 +29,7 @@ namespace Minecraft.Logic
         private const float sprintSpeed = 50.0f;
         private const float mouseSpeed = 0.125f;
         private const float playerHeight = 2.0f;
-        private const float colliderBoxSize = 0.5f;
+        private const float colliderBoxSize = 0.0f;
 
         private bool jumping = false;
         private Force force;
@@ -117,22 +117,22 @@ namespace Minecraft.Logic
             }
             else
             {
-                broadPhaseLeft = (int)player.Position.X;
+                broadPhaseLeft = (int)player.Position.X - 1;
                 broadPhaseRight = (int)(player.Position.X + deltaPos.X) + 1;
             }
 
             if (deltaPos.Z < 0.0)
             {
-                broadPhaseTop = (int)(player.Position.X + deltaPos.X) - 1;
-                broadPhaseBottom = (int)player.Position.X + 1;
+                broadPhaseTop = (int)(player.Position.Z + deltaPos.Z) - 1;
+                broadPhaseBottom = (int)player.Position.Z + 1;
             }
             else
             {
-                broadPhaseTop = (int)player.Position.X;
-                broadPhaseBottom = (int)(player.Position.X + deltaPos.X) + 1;
+                broadPhaseTop = (int)player.Position.Z - 1;
+                broadPhaseBottom = (int)(player.Position.Z + deltaPos.Z) + 1;
             }
 
-            Debug.WriteLine($"Left: {broadPhaseLeft} Right: {broadPhaseRight} Bot: {broadPhaseBottom} Top: {broadPhaseTop}");
+            //Debug.WriteLine($"Left: {broadPhaseLeft} Right: {broadPhaseRight} Top: {broadPhaseTop} Bot: {broadPhaseBottom}");
 
             for (int x = broadPhaseLeft; x <= broadPhaseRight; x++)
             {

@@ -72,32 +72,20 @@ namespace Minecraft.Terrain
                 TopBlockPositions[x, z] = y;
             }
         }
-        public short GetBlock(int x,int y,int z)
-        {
-            short block = -1;
-
-            if (y >= 0 || y < Height)
-            {
-                int xs = x % Size;
-                int zs = z % Size;
-
-                if (xs < 0)
-                    xs += Size;
-                
-                if (zs < 0)
-                    zs += Size;
-
-                return Blocks[xs, y, zs];
-            }
-
-            return block;
-        }
         public BlockType? GetBlock(Vector3 pos)
         {
             if(pos.Y >= 0 && pos.Y < Height)
             {
-                int x = (int)pos.X % Size;
-                int z = (int)pos.Z % Size;
+                int x = (int)pos.X;
+                int z = (int)pos.Z;
+
+                if (pos.X - x < 0)
+                    x--;
+                if (pos.Z - z < 0)
+                    z--;
+
+                x %= Size;
+                z %= Size;
 
                 if (x < 0)
                     x += Size;
