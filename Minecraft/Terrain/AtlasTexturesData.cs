@@ -6,11 +6,11 @@ namespace Minecraft.Terrain
     {
         Air, GrassBlock, Stone, Dirt, Leaves, OakTrunk, Glass, Sand, Water, Bedrock, Cobblestone, WoodPlank, Grass
     }
-    internal struct AtlasTexturePosition
+    internal struct Position2D
     {
         public int column, row;
 
-        public AtlasTexturePosition(int row, int column)
+        public Position2D(int row, int column)
         {
             this.column = column;
             this.row = row;
@@ -19,33 +19,33 @@ namespace Minecraft.Terrain
     internal static class AtlasTexturesData
     {
         //Top = 1st Bot = 2nd Other = 3rd
-        public static readonly AtlasTexturePosition[][] TexturePositions =
+        public static readonly Position2D[][] TexturePositions =
         {
-            new AtlasTexturePosition[0],
+            new Position2D[0],
             //Grass
-            new AtlasTexturePosition[3]{ new AtlasTexturePosition(0,13), new AtlasTexturePosition(0, 9), new AtlasTexturePosition(0, 11), },
+            new Position2D[3]{ new Position2D(0,13), new Position2D(0, 9), new Position2D(0, 11), },
             //Stone
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(1,7) },
+            new Position2D[1]{ new Position2D(1,7) },
             //Dirt
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,9) },
+            new Position2D[1]{ new Position2D(0,9) },
             //Leaves
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(1,4) },
+            new Position2D[1]{ new Position2D(1,4) },
             //OakTrunk
-            new AtlasTexturePosition[3]{ new AtlasTexturePosition(1,3), new AtlasTexturePosition(1, 3), new AtlasTexturePosition(1, 1), },
+            new Position2D[3]{ new Position2D(1,3), new Position2D(1, 3), new Position2D(1, 1), },
             //Glass
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(2,0) },
+            new Position2D[1]{ new Position2D(2,0) },
             //Sand
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,12) },
+            new Position2D[1]{ new Position2D(0,12) },
             //Water
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(1,10) },
+            new Position2D[1]{ new Position2D(1,10) },
             //Bedrock
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,2) },
+            new Position2D[1]{ new Position2D(0,2) },
             //Cobblestone
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,8) },
+            new Position2D[1]{ new Position2D(0,8) },
             //WoodPlank
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(1,6) },
+            new Position2D[1]{ new Position2D(1,6) },
             //Grass
-            new AtlasTexturePosition[1]{ new AtlasTexturePosition(0,10) },
+            new Position2D[1]{ new Position2D(0,10) },
 
         };
         public static readonly int TextureSize = 16;
@@ -60,6 +60,7 @@ namespace Minecraft.Terrain
                 return atlas;
             }
         }
+
         private static Texture? atlas;
         public static float[] GetTextureCoords(BlockType type, FaceDirection? face)
         {

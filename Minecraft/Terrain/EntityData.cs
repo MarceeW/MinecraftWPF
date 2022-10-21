@@ -8,9 +8,9 @@ namespace Minecraft.Terrain
     }
     internal static class EntityData
     {
-        public static Entity[] Entities { get; } = new Entity[]
+        public static VoxelEntity[] Entities { get; } = new VoxelEntity[]
         {
-            new Entity(5,5,5,new Block[]
+            new VoxelEntity(5,5,5,new Block[]
             {
                 new Block(new Vector3(0,0,0),BlockType.OakTrunk),
                 new Block(new Vector3(0,1,0),BlockType.OakTrunk),

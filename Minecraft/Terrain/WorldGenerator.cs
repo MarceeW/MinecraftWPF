@@ -159,7 +159,7 @@ namespace Minecraft.Terrain
                         {
                             world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.Tree,chunk);
                         }
-                        //else if(block == BlockType.GrassBlock && chance > 0.2 && chance <= 0.4)
+                        //else if(block == BlockType.GrassBlock && chance > 0.2 && chance <= 0.45)
                         //{
                         //    chunk.AddBlock(new Vector3(x,y + 1,z), BlockType.Grass, false);
                         //}

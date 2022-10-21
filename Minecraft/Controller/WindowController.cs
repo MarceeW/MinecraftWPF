@@ -9,7 +9,7 @@ namespace Minecraft.Controller
     internal static class WindowController
     {
         public static RenderWindow? Window { get;set; }
-        public static bool ShowGrids {get; private set;}
+        public static bool ShowGrids { get; private set;}
         private static bool needsToResetMouse = true;
         public static void CheckForKeyPress()
         {

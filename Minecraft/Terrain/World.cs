@@ -1,22 +1,21 @@
 ﻿using Minecraft.Graphics;
 using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Windows.Documents;
 
 namespace Minecraft.Terrain
 {
     internal class World
     {
-        public Dictionary<Vector2, Chunk> Chunks { get; private set; }
+        public Dictionary<Vector2, Chunk> Chunks { get; set; }
         public WorldGenerator? WorldGenerator { get; set; }
 
-        private Dictionary<Vector2, List<Block>> blocksWaitingForChunk;
+        private Dictionary<Vector2, List<Block>> blockQueue;
 
         public World()
         {
             Chunks = new Dictionary<Vector2, Chunk>();
-            blocksWaitingForChunk = new Dictionary<Vector2, List<Block>>();
+            blockQueue = new Dictionary<Vector2, List<Block>>();
         }
         public Chunk? GetChunk(Vector3 pos,out Vector2 chunkPos)
         {
@@ -47,14 +46,14 @@ namespace Minecraft.Terrain
         {  
             if(Chunks.TryAdd(pos, chunk))
             {
-                //if (blocksWaitingForChunk.ContainsKey(pos))
-                //{
-                //    foreach (var block in blocksWaitingForChunk[pos])
-                //    {
-                //        AddBlock(block.Position, block.Type);
-                //    }
-                //    blocksWaitingForChunk.Remove(pos);
-                //}
+                if (blockQueue.ContainsKey(pos))
+                {
+                    foreach (var block in blockQueue[pos])
+                    {
+                        chunk.AddBlock(block.Position, block.Type, false);
+                    }
+                    blockQueue.Remove(pos);
+                }
             }
         }
         public void RemoveBlock(Vector3 pos)
@@ -83,24 +82,32 @@ namespace Minecraft.Terrain
 
             foreach(var block in entity.Blocks)
             {
+                Vector3 blockPos = block.Position + position;
+
                 if (chunk.IsBlockPosInChunk(block.Position + position))
-                    chunk.AddBlock(block.Position + position, block.Type, false);
+                    chunk.AddBlock(blockPos, block.Type, false);
                 else
                 {
-                    
+
+                    GetChunk(blockPos, out Vector2 whereShouldBlockBe);
+
+                    if (Chunks.ContainsKey(whereShouldBlockBe))
+                    {
+                        Chunks[whereShouldBlockBe].AddBlock(block.Position + position, block.Type, true);
+                    }
+                    else
+                    {
+                        if (blockQueue.ContainsKey(whereShouldBlockBe))
+                        {
+                            blockQueue[whereShouldBlockBe].Add(new Block(blockPos, block.Type));
+                        }
+                        else
+                        {
+                            blockQueue.Add(whereShouldBlockBe, new List<Block>());
+                            blockQueue[whereShouldBlockBe].Add(new Block(blockPos, block.Type));
+                        }
+                    }
                 }
-            }
-        }
-        public void OrderByPlayerPosition(Vector2 position)
-        {
-            position /= Chunk.Size;
-            try
-            {
-                Chunks = Chunks.OrderByDescending(x => (x.Key - position).Length).ToDictionary(x => x.Key, y => y.Value);
-            }
-            catch
-            {
-                return;
             }
         }
     }

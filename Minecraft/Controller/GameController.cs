@@ -6,7 +6,6 @@ using OpenTK.Mathematics;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
-using System.Windows.Forms;
 
 namespace Minecraft.Controller
 {
@@ -28,16 +27,19 @@ namespace Minecraft.Controller
         {
 
             World = new World();
+            WorldSerializer.World = World;
+
             Player = new Player(new Vector3(0, 40, 0));
             
             worldGenerator = new WorldGenerator(World);
             worldRendererer = new WorldRenderer(World,Player.Camera);
             worldGenerator.ChunkAdded += worldRendererer.AddToQueue;
-            worldGenerator.InitWorld();
+
+            if(!WorldSerializer.WorldFileExists())
+                worldGenerator.InitWorld();
 
             playerController = new PlayerController(Player, World);
             playerController.ChangedChunk += worldGenerator.ExpandWorld;
-            playerController.Moved += World.OrderByPlayerPosition;
 
             renderer.OnRendering += worldRendererer.CreateMeshesInQueue;
             renderer.OnRendering += worldGenerator.AddGeneratedChunksToWorld;
@@ -47,6 +49,18 @@ namespace Minecraft.Controller
 
             renderWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
             renderWindow.Loaded += (object sender, RoutedEventArgs e) => renderer.SetupRenderer((int)renderWindow.Width, (int)renderWindow.Height);
+            
+            //renderWindow.Loaded += (object sender, RoutedEventArgs e) =>
+            //{
+            //    World.Chunks = WorldSerializer.LoadWorld();
+            //
+            //    foreach (var chunk in World.Chunks)
+            //    {
+            //        chunk.Value.Mesh = new ChunkMesh();
+            //        worldRendererer.AddToQueue(chunk.Key);
+            //    }
+            //};
+            //renderWindow.Closing += (object? sender,CancelEventArgs e) => WorldSerializer.SaveWorld();
 
             WindowController.Window = renderWindow;
 
@@ -97,6 +111,7 @@ namespace Minecraft.Controller
 
                 if (hit)
                 {
+                    Debug.WriteLine(blockHit);
                     World.RemoveBlock(blockHit);
                 }
             };

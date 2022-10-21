@@ -31,7 +31,7 @@ namespace Minecraft.Graphics
             }
         }
     }
-    internal static class BlockFace
+    internal static class Face
     {
         public const int SingleFaceVertexCount = 54;
         public static int SingleVertexFloats = 9;
@@ -114,90 +114,90 @@ namespace Minecraft.Graphics
                     -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[1],  0.7f
                 };
         }
-        public static float[] GetVegetationFaceVertices(BlockType? block, Vector3 position)
+        public static float[] GetVegetationFaceVertices(BlockType block, Vector3 position)
         {
-            var texCoords = AtlasTexturesData.GetTextureCoords((BlockType)block,null);
+            var texCoords = AtlasTexturesData.GetTextureCoords(block,null);
 
             position += new Vector3(0.5f);
 
                 return
                 new float[]
                 {
-                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  0.5f,
-                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  0.5f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  0.5f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  0.5f,
-                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  0.5f,
-                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  0.5f,
-
-                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  0.5f,
-                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  0.5f,
-                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  0.5f,
-                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  0.5f,
-                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  0.5f,
-                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  0.5f
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
+                                                                                                                                      
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f
                 };
         }
-        public static float[] GetBlockFaceWireFrames(FaceDirection face, Vector3 position)
+        public static float[] GetBlockFaceWireFrames(Vector3 position,Vector3 color)
         {
             position += new Vector3(0.5f);
 
                 return
                 new float[]
                 {  //Positions                                                
-                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                                                            
-                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                                                            
-                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                                                            
-                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                                              
-                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,
-                                             
-                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,
-                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                                                                                 
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                                                                                 
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                                                                                 
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                                                                                 
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
+                                                                                 
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z
                 };
         }
     }

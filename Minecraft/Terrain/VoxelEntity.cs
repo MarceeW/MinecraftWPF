@@ -4,9 +4,9 @@ using System.Xml.Linq;
 
 namespace Minecraft.Terrain
 {
-    class Entity
+    class VoxelEntity
     {
-        public Entity(int width, int height, int depth, Block[] blocks)
+        public VoxelEntity(int width, int height, int depth, Block[] blocks)
         {
             Width = width;
             Height = height;

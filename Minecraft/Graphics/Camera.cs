@@ -3,9 +3,9 @@ using OpenTK.Input;
 
 namespace Minecraft.Graphics
 {
-    internal class Camera
+    internal class Camera : ICamera
     {
-        public Vector3 Position{ get; private set; }
+        public Vector3 Position { get; private set; }
         public Vector3 Up { get; private set; }
         public Vector3 Front { get; set; }
         public Matrix4 View { get; private set; }
@@ -13,7 +13,7 @@ namespace Minecraft.Graphics
         public float Pitch { get; private set; }
         public float Yaw { get; private set; }
 
-        public event ShaderMat4Handler ViewMatrixChange;
+        public event ShaderMat4Handler? ViewMatrixChange;
 
         public Camera(Vector3 startPos)
         {
@@ -51,9 +51,8 @@ namespace Minecraft.Graphics
 
         public void UpdateViewMatrix()
         {
-            //remove
             View = Matrix4.LookAt(Position, Position + Front, Up);
-            ViewMatrixChange?.Invoke("view",View);
+            ViewMatrixChange?.Invoke("view", View);
         }
     }
 }

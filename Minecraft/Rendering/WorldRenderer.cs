@@ -1,7 +1,9 @@
-﻿using Minecraft.Game;
+﻿using Assimp.Unmanaged;
+using Minecraft.Game;
 using Minecraft.Graphics;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 using Chunk = Minecraft.Terrain.Chunk;
 
@@ -9,7 +11,7 @@ namespace Minecraft.Render
 {
     internal class WorldRenderer
     {
-        public static int RenderDistance = 12;
+        public static int RenderDistance = 8;
         private PriorityQueue<Vector2,float> renderQueue;
         private Camera camera;
         public Shader Shader { get; }
@@ -31,12 +33,18 @@ namespace Minecraft.Render
             AtlasTexturesData.Atlas.Use();
 
             foreach (var chunk in world.Chunks.Values)
-                chunk.Mesh.RenderSolidMesh(Shader);
+                if(IsChunkInRange(chunk))
+                    chunk.Mesh.RenderSolidMesh(Shader);
 
             foreach (var chunk in world.Chunks.Values)
-                chunk.Mesh.RenderTransparentMesh(Shader);
+                if (IsChunkInRange(chunk))
+                    chunk.Mesh.RenderTransparentMesh(Shader);
 
             RenderSelectedBlockFrame();
+
+            //LineRenderer.WireWrame(camera.Position - new Vector3(0.5f), new Vector3(0.0f));
+            LineRenderer.Axes(camera.Position - new Vector3(0.5f));
+
             CreateMeshesInQueue();
         }
         public void CreateMeshesInQueue()
@@ -47,13 +55,20 @@ namespace Minecraft.Render
                     ChunkMesh.CreateMesh(world, chunk);
             }             
         }
+        private bool IsChunkInRange(in Chunk chunk)
+        {
+            float xDistance = Math.Abs(camera.Position.X - chunk.Position.X * Chunk.Size);
+            float zDistance = Math.Abs(camera.Position.Z - chunk.Position.Y * Chunk.Size);
+
+            return xDistance <= RenderDistance * Chunk.Size && zDistance <= RenderDistance * Chunk.Size;
+        }
         private void RenderSelectedBlockFrame()
         {
             var blockHitPos = Ray.Cast(camera, world, out bool hit, out FaceDirection hitFace);
 
             if (hit)
             {
-                WireFrame.Render(blockHitPos, hitFace, new Vector3(0.0f));
+                LineRenderer.WireWrame(blockHitPos, new Vector3(0.0f));
             }
         }
     }

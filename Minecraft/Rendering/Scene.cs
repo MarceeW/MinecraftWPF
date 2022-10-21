@@ -16,7 +16,7 @@ namespace Minecraft.Render
         private Matrix4 Projection;
 
         private WorldRenderer worldRenderer;
-        private Camera camera;
+        private ICamera camera;
         private Skybox skybox;
         public Scene(Camera camera,World world,WorldRenderer worldRenderer)
         {
@@ -38,9 +38,9 @@ namespace Minecraft.Render
             camera.ViewMatrixChange += Cube.GetShader().SetMat4;
             ProjectionMatrixChange += Cube.GetShader().SetMat4;
 
-            WireFrame.InitShader();
-            camera.ViewMatrixChange += WireFrame.Shader.SetMat4;
-            ProjectionMatrixChange += WireFrame.Shader.SetMat4;
+            LineRenderer.InitShader();
+            camera.ViewMatrixChange += LineRenderer.Shader.SetMat4;
+            ProjectionMatrixChange += LineRenderer.Shader.SetMat4;
         }
         public void OnProjectionMatrixChange(float aspectRatio)
         {

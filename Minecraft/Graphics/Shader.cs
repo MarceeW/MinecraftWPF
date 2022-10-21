@@ -9,7 +9,7 @@ namespace Minecraft.Graphics
 {
     delegate void ShaderMat4Handler(string property, Matrix4 matrix);
     delegate void ShaderVec3Handler(string property, Vector3 vector);
-    internal class Shader
+    internal class Shader : IDisposable
     {
         private int handle;
         private bool disposeValue;

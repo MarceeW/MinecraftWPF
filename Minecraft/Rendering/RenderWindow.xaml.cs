@@ -7,6 +7,7 @@ using OpenTK.Windowing.Common;
 using System.Windows;
 using System.Windows.Forms;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace Minecraft
 {
@@ -24,8 +25,6 @@ namespace Minecraft
             InitializeComponent();
 
             Title = "Minecraft";
-            Width = 1600;
-            Height = 900;
             WindowState = System.Windows.WindowState.Maximized;
             WindowStyle = WindowStyle.None;
 
@@ -45,6 +44,11 @@ namespace Minecraft
             Top = resolution.Height / 2 - Height / 2;
 
             CenterPosition = new Vector2(resolution.Width / 2, resolution.Height / 2);
+
+            float hudScale = 0.7f;
+
+            Toolbar.Width = 900 * hudScale;
+            Toolbar.Height = 100 * hudScale;
         }
         protected override void OnLocationChanged(EventArgs e)
         {
@@ -60,6 +64,8 @@ namespace Minecraft
         {
             base.OnRenderSizeChanged(sizeInfo);
             CenterPosition = new Vector2((float)(Left + Width / 2), (float)(Top + Height / 2));
+
+
             RenderSizeChange?.Invoke((float)OpenTkControl.FrameBufferWidth / OpenTkControl.FrameBufferHeight);
         }
         private void OpenTkControl_OnRender(TimeSpan delta)

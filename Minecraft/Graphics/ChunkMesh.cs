@@ -34,10 +34,6 @@ namespace Minecraft.Graphics
                 GL.Enable(EnableCap.CullFace);
             }
         }
-        public void LoadMeshToGPU()
-        {
-
-        }
         public static void CreateMesh(World world,Vector2 target)
         {
             var chunk = world.Chunks.GetValueOrDefault(target);
@@ -71,12 +67,16 @@ namespace Minecraft.Graphics
 
                                     if (neighborBlock == null || (BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block)))
                                     {
-                                        nVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
+                                        nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
                                         chunk.Mesh.nFaceCount++;
                                     }
                                     else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block==BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                     {
-                                        tVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
+                                        if (BlockData.IsVegetationBlock(block))
+                                            tVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                        else
+                                            tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+
                                         chunk.Mesh.tFaceCount++;
                                     }
                                 }
@@ -92,7 +92,7 @@ namespace Minecraft.Graphics
 
                                             if (topBlockY < neighborPos.Y)
                                             {
-                                                nVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
+                                                nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
                                                 chunk.Mesh.nFaceCount++;
                                             }
                                         }
@@ -103,12 +103,16 @@ namespace Minecraft.Graphics
                                     
                                         if(BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block))
                                         {
-                                            nVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
+                                            nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
                                             chunk.Mesh.nFaceCount++;
                                         }
                                         else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0)
                                         {
-                                            tVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
+                                            if (BlockData.IsVegetationBlock(block))
+                                                tVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                            else
+                                                tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+
                                             chunk.Mesh.tFaceCount++;
                                         }
                                     }
@@ -120,12 +124,16 @@ namespace Minecraft.Graphics
 
                                 if (neighborBlock == null || BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block))
                                 {
-                                    nVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
+                                    nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
                                     chunk.Mesh.nFaceCount++;
                                 }
                                 else if (BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block == BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                 {
-                                    tVertices.AddRange(BlockFace.GetBlockFaceVertices(block, face.Key, blockPos));
+                                    if (BlockData.IsVegetationBlock(block))
+                                        tVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                    else
+                                        tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+
                                     chunk.Mesh.tFaceCount++;
                                 }
                             }

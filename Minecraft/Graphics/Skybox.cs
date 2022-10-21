@@ -4,7 +4,7 @@ using OpenTK.Mathematics;
 
 namespace Minecraft.Graphics
 {
-    internal class Skybox : IRenderable
+    internal class Skybox
     {
         public Shader Shader { get; private set; }
         public Texture? Texture { get; private set; }

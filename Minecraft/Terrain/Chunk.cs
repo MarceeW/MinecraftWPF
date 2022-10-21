@@ -1,23 +1,37 @@
 ﻿using Minecraft.Graphics;
 using OpenTK.Mathematics;
+using System;
 
 namespace Minecraft.Terrain
 {
+    [Serializable]
     internal class Chunk
     {
         public const int Size = 16;
         public const int Height = 256;
         public Vector2 Position { get; private set; }
-        public ChunkMesh Mesh { get; }
+        public ChunkMesh Mesh
+        {
+            get
+            {
+                return mesh;
+            }
+            set
+            {
+                mesh = value;
+            }
+        }
         public byte[,,] Blocks { get; private set; }
         public int[,] TopBlockPositions { get; private set; }
+        [NonSerialized]
+        private ChunkMesh mesh;
         public Chunk(Vector2 pos)
         {
             Position = pos;
             Blocks = new byte[Size, Height, Size];
             TopBlockPositions = new int[Size, Size];
 
-            Mesh = new ChunkMesh();
+            mesh = new ChunkMesh();
         }
         public void AddBlock(Vector3 pos,BlockType block,bool overWrite)
         {
@@ -77,6 +91,7 @@ namespace Minecraft.Terrain
             if(pos.Y >= 0 && pos.Y < Height)
             {
                 int x = (int)pos.X;
+                int y = (int)pos.Y;
                 int z = (int)pos.Z;
 
                 if (pos.X - x < 0)
@@ -93,7 +108,7 @@ namespace Minecraft.Terrain
                 if (z < 0)
                     z += Size;
 
-                return (BlockType)Blocks[x, (int)pos.Y, z];
+                return (BlockType)Blocks[x, y, z];
             }
             return null;
         }

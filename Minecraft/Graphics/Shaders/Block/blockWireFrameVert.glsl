@@ -1,11 +1,15 @@
 ﻿#version 460 core
 
 layout(location = 0) in vec3 a_Position;
+layout(location = 1) in vec3 a_Color;
 
 uniform mat4 view;
 uniform mat4 projection;
 
+out vec3 color;
+
 void main(void)
 {
+    color = a_Color;
     gl_Position = vec4(a_Position,1.0) * view * projection;
 }
