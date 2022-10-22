@@ -10,6 +10,9 @@
 
     <Window.Resources>
         <BitmapImage x:Key="BlockAtlas" UriSource="..\Assets\Textures\terrain.png"/>
+        <BitmapImage x:Key="ItemFrame" UriSource="..\Assets\HUD\ItemFrame.png"/>
+        <BitmapImage x:Key="SelectedItemFrame" UriSource="..\Assets\HUD\SelectedItemFrame.png"/>
+        <BitmapImage x:Key="InventoryFrame" UriSource="..\Assets\HUD\InventoryFrame.png"/>
     </Window.Resources>
 
     <Grid Name="RenderCanvas">
@@ -28,42 +31,20 @@
         <Rectangle HorizontalAlignment="Center" Height="24" Stroke="WhiteSmoke" VerticalAlignment="Center" Width="3"/>
         <Rectangle HorizontalAlignment="Center" Height="3" Stroke="WhiteSmoke" VerticalAlignment="Center" Width="24"/>
 
-        <Grid Name="Toolbar" VerticalAlignment="Bottom" Margin="0,30">
-            <Grid.Background>
-                <ImageBrush ImageSource="..\Assets\HUD\Toolbar_withbg.png"/>
-            </Grid.Background>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
+        <Rectangle Visibility="Hidden" Name="PauseMenuDarkener" Height="1080" VerticalAlignment="Center" HorizontalAlignment="Left" Width="1920">
+            <Rectangle.Fill>
+                <SolidColorBrush Color="Black" Opacity=".5"/>
+            </Rectangle.Fill>
+        </Rectangle>
 
-            <Image Name="SelectedItemFrame" Grid.Column="0" Grid.Row="0">
-                <Image.Source>
-                    <BitmapImage UriSource="..\Assets\HUD\SelectedItemFrame.png"/>
-                </Image.Source>
-            </Image>
+        <Grid Name="HotbarGrid" VerticalAlignment="Bottom" Margin="0,30" MouseDown="HotbarGridMouseDown"/>
+        <Grid Visibility="Hidden" Width="900" Name="InventoryGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,30" PreviewMouseDown="InventoryMouseDown"/>
 
-            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item0" Grid.Column="0" Grid.Row="0"/>
-            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item1" Grid.Column="1" Grid.Row="0"/>
-            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item2" Grid.Column="2" Grid.Row="0"/>
-            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item3" Grid.Column="3" Grid.Row="0"/>
-            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item4" Grid.Column="4" Grid.Row="0"/>
-            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item5" Grid.Column="5" Grid.Row="0"/>
-            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item6" Grid.Column="6" Grid.Row="0"/>
-            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item7" Grid.Column="7" Grid.Row="0"/>
-            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item8" Grid.Column="8" Grid.Row="0"/>
-
-        </Grid>
         <TextBox Name="CommandLine" Visibility="Hidden" HorizontalAlignment="Left" Margin="30,900,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" Background="#59000000" BorderBrush="{x:Null}" FontSize="36"/>
+
+        <Canvas Name="PickedItemCanvas" VerticalAlignment="Top" HorizontalAlignment="Left">
+            <Image Name="PickedItemImage" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Canvas>
+
     </Grid>
 </Window>

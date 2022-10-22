@@ -11,32 +11,32 @@ namespace Minecraft.UI
     public class Hotbar
     {
         public int SelectedItemIndex { get; private set; }
-        internal BlockType[] Content { get; set; } = new BlockType[maxItems];
-        private const int maxItems = 9;
+        internal BlockType[] Items { get; set; } = new BlockType[MaxItems];
+        public const int MaxItems = 9;
         public Hotbar()
         {
-            Content[0] = BlockType.GrassBlock;
-            Content[1] = BlockType.Sand;
-            Content[2] = BlockType.Stone;
-            Content[3] = BlockType.Glass;
-            Content[4] = BlockType.WoodPlank;
-            Content[5] = BlockType.Cobblestone;
-            Content[6] = BlockType.OakTrunk;
-            Content[7] = BlockType.OakLeaves;
-            Content[8] = BlockType.Bedrock;
+            Items[0] = BlockType.GrassBlock;
+            Items[1] = BlockType.Cobblestone;
+            Items[2] = BlockType.WoodPlank;
+            Items[3] = BlockType.Glass;
+            Items[4] = BlockType.GreyConcrete;
+            Items[5] = BlockType.BlackConcrete;
+            Items[6] = BlockType.OakTrunk;
+            Items[7] = BlockType.OakLeaves;
+            Items[8] = BlockType.Bedrock;
         }
         internal BlockType GetSelectedBlock()
         {
-            return Content[SelectedItemIndex];
+            return Items[SelectedItemIndex];
         }
         public void UpdateSelectedIndex(int delta)
         {
             SelectedItemIndex += delta < 0 ? 1 : -1;
 
             if (SelectedItemIndex < 0)
-                SelectedItemIndex = maxItems - 1;
+                SelectedItemIndex = MaxItems - 1;
 
-            else if (SelectedItemIndex == maxItems)
+            else if (SelectedItemIndex == MaxItems)
                 SelectedItemIndex = 0;
         }
     }

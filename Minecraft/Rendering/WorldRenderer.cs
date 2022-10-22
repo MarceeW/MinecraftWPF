@@ -11,6 +11,7 @@ namespace Minecraft.Render
 {
     internal class WorldRenderer
     {
+        public static BlockType? CurrentTarget { get; private set; }
         public static int RenderDistance = 8;
         private PriorityQueue<Vector2,float> renderQueue;
         private Camera camera;
@@ -66,6 +67,8 @@ namespace Minecraft.Render
         private void RenderSelectedBlockFrame()
         {
             var blockHitPos = Ray.Cast(camera, world, out bool hit, out FaceDirection hitFace);
+
+            CurrentTarget = world.GetBlock(blockHitPos);
 
             if (hit)
             {

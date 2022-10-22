@@ -9,6 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\HUD\InventoryFrame.png" />
+    <None Remove="Assets\HUD\ItemFrame.png" />
     <None Remove="Assets\HUD\SelectedItemFrame.png" />
     <None Remove="Assets\HUD\Toolbar.png" />
     <None Remove="Assets\HUD\Toolbar_withbg.png" />
@@ -25,7 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\HUD\InventoryFrame.png" />
     <Resource Include="Assets\HUD\SelectedItemFrame.png" />
+    <Resource Include="Assets\HUD\ItemFrame.png" />
     <Resource Include="Assets\HUD\Toolbar_withbg.png" />
   </ItemGroup>
 

@@ -13,6 +13,10 @@ using System.Windows.Media.Imaging;
 using Minecraft.Terrain;
 using OpenTK.Graphics.OpenGL;
 using System.Diagnostics;
+using System.Windows.Media;
+using Minecraft.Logic;
+using System.Windows.Shapes;
+using System.Windows.Data;
 
 namespace Minecraft
 {
@@ -20,14 +24,31 @@ namespace Minecraft
     public delegate void GameUpdateHandler();
     partial class RenderWindow : Window
     {
+        class PickedItem
+        {
+            public CroppedBitmap src;
+            public BlockType type;
+
+            public PickedItem(CroppedBitmap src, BlockType type)
+            {
+                this.src = src;
+                this.type = type;
+            }
+        }
+
         public Vector2 CenterPosition;
         public event Action<float>? RenderSizeChange;
         public bool ShouldClose { get; set; }
         public Hotbar? Hotbar { get; set; }
+        public Inventory Inventory { get; set; } = new Inventory();
+
         public WindowController Controller;
+
+        public bool IsInventoryOpened = false;
 
         private Renderer renderer;
 
+        private PickedItem? pickedItem;
         public RenderWindow()
         {
             InitializeComponent();
@@ -55,27 +76,166 @@ namespace Minecraft
 
             float hudScale = 0.7f;
 
-            Toolbar.Width = 900 * hudScale;
-            Toolbar.Height = 100 * hudScale;
+            HotbarGrid.Width = 900 * hudScale;
+            HotbarGrid.Height = 100 * hudScale;
 
-            Loaded += (object sender, RoutedEventArgs e) => SetupToolbarIcons();
+            CreateHotbar();
+            CreateInventory();
+
+            Loaded += (object sender, RoutedEventArgs e) => SetupHotbar();
 
             Controller = new WindowController(this);
         }
-        private void SetupToolbarIcons()
+        private void CreateInventory()
         {
-            if(Hotbar != null)
+            double inventoryFrameSize = InventoryGrid.Width / Inventory.Columns;
+            InventoryGrid.Height = inventoryFrameSize * Inventory.Rows;
+
+            for (int i = 0; i < Inventory.Rows; i++)
             {
-                Item0.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[0]));
-                Item1.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[1]));
-                Item2.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[2]));
-                Item3.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[3]));
-                Item4.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[4]));
-                Item5.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[5]));
-                Item6.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[6]));
-                Item7.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[7]));
-                Item8.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[8]));
+                RowDefinition rowDef = new RowDefinition();
+                rowDef.Height = new GridLength(1, GridUnitType.Star);
+
+                InventoryGrid.RowDefinitions.Add(rowDef);
             }
+            for (int i = 0; i < Inventory.Columns; i++)
+            {
+                ColumnDefinition colDef = new ColumnDefinition();
+                colDef.Width = new GridLength(1, GridUnitType.Star);
+
+                InventoryGrid.ColumnDefinitions.Add(colDef);
+            }
+
+            for (int x = 0; x < Inventory.Columns; x++)
+            {
+                for (int y = 0; y < Inventory.Rows; y++)
+                {
+                    Image frame = new Image();
+                    frame.Source = (BitmapSource)Resources["InventoryFrame"];
+                    frame.Name = $"InventoryItemFrame_{x}_{y}";
+
+                    RenderOptions.SetBitmapScalingMode(frame, BitmapScalingMode.NearestNeighbor);
+
+                    Grid.SetRow(frame, y);
+                    Grid.SetColumn(frame, x);
+
+                    InventoryGrid.Children.Add(frame);
+                    InventoryGrid.RegisterName(frame.Name, frame);
+                }
+            }
+
+            if (Inventory != null)
+            {
+                for (int x = 0; x < Inventory.Columns; x++)
+                {
+                    for (int y = 0; y < Inventory.Rows; y++)
+                    {
+                        if (Inventory.Blocks[y, x] == BlockType.Air)
+                            continue;
+
+                        Image item = new Image();
+                        item.Name = $"InventoryItem_{x}_{y}";
+                        item.Width = 32;
+
+                        item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Inventory.Blocks[y,x]));
+
+                        RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
+
+                        Grid.SetRow(item, y);
+                        Grid.SetColumn(item, x);
+
+                        InventoryGrid.Children.Add(item);
+                        InventoryGrid.RegisterName(item.Name, item);
+                    }
+                }
+            }
+        }
+        private void CreateHotbar()
+        {
+            RowDefinition row = new RowDefinition();
+            row.Height = new GridLength(1, GridUnitType.Star);
+            HotbarGrid.RowDefinitions.Add(row);
+
+            for (int i = 0; i < Hotbar.MaxItems; i++)
+            {
+                ColumnDefinition def = new ColumnDefinition();
+                def.Width = new GridLength(1, GridUnitType.Star);
+                HotbarGrid.ColumnDefinitions.Add(def);
+            }
+
+            for (int i = 0; i < Hotbar.MaxItems; i++)
+            {
+                Image frame = new Image();
+                frame.Source = (BitmapSource)Resources["ItemFrame"];
+                frame.Name = "ItemFrame" + i;
+
+                RenderOptions.SetBitmapScalingMode(frame, BitmapScalingMode.NearestNeighbor);
+
+                Grid.SetRow(frame, 0);
+                Grid.SetColumn(frame, i);
+
+                HotbarGrid.Children.Add(frame);
+                HotbarGrid.RegisterName(frame.Name, frame);
+            }
+
+            Image selectedFrame = new Image();
+            selectedFrame.Source = (BitmapSource)Resources["SelectedItemFrame"];
+            selectedFrame.Name = "SelectedFrame";
+
+            RenderOptions.SetBitmapScalingMode(selectedFrame, BitmapScalingMode.NearestNeighbor);
+
+            Grid.SetRow(selectedFrame, 0);
+            Grid.SetColumn(selectedFrame, 0);
+
+            HotbarGrid.Children.Add(selectedFrame);
+            HotbarGrid.RegisterName(selectedFrame.Name, selectedFrame);
+        }
+        private void SetupHotbar()
+        {
+            if (Hotbar != null)
+            {
+                for (int i = 0; i < Hotbar.MaxItems; i++)
+                {
+                    if (Hotbar.Items[i] == BlockType.Air)
+                        continue;
+
+                    Image item = new Image();
+                    item.Name = "HotbarItem_" + i;
+                    item.Width = 32;
+
+                    item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Items[i]));
+
+                    RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
+
+                    Grid.SetRow(item, 0);
+                    Grid.SetColumn(item, i);
+
+                    HotbarGrid.Children.Add(item);
+                    HotbarGrid.RegisterName(item.Name, item);
+                }
+            }
+        }
+        protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
+        {
+            if (pickedItem != null)
+            {
+                PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - 30, e.GetPosition(null).Y, 0, 0);
+            }
+            base.OnMouseMove(e);
+        }
+        protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!IsInventoryOpened)
+            {
+                if (Hotbar != null && e.MiddleButton == MouseButtonState.Pressed && WorldRenderer.CurrentTarget != null)
+                {
+                    Hotbar.Items[Hotbar.SelectedItemIndex] = (BlockType)WorldRenderer.CurrentTarget;
+
+                    var hotbarImage = (Image)HotbarGrid.FindName($"HotbarItem_{Hotbar.SelectedItemIndex}");
+                    hotbarImage.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect((BlockType)WorldRenderer.CurrentTarget));
+                }
+            }
+            base.OnMouseDown(e);
         }
         protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
         {
@@ -83,14 +243,36 @@ namespace Minecraft
             {
                 switch (e.Key)
                 {
+                    case Key.E:
+                        {
+                            pickedItem = null;
+                            PickedItemImage.Source = null;
+
+                            IsInventoryOpened = !IsInventoryOpened;
+
+                            PauseMenuDarkener.Visibility = PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+
+                            InventoryGrid.Visibility = InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+
+                            Controller.NeedsToResetMouse = !Controller.NeedsToResetMouse;
+
+                            if (Controller.NeedsToResetMouse)
+                                MouseController.HideMouse();
+                            else
+                                MouseController.ShowMouse();
+                        }
+                    break;
                     case Key.T:
                         {
-                            CommandLine.Focusable = true;
+                            if (!IsInventoryOpened)
+                            {
+                                CommandLine.Focusable = true;
 
-                            CommandLine.Visibility = Visibility.Visible;
-                            CommandLine.Focus();
+                                CommandLine.Visibility = Visibility.Visible;
+                                CommandLine.Focus();
 
-                            PlayerController.CanMove = false;
+                                PlayerController.CanMove = false;
+                            }                 
                         }
                         break;
                     case Key.G:
@@ -133,9 +315,10 @@ namespace Minecraft
             if(Hotbar != null)
             {
                 Hotbar.UpdateSelectedIndex(e.Delta);
-                Grid.SetColumn(SelectedItemFrame, Hotbar.SelectedItemIndex);
+
+                Grid.SetColumn((Image)HotbarGrid.FindName("SelectedFrame"), Hotbar.SelectedItemIndex);
             }
-            
+
             base.OnMouseWheel(e);
         }
         protected override void OnLocationChanged(EventArgs e)
@@ -153,7 +336,6 @@ namespace Minecraft
             base.OnRenderSizeChanged(sizeInfo);
             CenterPosition = new Vector2((float)(Left + Width / 2), (float)(Top + Height / 2));
 
-
             RenderSizeChange?.Invoke((float)OpenTkControl.FrameBufferWidth / OpenTkControl.FrameBufferHeight);
         }
         private void OpenTkControl_OnRender(TimeSpan delta)
@@ -168,6 +350,75 @@ namespace Minecraft
 
             fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);
             renderer.RenderFrame();
+        }
+
+        private void InventoryMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if(e.LeftButton == MouseButtonState.Pressed)
+            {
+                var grid = sender as Grid;
+
+                var pos = e.GetPosition(grid);
+
+                pos.X /= grid.Width / Inventory.Columns;
+                pos.Y /= grid.Height / Inventory.Rows;
+
+                var blockType = Inventory.Blocks[(int)pos.Y, (int)pos.X];
+
+                if(blockType != BlockType.Air)
+                {
+                    pickedItem = new PickedItem(new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(blockType)), blockType);
+
+                    PickedItemImage.Source = pickedItem.src;
+                }
+
+                PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - 30, e.GetPosition(null).Y, 0, 0);
+            }
+            else
+            {
+                PickedItemImage.Source = null;
+                pickedItem = null;
+            }
+        }
+        private void HotbarGridMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if(Hotbar != null)
+            {
+                var grid = sender as Grid;
+
+                var pos = e.GetPosition(grid);
+
+                pos.X /= grid.Width / Hotbar.MaxItems;
+
+                var clickedImage = (Image)HotbarGrid.FindName($"HotbarItem_{(int)pos.X}");
+
+                if (pickedItem != null)
+                {
+                    BlockType toChange = pickedItem.type;
+
+                    if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        pickedItem.src = (CroppedBitmap)clickedImage.Source;
+                        pickedItem.type = Hotbar.Items[(int)pos.X];
+
+                        clickedImage.Source = PickedItemImage.Source;
+
+                        PickedItemImage.Source = pickedItem.src;
+                    }
+                    else
+                    {
+                        clickedImage.Source = null;
+                        toChange = BlockType.Air;
+                    }
+
+                    Hotbar.Items[(int)pos.X] = toChange;
+                }
+                else if (e.RightButton == MouseButtonState.Pressed)
+                {
+                    clickedImage.Source = null;
+                    Hotbar.Items[(int)pos.X] = BlockType.Air;
+                }
+            }
         }
     }
 }

@@ -2,6 +2,7 @@
 using Minecraft.Graphics;
 using Minecraft.Render;
 using Minecraft.Terrain;
+using Minecraft.UI;
 using OpenTK.Mathematics;
 using System.Diagnostics;
 using System.Threading;
@@ -80,7 +81,7 @@ namespace Minecraft.Controller
             {
                 var blockHit = Ray.Cast(Player.Camera, World, out bool hit, out FaceDirection hitFace);
 
-                if (hit)
+                if (hit && !renderWindow.IsInventoryOpened)
                 {
                     switch (hitFace)
                     {
@@ -114,7 +115,7 @@ namespace Minecraft.Controller
             {
                 var blockHit = Ray.Cast(Player.Camera, World, out bool hit, out FaceDirection hitFace);
 
-                if (hit)
+                if (hit && !renderWindow.IsInventoryOpened)
                 {
                     Debug.WriteLine(blockHit);
                     World.RemoveBlock(blockHit);
