@@ -64,6 +64,28 @@ namespace Minecraft.Terrain
             {
                 chunk.RemoveBlock(pos);
                 ChunkMesh.CreateMesh(this, chunk.Position);
+
+                var left =  new Vector3(-1,0, 0);
+                var right = new Vector3( 1,0, 0);
+                var back =  new Vector3( 0,0,-1);
+                var front = new Vector3( 0,0, 1);
+
+                GetChunk(pos + left, out Vector2 chunkPosLeft);
+                GetChunk(pos + right, out Vector2 chunkPosRight);
+                GetChunk(pos + back, out Vector2 chunkPosBack);
+                GetChunk(pos + front, out Vector2 chunkPosFront);
+
+                if (chunkPosLeft != chunkPos)
+                    ChunkMesh.CreateMesh(this, chunkPosLeft);
+
+                if (chunkPosRight != chunkPos)
+                    ChunkMesh.CreateMesh(this, chunkPosRight);
+
+                if (chunkPosBack != chunkPos)
+                    ChunkMesh.CreateMesh(this, chunkPosBack);
+
+                if (chunkPosFront != chunkPos)
+                    ChunkMesh.CreateMesh(this, chunkPosFront);
             }
         }
         public void AddBlock(Vector3 pos,BlockType block)

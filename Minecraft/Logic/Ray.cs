@@ -110,7 +110,7 @@ namespace Minecraft.Game
                 currentBlock = new Vector3(mapX, mapY, mapZ);
                 var block = world.GetBlock(currentBlock);
 
-                hit = BlockData.IsBlockSolid(block);
+                hit = BlockData.IsBlockSolid(block) || BlockData.IsVegetationBlock(block);
             }
 
             return currentBlock;

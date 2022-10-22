@@ -6,8 +6,13 @@ using System;
 using OpenTK.Windowing.Common;
 using System.Windows;
 using System.Windows.Forms;
+using Minecraft.UI;
+using System.Windows.Input;
+using System.Windows.Controls;
+using System.Windows.Media.Imaging;
+using Minecraft.Terrain;
+using OpenTK.Graphics.OpenGL;
 using System.Diagnostics;
-using System.ComponentModel;
 
 namespace Minecraft
 {
@@ -16,10 +21,13 @@ namespace Minecraft
     partial class RenderWindow : Window
     {
         public Vector2 CenterPosition;
-        public event Action<float> RenderSizeChange;
+        public event Action<float>? RenderSizeChange;
+        public bool ShouldClose { get; set; }
+        public Hotbar? Hotbar { get; set; }
+        public WindowController Controller;
 
         private Renderer renderer;
-        public bool ShouldClose { get; set; }
+
         public RenderWindow()
         {
             InitializeComponent();
@@ -49,6 +57,86 @@ namespace Minecraft
 
             Toolbar.Width = 900 * hudScale;
             Toolbar.Height = 100 * hudScale;
+
+            Loaded += (object sender, RoutedEventArgs e) => SetupToolbarIcons();
+
+            Controller = new WindowController(this);
+        }
+        private void SetupToolbarIcons()
+        {
+            if(Hotbar != null)
+            {
+                Item0.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[0]));
+                Item1.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[1]));
+                Item2.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[2]));
+                Item3.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[3]));
+                Item4.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[4]));
+                Item5.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[5]));
+                Item6.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[6]));
+                Item7.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[7]));
+                Item8.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Content[8]));
+            }
+        }
+        protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            if(e.Source == OpenTkControl)
+            {
+                switch (e.Key)
+                {
+                    case Key.T:
+                        {
+                            CommandLine.Focusable = true;
+
+                            CommandLine.Visibility = Visibility.Visible;
+                            CommandLine.Focus();
+
+                            PlayerController.CanMove = false;
+                        }
+                        break;
+                    case Key.G:
+                        {
+                            Controller.ShowGrids = !Controller.ShowGrids;
+                            e.Handled = true;
+                        }
+                        break;
+                    case Key.P:
+                        {
+                            Controller.NeedsToResetMouse = !Controller.NeedsToResetMouse;
+
+                            if(Controller.NeedsToResetMouse)
+                                MouseController.HideMouse();
+                            else
+                                MouseController.ShowMouse();
+                        }
+                        break;
+                    case Key.Escape:
+                        {
+                            if (CommandLine.Visibility == Visibility.Visible)
+                            {
+                                CommandLine.Focusable = false;
+                                CommandLine.Visibility = Visibility.Hidden;
+                                PlayerController.CanMove = true;
+                            }
+                            else
+                            {
+                                ShouldClose = true;
+                            }
+                        }
+                        break;
+                }
+            }
+
+            base.OnKeyDown(e);
+        }
+        protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
+        {
+            if(Hotbar != null)
+            {
+                Hotbar.UpdateSelectedIndex(e.Delta);
+                Grid.SetColumn(SelectedItemFrame, Hotbar.SelectedItemIndex);
+            }
+            
+            base.OnMouseWheel(e);
         }
         protected override void OnLocationChanged(EventArgs e)
         {
@@ -70,6 +158,11 @@ namespace Minecraft
         }
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
+            if (Controller.ShowGrids)
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            else
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+
             if (ShouldClose)
                 Close();
 

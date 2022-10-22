@@ -52,7 +52,12 @@ namespace Minecraft.Terrain
                 TopBlockPositions[x, z] = y;
 
             if(Blocks[x, y, z] == 0 || overWrite)
+            {
                 Blocks[x, y, z] = (byte)block;
+
+                if (y > 0 && Blocks[x, y - 1, z] == (byte)BlockType.GrassBlock && !BlockData.IsVegetationBlock(block))
+                    Blocks[x, y - 1, z] = (byte)BlockType.Dirt;
+            }
         }
         public void RemoveBlock(Vector3 pos)
         {
@@ -69,11 +74,17 @@ namespace Minecraft.Terrain
             if (z < 0)
                 z += Size;
 
-            var block = GetBlock(new Vector3(pos.X,pos.Y + 1,pos.Z));
+            Vector3 aboveBlockPos = new Vector3(pos.X, pos.Y + 1, pos.Z);
+            var block = GetBlock(aboveBlockPos);
 
-            if (block != null && !BlockData.IsBlockSolid(block))
+            if (block != null && !BlockData.IsBlockSolid(block) && !BlockData.IsVegetationBlock(block))
             {
                 Blocks[x, y, z] = (byte)block;
+            }
+            else if (BlockData.IsVegetationBlock(block))
+            {
+                Blocks[x, y, z] = 0;
+                RemoveBlock(aboveBlockPos);
             }
             else
                 Blocks[x, y, z] = 0;

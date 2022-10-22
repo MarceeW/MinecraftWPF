@@ -110,7 +110,7 @@ namespace Minecraft.Graphics
             GL.UseProgram(handle);
             GL.Uniform3(GL.GetUniformLocation(handle, name), vec);
         }
-        public void SetValue(string name, double value)
+        public void SetDouble(string name, double value)
         {
             GL.UseProgram(handle);
             GL.Uniform1(GL.GetUniformLocation(handle, name), value);

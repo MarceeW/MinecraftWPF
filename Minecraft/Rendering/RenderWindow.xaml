@@ -6,7 +6,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="900" Width="1600">
+        Title="MainWindow" Height="1080"  Width="1920">
+
+    <Window.Resources>
+        <BitmapImage x:Key="BlockAtlas" UriSource="..\Assets\Textures\terrain.png"/>
+    </Window.Resources>
+
     <Grid Name="RenderCanvas">
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
@@ -20,8 +25,8 @@
         </glWpfControl:GLWpfControl>
         <Label x:Name="fpsCounter" HorizontalAlignment="Left" Margin="54,47,0,0" VerticalAlignment="Top" Background="#7F000000" Foreground="White" FontSize="14" FontFamily="Century Gothic"/>
 
-        <Rectangle HorizontalAlignment="Center" Height="24" Stroke="WhiteSmoke" VerticalAlignment="Center" Width="2"/>
-        <Rectangle HorizontalAlignment="Center" Height="2" Stroke="WhiteSmoke" VerticalAlignment="Center" Width="24"/>
+        <Rectangle HorizontalAlignment="Center" Height="24" Stroke="WhiteSmoke" VerticalAlignment="Center" Width="3"/>
+        <Rectangle HorizontalAlignment="Center" Height="3" Stroke="WhiteSmoke" VerticalAlignment="Center" Width="24"/>
 
         <Grid Name="Toolbar" VerticalAlignment="Bottom" Margin="0,30">
             <Grid.Background>
@@ -41,7 +46,24 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
+
+            <Image Name="SelectedItemFrame" Grid.Column="0" Grid.Row="0">
+                <Image.Source>
+                    <BitmapImage UriSource="..\Assets\HUD\SelectedItemFrame.png"/>
+                </Image.Source>
+            </Image>
+
+            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item0" Grid.Column="0" Grid.Row="0"/>
+            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item1" Grid.Column="1" Grid.Row="0"/>
+            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item2" Grid.Column="2" Grid.Row="0"/>
+            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item3" Grid.Column="3" Grid.Row="0"/>
+            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item4" Grid.Column="4" Grid.Row="0"/>
+            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item5" Grid.Column="5" Grid.Row="0"/>
+            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item6" Grid.Column="6" Grid.Row="0"/>
+            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item7" Grid.Column="7" Grid.Row="0"/>
+            <Image Width="32" RenderOptions.BitmapScalingMode="NearestNeighbor" Name="Item8" Grid.Column="8" Grid.Row="0"/>
+
         </Grid>
-        
+        <TextBox Name="CommandLine" Visibility="Hidden" HorizontalAlignment="Left" Margin="30,900,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" Background="#59000000" BorderBrush="{x:Null}" FontSize="36"/>
     </Grid>
 </Window>

@@ -50,7 +50,7 @@ namespace Minecraft.Graphics
             if (face == FaceDirection.Top)
                 return
                 new float[SingleFaceVertexCount]
-                {  //Positions                                                 //Normals            //Block Texture Coords        //Shade
+                {  //Positions                                                 //Normals            //Block          Texture Coord  Shade
                     -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
                      0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
                      0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
@@ -123,19 +123,19 @@ namespace Minecraft.Graphics
                 return
                 new float[]
                 {
-                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
-                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
-                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
-                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
-                                                                                                                                      
-                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
-                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
-                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
-                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
-                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
-                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
+
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
                 };
         }
         public static float[] GetBlockFaceWireFrames(Vector3 position,Vector3 color)

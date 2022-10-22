@@ -6,35 +6,21 @@ using System.Windows.Input;
 
 namespace Minecraft.Controller
 {
-    internal static class WindowController
+    public class WindowController
     {
-        public static RenderWindow? Window { get;set; }
-        public static bool ShowGrids { get; private set;}
-        private static bool needsToResetMouse = true;
-        public static void CheckForKeyPress()
-        {
-            if(Window != null)
-            {
-                if (Keyboard.IsKeyDown(Key.Escape))
-                    Window.ShouldClose = true;
+        public RenderWindow Window { get;set; }
+        public bool NeedsToResetMouse = true;
 
-                if (Keyboard.IsKeyDown(Key.G))
-                {
-                    ShowGrids = !ShowGrids;
-                }
-                if (Keyboard.IsKeyDown(Key.P))
-                {
-                    needsToResetMouse = !needsToResetMouse;
-                }
-            }
-        }
-        
-        public static void ResetMousePosition()
+        public bool ShowGrids { get; set;}
+        public WindowController(RenderWindow window)
         {
-            if (needsToResetMouse)
+            Window = window;
+        }
+        public void ResetMousePosition()
+        {
+            if (NeedsToResetMouse)
             {
-                if (Window != null)
-                    MouseController.MoveMouse(Window.CenterPosition);
+                MouseController.MoveMouse(Window.CenterPosition);
             }
         }
     }

@@ -24,6 +24,7 @@ namespace Minecraft.Logic
     internal class PlayerLogic
     {
         public bool Sprint = false;
+        public static bool CollisionEnabled = true;
 
         private World world;
         private Player player;
@@ -92,7 +93,8 @@ namespace Minecraft.Logic
                     break;
             }
 
-            collider.Collision(ref deltaPos);
+            if(CollisionEnabled)
+                collider.Collision(ref deltaPos);
 
             player.Camera.ModPosition(deltaPos);
             collider.Position = player.Position - new Vector3(0.5f);

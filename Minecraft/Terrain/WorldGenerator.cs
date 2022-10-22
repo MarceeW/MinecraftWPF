@@ -155,18 +155,49 @@ namespace Minecraft.Terrain
 
                         var chance = random.NextDouble();
 
-                        if (block == BlockType.GrassBlock && chance <= 0.02)
+                        if (block == BlockType.GrassBlock)
                         {
-                            world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.Tree,chunk);
+                            if(chance <= 0.02)
+                            {
+                                chance = random.NextDouble();
+
+                                chunk.AddBlock(new Vector3(x, y, z), BlockType.Dirt, true);
+
+                                if (chance <= 0.1)
+                                    world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.BirchTree, chunk);
+                                else
+                                    world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.OakTree, chunk);
+                            }
+                            else if (chance > 0.02 && chance <= 0.3)
+                            {
+                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Grass, false);
+                            }
+                            else if (chance > 0.3 && chance <= 0.35)
+                            {
+                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.SparseGrass, false);
+                            }
+                            else if (chance > 0.35 && chance <= 0.36)
+                            {
+                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Poppy, false);
+                            }
+                            else if (chance > 0.36 && chance <= 0.365)
+                            {
+                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Allium, false);
+                            }
                         }
-                        //else if(block == BlockType.GrassBlock && chance > 0.2 && chance <= 0.45)
-                        //{
-                        //    chunk.AddBlock(new Vector3(x,y + 1,z), BlockType.Grass, false);
-                        //}
+                        else if(block == BlockType.Sand)
+                        {
+                            if (chance <= 0.005)
+                            {
+                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.DeadBush, false);
+                            }
+                        }
+                        
                         depth++;
                     }       
                 }
             }
         }
+
     }
 }

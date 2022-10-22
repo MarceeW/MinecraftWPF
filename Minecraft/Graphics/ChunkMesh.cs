@@ -8,9 +8,8 @@ namespace Minecraft.Graphics
 {
     internal class ChunkMesh
     {
-        private int nVAO,tVAO, nVBO,tVBO;
-        private int nFaceCount = 0, tFaceCount = 0;
-        private int vegetationElementFaces = 0;
+        private int nVAO,tVAO,vVAO, nVBO,tVBO,vVBO;
+        private int nFaceCount = 0, tFaceCount = 0, vFaceCount = 0;
 
         private bool hasData = false;
         public void RenderSolidMesh(Shader shader)
@@ -26,11 +25,18 @@ namespace Minecraft.Graphics
             shader.Use();
             shader?.SetInt("tex", AtlasTexturesData.Atlas.GetTexUnitId());
 
-            if (tFaceCount > 0) //TODO!!
+            if (tFaceCount > 0)
             {
                 GL.Disable(EnableCap.CullFace);
                 GL.BindVertexArray(tVAO);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, tFaceCount * 6 + vegetationElementFaces * 2);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, tFaceCount * 6);
+                GL.Enable(EnableCap.CullFace);
+            }
+            if (vFaceCount > 0)
+            {
+                GL.Disable(EnableCap.CullFace);
+                GL.BindVertexArray(vVAO);
+                GL.DrawArrays(PrimitiveType.Triangles, 0, vFaceCount * 2 * 6);
                 GL.Enable(EnableCap.CullFace);
             }
         }
@@ -43,6 +49,7 @@ namespace Minecraft.Graphics
 
             var nVertices = new List<float>();
             var tVertices = new List<float>();
+            var vVertices = new List<float>();
 
             for (int x = 0; x < Chunk.Size; x++)
                 for (int z = 0; z < Chunk.Size; z++)
@@ -73,11 +80,16 @@ namespace Minecraft.Graphics
                                     else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block==BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                     {
                                         if (BlockData.IsVegetationBlock(block))
-                                            tVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                        {
+                                            vVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                            chunk.Mesh.vFaceCount++;
+                                        }
                                         else
+                                        {
                                             tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+                                            chunk.Mesh.tFaceCount++;
+                                        }
 
-                                        chunk.Mesh.tFaceCount++;
                                     }
                                 }
                                 else
@@ -109,11 +121,15 @@ namespace Minecraft.Graphics
                                         else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0)
                                         {
                                             if (BlockData.IsVegetationBlock(block))
-                                                tVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                            {
+                                                vVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                                chunk.Mesh.vFaceCount++;
+                                            }
                                             else
+                                            {
                                                 tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
-
-                                            chunk.Mesh.tFaceCount++;
+                                                chunk.Mesh.tFaceCount++;
+                                            }
                                         }
                                     }
                                 }
@@ -130,11 +146,15 @@ namespace Minecraft.Graphics
                                 else if (BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block == BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                 {
                                     if (BlockData.IsVegetationBlock(block))
-                                        tVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                    {
+                                        vVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                        chunk.Mesh.vFaceCount++;
+                                    }
                                     else
+                                    {
                                         tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
-
-                                    chunk.Mesh.tFaceCount++;
+                                        chunk.Mesh.tFaceCount++;
+                                    }
                                 }
                             }
                         }
@@ -147,6 +167,9 @@ namespace Minecraft.Graphics
 
                 chunk.Mesh.tVBO = GL.GenBuffer();
                 chunk.Mesh.tVAO = GL.GenVertexArray();
+
+                chunk.Mesh.vVBO = GL.GenBuffer();
+                chunk.Mesh.vVAO = GL.GenVertexArray();
             }
 
             GL.BindVertexArray(chunk.Mesh.nVAO);
@@ -184,7 +207,26 @@ namespace Minecraft.Graphics
 
                 GL.VertexAttribPointer(3, 1, VertexAttribPointerType.Float, false, 9 * sizeof(float), 8 * sizeof(float));
                 GL.EnableVertexAttribArray(3);
-            }    
+            }
+            if (vVertices.Count > 0)
+            {
+                GL.BindVertexArray(chunk.Mesh.vVAO);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, chunk.Mesh.vVBO);
+
+                GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * vVertices.Count, vVertices.ToArray(), BufferUsageHint.StaticDraw);
+
+                GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 9 * sizeof(float), 0);
+                GL.EnableVertexAttribArray(0);
+
+                GL.VertexAttribPointer(1, 3, VertexAttribPointerType.Float, false, 9 * sizeof(float), 3 * sizeof(float));
+                GL.EnableVertexAttribArray(1);
+
+                GL.VertexAttribPointer(2, 2, VertexAttribPointerType.Float, false, 9 * sizeof(float), 6 * sizeof(float));
+                GL.EnableVertexAttribArray(2);
+
+                GL.VertexAttribPointer(3, 1, VertexAttribPointerType.Float, false, 9 * sizeof(float), 8 * sizeof(float));
+                GL.EnableVertexAttribArray(3);
+            }
 
             chunk.Mesh.hasData = true;
         }

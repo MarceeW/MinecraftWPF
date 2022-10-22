@@ -9,8 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\HUD\SelectedItemFrame.png" />
     <None Remove="Assets\HUD\Toolbar.png" />
     <None Remove="Assets\HUD\Toolbar_withbg.png" />
+    <None Remove="Assets\Textures\terrain.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\HUD\SelectedItemFrame.png" />
     <Resource Include="Assets\HUD\Toolbar_withbg.png" />
   </ItemGroup>
 
@@ -41,6 +44,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\HUD\Toolbar.png" />
+    <Resource Include="Assets\Textures\terrain.png" />
   </ItemGroup>
 
 </Project>

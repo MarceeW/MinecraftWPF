@@ -40,11 +40,6 @@ namespace Minecraft.Render
         {
             OnRendering?.Invoke();
 
-            if (WindowController.ShowGrids)
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-            else
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             Scene?.Render();
         }

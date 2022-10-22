@@ -70,7 +70,7 @@ namespace Minecraft.Logic
                 if (deltaPos.Y == 0)
                 {
                     broadPhaseBottom = (int)Math.Floor(Position.Y);
-                    broadPhaseTop = (int)Math.Floor(Position.Y);
+                    broadPhaseTop = (int)Math.Ceiling(Position.Y);
                 }
                 else
                 {
@@ -112,7 +112,7 @@ namespace Minecraft.Logic
                     {
                         var blockPos = new Vector3(x, y, z);
 
-                        if (worldToCollide.GetBlock(blockPos) > 0)
+                        if (BlockData.IsBlockSolid(worldToCollide.GetBlock(blockPos)))
                         {
                             if (SweptAABB(deltaPos, blockPos, out Vector3 _collisionNormal, out float collisionTime))
                             {
@@ -260,7 +260,7 @@ namespace Minecraft.Logic
 
                 //Debug.WriteLine(collisionNormal);
 
-                if (precisedSides == 3 && worldToCollide.GetBlock(Position + collisionNormal) == 0)
+                if (precisedSides == 3 && !BlockData.IsBlockSolid(worldToCollide.GetBlock(Position + collisionNormal)))
                     return false;
 
                 return true;

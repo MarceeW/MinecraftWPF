@@ -6,6 +6,7 @@ using OpenTK.Mathematics;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
+using System.Windows.Input;
 
 namespace Minecraft.Controller
 {
@@ -13,7 +14,8 @@ namespace Minecraft.Controller
     {
         public Player Player { get; private set; }
         public World World { get; private set; }
-        public WorldRenderer worldRendererer { get; }
+        public WorldRenderer WorldRendererer { get; }
+        public RenderWindow RenderWindow { get; }
         public bool IsGameRunning { get; private set; }
 
         private PlayerController playerController;
@@ -26,14 +28,16 @@ namespace Minecraft.Controller
         public GameController(Renderer renderer,RenderWindow renderWindow)
         {
 
+            RenderWindow = renderWindow;
+
             World = new World();
             WorldSerializer.World = World;
 
             Player = new Player(new Vector3(0, 40, 0));
             
             worldGenerator = new WorldGenerator(World);
-            worldRendererer = new WorldRenderer(World,Player.Camera);
-            worldGenerator.ChunkAdded += worldRendererer.AddToQueue;
+            WorldRendererer = new WorldRenderer(World,Player.Camera);
+            worldGenerator.ChunkAdded += WorldRendererer.AddToQueue;
 
             if(!WorldSerializer.WorldFileExists())
                 worldGenerator.InitWorld();
@@ -41,15 +45,17 @@ namespace Minecraft.Controller
             playerController = new PlayerController(Player, World);
             playerController.ChangedChunk += worldGenerator.ExpandWorld;
 
-            renderer.OnRendering += worldRendererer.CreateMeshesInQueue;
+            renderer.OnRendering += WorldRendererer.CreateMeshesInQueue;
             renderer.OnRendering += worldGenerator.AddGeneratedChunksToWorld;
-            renderer.Scene = new Scene(Player.Camera, World, worldRendererer);
+            renderer.Scene = new Scene(Player.Camera, World, WorldRendererer);
 
             playerController.InitPlayerCamera();
 
-            renderWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
-            renderWindow.Loaded += (object sender, RoutedEventArgs e) => renderer.SetupRenderer((int)renderWindow.Width, (int)renderWindow.Height);
-            
+            renderWindow.Hotbar = Player.Hotbar;
+
+            RenderWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
+            RenderWindow.Loaded += (object sender, RoutedEventArgs e) => renderer.SetupRenderer((int)renderWindow.Width, (int)renderWindow.Height);
+
             //renderWindow.Loaded += (object sender, RoutedEventArgs e) =>
             //{
             //    World.Chunks = WorldSerializer.LoadWorld();
@@ -62,7 +68,6 @@ namespace Minecraft.Controller
             //};
             //renderWindow.Closing += (object? sender,CancelEventArgs e) => WorldSerializer.SaveWorld();
 
-            WindowController.Window = renderWindow;
 
             updateThread = new Thread(UpdateGameState);
             updateThread.SetApartmentState(ApartmentState.STA);
@@ -101,7 +106,7 @@ namespace Minecraft.Controller
                             break;
                     }
 
-                    World.AddBlock(blockHit, BlockType.Cobblestone);
+                    World.AddBlock(blockHit, Player.Hotbar.GetSelectedBlock());
                 }
             };
 
@@ -116,9 +121,9 @@ namespace Minecraft.Controller
                 }
             };
 
-            renderWindow.MouseDown += mouseListener.OnMouseDown;
+            RenderWindow.MouseDown += mouseListener.OnMouseDown;
 
-            renderWindow.Loaded += (object sender, RoutedEventArgs e) =>
+            RenderWindow.Loaded += (object sender, RoutedEventArgs e) =>
             { 
                 updateThread.Start();
                 IsGameRunning = true;
@@ -166,8 +171,7 @@ namespace Minecraft.Controller
 
                 while (accumulator > updateStep)
                 {
-                    WindowController.CheckForKeyPress();
-                    WindowController.ResetMousePosition();
+                    RenderWindow.Controller.ResetMousePosition();
 
                     worldGenerator.GenerateChunksToQueue();
                     playerController.Update((float)updateStep / 1000.0f);

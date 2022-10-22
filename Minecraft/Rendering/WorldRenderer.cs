@@ -23,6 +23,7 @@ namespace Minecraft.Render
 
             renderQueue = new PriorityQueue<Vector2,float>();
             Shader = new Shader(@"..\..\..\Graphics\Shaders\Block\blockVert.glsl", @"..\..\..\Graphics\Shaders\Block\blockFrag.glsl");
+            Shader.SetDouble("renderDistance", RenderDistance);
         }
         public void AddToQueue(Vector2 toRender)
         {
@@ -43,7 +44,7 @@ namespace Minecraft.Render
             RenderSelectedBlockFrame();
 
             //LineRenderer.WireWrame(camera.Position - new Vector3(0.5f), new Vector3(0.0f));
-            LineRenderer.Axes(camera.Position - new Vector3(0.5f));
+            //LineRenderer.Axes(camera.Position - new Vector3(0.5f));
 
             CreateMeshesInQueue();
         }

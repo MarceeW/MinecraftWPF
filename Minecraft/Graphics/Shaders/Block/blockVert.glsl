@@ -12,12 +12,15 @@ out float visibility;
 
 uniform mat4 view;
 uniform mat4 projection;
+uniform double renderDistance;
 
-float density = 0.005;
-float gradient = 8.0;
+float density;
+float gradient = 4.0;
 
 void main(void)
 {
+    density = 0.08 / float(renderDistance);
+
     normal = a_Normal;
     texCoord = a_TexCoord;
     shade = a_Shade;
