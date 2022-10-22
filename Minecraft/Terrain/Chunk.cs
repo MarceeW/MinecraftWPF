@@ -61,7 +61,7 @@ namespace Minecraft.Terrain
         }
         public void RemoveBlock(Vector3 pos)
         {
-            if (pos.Y <= 1)
+            if (pos.Y <= 0)
                 return;
 
             int x = (int)pos.X % Size;

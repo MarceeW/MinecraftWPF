@@ -12,11 +12,10 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using Minecraft.Terrain;
 using OpenTK.Graphics.OpenGL;
-using System.Diagnostics;
 using System.Windows.Media;
-using Minecraft.Logic;
-using System.Windows.Shapes;
-using System.Windows.Data;
+
+using ToolTip = System.Windows.Controls.ToolTip;
+using System.Windows.Media.Effects;
 
 namespace Minecraft
 {
@@ -86,6 +85,150 @@ namespace Minecraft
 
             Controller = new WindowController(this);
         }
+        protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
+        {
+            if (pickedItem != null)
+            {
+                PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
+            }
+            base.OnMouseMove(e);
+        }
+        protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (!IsInventoryOpened)
+            {
+                if (Hotbar != null && e.MiddleButton == MouseButtonState.Pressed && WorldRenderer.CurrentTarget != null)
+                {
+                    Hotbar.Items[Hotbar.SelectedItemIndex] = (BlockType)WorldRenderer.CurrentTarget;
+
+                    var hotbarImage = (Image)HotbarGrid.FindName($"HotbarItem_{Hotbar.SelectedItemIndex}");
+                    hotbarImage.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect((BlockType)WorldRenderer.CurrentTarget));
+                }
+            }
+            base.OnMouseDown(e);
+        }
+        protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
+        {
+            if(e.Source == OpenTkControl)
+            {
+                switch (e.Key)
+                {
+                    case Key.E:
+                        {
+                            OpenCloseInventory();
+                        }
+                    break;
+                    case Key.T:
+                        {
+                            if (!IsInventoryOpened)
+                            {
+                                CommandLine.Focusable = true;
+
+                                CommandLine.Visibility = Visibility.Visible;
+                                CommandLine.Focus();
+
+                                PlayerController.CanMove = false;
+                            }                 
+                        }
+                        break;
+                    case Key.G:
+                        {
+                            Controller.ShowGrids = !Controller.ShowGrids;
+                            e.Handled = true;
+                        }
+                        break;
+                    case Key.P:
+                        {
+                            Controller.NeedsToResetMouse = !Controller.NeedsToResetMouse;
+
+                            if(Controller.NeedsToResetMouse)
+                                MouseController.HideMouse();
+                            else
+                                MouseController.ShowMouse();
+                        }
+                        break;
+                    case Key.Escape:
+                        {
+                            
+                            if (CommandLine.Visibility == Visibility.Visible)
+                            {
+                                CommandLine.Focusable = false;
+                                CommandLine.Visibility = Visibility.Hidden;
+                                PlayerController.CanMove = true;
+                            }
+                            else if (IsInventoryOpened)
+                            {
+                                OpenCloseInventory();
+                            }
+                            else
+                            {
+                                ShouldClose = true;
+                            }
+                        }
+                        break;
+                }
+            }
+
+            base.OnKeyDown(e);
+        }
+        protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
+        {
+            if(Hotbar != null)
+            {
+                Hotbar.UpdateSelectedIndex(e.Delta);
+
+                Grid.SetColumn((Image)HotbarGrid.FindName("SelectedFrame"), Hotbar.SelectedItemIndex);
+            }
+
+            base.OnMouseWheel(e);
+        }
+        protected override void OnLocationChanged(EventArgs e)
+        {
+            CenterPosition = new Vector2((float)(Left + Width / 2), (float)(Top + Height / 2));
+            base.OnLocationChanged(e);
+        }
+        protected override void OnClosed(EventArgs e)
+        {
+            Environment.Exit(0);
+            base.OnClosed(e);
+        }
+        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+        {
+            base.OnRenderSizeChanged(sizeInfo);
+            CenterPosition = new Vector2((float)(Left + Width / 2), (float)(Top + Height / 2));
+
+            RenderSizeChange?.Invoke((float)OpenTkControl.FrameBufferWidth / OpenTkControl.FrameBufferHeight);
+        }
+        private void OpenCloseInventory()
+        {
+            pickedItem = null;
+            PickedItemImage.Source = null;
+
+            IsInventoryOpened = !IsInventoryOpened;
+
+            PauseMenuDarkener.Visibility = PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            InventoryData.Visibility = InventoryData.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            InventoryGrid.Visibility = InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            InventoryText.Visibility = InventoryText.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+
+            if (IsInventoryOpened)
+            {
+                var effect = new BlurEffect();
+                effect.Radius = 15;
+
+                OpenTkControl.Effect = effect;
+            }
+            else
+                OpenTkControl.Effect = null;
+
+
+            Controller.NeedsToResetMouse = !Controller.NeedsToResetMouse;
+
+            if (Controller.NeedsToResetMouse)
+                MouseController.HideMouse();
+            else
+                MouseController.ShowMouse();
+        }
         private void CreateInventory()
         {
             double inventoryFrameSize = InventoryGrid.Width / Inventory.Columns;
@@ -135,9 +278,14 @@ namespace Minecraft
 
                         Image item = new Image();
                         item.Name = $"InventoryItem_{x}_{y}";
-                        item.Width = 32;
+                        item.Width = 48;
 
-                        item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Inventory.Blocks[y,x]));
+                        var tooltip = new ToolTip();
+                        tooltip.Content = Inventory.Blocks[y, x];
+                        tooltip.Visibility = Visibility.Visible;
+
+                        item.ToolTip = tooltip;
+                        item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Inventory.Blocks[y, x]));
 
                         RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
 
@@ -215,129 +363,6 @@ namespace Minecraft
                 }
             }
         }
-        protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
-        {
-            if (pickedItem != null)
-            {
-                PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - 30, e.GetPosition(null).Y, 0, 0);
-            }
-            base.OnMouseMove(e);
-        }
-        protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (!IsInventoryOpened)
-            {
-                if (Hotbar != null && e.MiddleButton == MouseButtonState.Pressed && WorldRenderer.CurrentTarget != null)
-                {
-                    Hotbar.Items[Hotbar.SelectedItemIndex] = (BlockType)WorldRenderer.CurrentTarget;
-
-                    var hotbarImage = (Image)HotbarGrid.FindName($"HotbarItem_{Hotbar.SelectedItemIndex}");
-                    hotbarImage.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect((BlockType)WorldRenderer.CurrentTarget));
-                }
-            }
-            base.OnMouseDown(e);
-        }
-        protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
-        {
-            if(e.Source == OpenTkControl)
-            {
-                switch (e.Key)
-                {
-                    case Key.E:
-                        {
-                            pickedItem = null;
-                            PickedItemImage.Source = null;
-
-                            IsInventoryOpened = !IsInventoryOpened;
-
-                            PauseMenuDarkener.Visibility = PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-
-                            InventoryGrid.Visibility = InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-
-                            Controller.NeedsToResetMouse = !Controller.NeedsToResetMouse;
-
-                            if (Controller.NeedsToResetMouse)
-                                MouseController.HideMouse();
-                            else
-                                MouseController.ShowMouse();
-                        }
-                    break;
-                    case Key.T:
-                        {
-                            if (!IsInventoryOpened)
-                            {
-                                CommandLine.Focusable = true;
-
-                                CommandLine.Visibility = Visibility.Visible;
-                                CommandLine.Focus();
-
-                                PlayerController.CanMove = false;
-                            }                 
-                        }
-                        break;
-                    case Key.G:
-                        {
-                            Controller.ShowGrids = !Controller.ShowGrids;
-                            e.Handled = true;
-                        }
-                        break;
-                    case Key.P:
-                        {
-                            Controller.NeedsToResetMouse = !Controller.NeedsToResetMouse;
-
-                            if(Controller.NeedsToResetMouse)
-                                MouseController.HideMouse();
-                            else
-                                MouseController.ShowMouse();
-                        }
-                        break;
-                    case Key.Escape:
-                        {
-                            if (CommandLine.Visibility == Visibility.Visible)
-                            {
-                                CommandLine.Focusable = false;
-                                CommandLine.Visibility = Visibility.Hidden;
-                                PlayerController.CanMove = true;
-                            }
-                            else
-                            {
-                                ShouldClose = true;
-                            }
-                        }
-                        break;
-                }
-            }
-
-            base.OnKeyDown(e);
-        }
-        protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
-        {
-            if(Hotbar != null)
-            {
-                Hotbar.UpdateSelectedIndex(e.Delta);
-
-                Grid.SetColumn((Image)HotbarGrid.FindName("SelectedFrame"), Hotbar.SelectedItemIndex);
-            }
-
-            base.OnMouseWheel(e);
-        }
-        protected override void OnLocationChanged(EventArgs e)
-        {
-            CenterPosition = new Vector2((float)(Left + Width / 2), (float)(Top + Height / 2));
-            base.OnLocationChanged(e);
-        }
-        protected override void OnClosed(EventArgs e)
-        {
-            Environment.Exit(0);
-            base.OnClosed(e);
-        }
-        protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-        {
-            base.OnRenderSizeChanged(sizeInfo);
-            CenterPosition = new Vector2((float)(Left + Width / 2), (float)(Top + Height / 2));
-
-            RenderSizeChange?.Invoke((float)OpenTkControl.FrameBufferWidth / OpenTkControl.FrameBufferHeight);
-        }
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
             if (Controller.ShowGrids)
@@ -351,7 +376,6 @@ namespace Minecraft
             fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);
             renderer.RenderFrame();
         }
-
         private void InventoryMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if(e.LeftButton == MouseButtonState.Pressed)
@@ -372,7 +396,7 @@ namespace Minecraft
                     PickedItemImage.Source = pickedItem.src;
                 }
 
-                PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - 30, e.GetPosition(null).Y, 0, 0);
+                PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
             }
             else
             {

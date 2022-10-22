@@ -13,9 +13,15 @@
         <BitmapImage x:Key="ItemFrame" UriSource="..\Assets\HUD\ItemFrame.png"/>
         <BitmapImage x:Key="SelectedItemFrame" UriSource="..\Assets\HUD\SelectedItemFrame.png"/>
         <BitmapImage x:Key="InventoryFrame" UriSource="..\Assets\HUD\InventoryFrame.png"/>
+
+        <Style x:Key="lblDesign" TargetType="Label">
+            <Setter Property="FontFamily" Value="..\Assets\Fonts\MinecraftRegular.otf #Minecraft"/>
+        </Style>
+        
     </Window.Resources>
 
     <Grid Name="RenderCanvas">
+        
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
             Render="OpenTkControl_OnRender">
@@ -43,8 +49,35 @@
         <TextBox Name="CommandLine" Visibility="Hidden" HorizontalAlignment="Left" Margin="30,900,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" Background="#59000000" BorderBrush="{x:Null}" FontSize="36"/>
 
         <Canvas Name="PickedItemCanvas" VerticalAlignment="Top" HorizontalAlignment="Left">
-            <Image Name="PickedItemImage" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+            <Image Width="32" Name="PickedItemImage" RenderOptions.BitmapScalingMode="NearestNeighbor">
+                <Image.Effect>
+                    <DropShadowEffect Opacity="0.7" Direction="300" BlurRadius="10" ShadowDepth="13"/>
+                </Image.Effect>
+            </Image>
         </Canvas>
 
+        <Grid Name="InventoryData" Visibility="Hidden" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="300">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <Image Name="SelfieImage" Height="200" Source="..\Assets\HUD\Selfie.png" Grid.Row="0"/>
+            <Label Name="CharacterName" Content="Pista" HorizontalAlignment="Center" Foreground="White" FontSize="16" Grid.Row="1" Margin="0,30" Style="{StaticResource lblDesign}">
+                <Label.Effect>
+                    <DropShadowEffect/>
+                </Label.Effect>
+            </Label>
+        </Grid>
+        
+        <Label Visibility="Hidden" Name="InventoryText" Content="Inventory" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="48" Margin="0,60" Style="{StaticResource lblDesign}">
+            <Label.Effect>
+                <DropShadowEffect/>
+            </Label.Effect>
+        </Label>
     </Grid>
 </Window>
