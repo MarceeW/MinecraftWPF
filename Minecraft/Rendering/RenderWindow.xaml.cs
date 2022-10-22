@@ -349,7 +349,7 @@ namespace Minecraft
 
                     Image item = new Image();
                     item.Name = "HotbarItem_" + i;
-                    item.Width = 32;
+                    item.Width = 40;
 
                     item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Items[i]));
 
@@ -436,6 +436,16 @@ namespace Minecraft
                     }
 
                     Hotbar.Items[(int)pos.X] = toChange;
+                }
+                else if(pickedItem == null)
+                {
+                    pickedItem = new PickedItem((CroppedBitmap)clickedImage.Source, Hotbar.Items[(int)pos.X]);
+
+                    clickedImage.Source = null;
+                    PickedItemImage.Source = pickedItem.src;
+                    Hotbar.Items[(int)pos.X] = BlockType.Air;
+
+                    PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
                 }
                 else if (e.RightButton == MouseButtonState.Pressed)
                 {
