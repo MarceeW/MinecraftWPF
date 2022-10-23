@@ -13,9 +13,21 @@
         <BitmapImage x:Key="ItemFrame" UriSource="..\Assets\HUD\ItemFrame.png"/>
         <BitmapImage x:Key="SelectedItemFrame" UriSource="..\Assets\HUD\SelectedItemFrame.png"/>
         <BitmapImage x:Key="InventoryFrame" UriSource="..\Assets\HUD\InventoryFrame.png"/>
+        <BitmapImage x:Key="MenuButtonFrame" UriSource="..\Assets\HUD\MenuButton.png"/>
+        <BitmapImage x:Key="MenuButtonSelectedFrame" UriSource="..\Assets\HUD\MenuButton_selected.png"/>
 
         <Style x:Key="lblDesign" TargetType="Label">
             <Setter Property="FontFamily" Value="..\Assets\Fonts\MinecraftRegular.otf #Minecraft"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect 
+                              ShadowDepth="2"
+                              BlurRadius="2"
+                              Direction="300"
+                              Color="Black"
+                              RenderingBias="Performance"/>
+                </Setter.Value>
+            </Setter>
         </Style>
         
     </Window.Resources>
@@ -67,17 +79,31 @@
             </Grid.RowDefinitions>
 
             <Image Name="SelfieImage" Height="200" Source="..\Assets\HUD\Selfie.png" Grid.Row="0"/>
-            <Label Name="CharacterName" Content="Pista_mc2013" HorizontalAlignment="Center" Foreground="White" FontSize="16" Grid.Row="1" Margin="0,30" Style="{StaticResource lblDesign}">
-                <Label.Effect>
-                    <DropShadowEffect/>
-                </Label.Effect>
-            </Label>
+            <Label Name="CharacterName" Content="Pista_mc2013" HorizontalAlignment="Center" Foreground="White" FontSize="16" Grid.Row="1" Margin="0,30" Style="{StaticResource lblDesign}"/>
+
         </Grid>
-        
-        <Label Visibility="Hidden" Name="InventoryText" Content="Inventory" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="48" Margin="0,60" Style="{StaticResource lblDesign}">
-            <Label.Effect>
-                <DropShadowEffect/>
-            </Label.Effect>
-        </Label>
+
+        <Label Visibility="Hidden" Name="InventoryText" Content="Creative Inventory" HorizontalAlignment="Center" VerticalAlignment="Top" Foreground="White" FontSize="48" Margin="0,60" Style="{StaticResource lblDesign}"/>
+
+        <Grid Name="PauseMenu" Height="300">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <Image Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="0" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave"/>
+            <Label Width="300" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Back to game" Foreground="White" FontSize="20" Style="{StaticResource lblDesign}" Grid.Row="0"/>
+
+            <Image Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave"/>
+            <Label Width="300" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Options" Foreground="White" FontSize="20" Style="{StaticResource lblDesign}" Grid.Row="1"/>
+
+            <Image Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="2" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave"/>
+            <Label Width="300" Height="50" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Content="Save and exit" Foreground="White" FontSize="20" Style="{StaticResource lblDesign}" Grid.Row="2"/>
+        </Grid>
     </Grid>
 </Window>

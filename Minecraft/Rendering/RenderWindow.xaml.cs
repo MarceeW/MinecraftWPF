@@ -483,5 +483,17 @@ namespace Minecraft
                 }
             }
         }
+
+        private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var img = e.Source as Image;
+            img.Source = (BitmapSource)Resources["MenuButtonSelectedFrame"];
+        }
+
+        private void Button_MouseLeave(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            var img = e.Source as Image;
+            img.Source = (BitmapSource)Resources["MenuButtonFrame"];
+        }
     }
 }

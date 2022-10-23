@@ -12,6 +12,8 @@
     <None Remove="Assets\Fonts\MinecraftRegular.otf" />
     <None Remove="Assets\HUD\InventoryFrame.png" />
     <None Remove="Assets\HUD\ItemFrame.png" />
+    <None Remove="Assets\HUD\MenuButton.png" />
+    <None Remove="Assets\HUD\MenuButton_selected.png" />
     <None Remove="Assets\HUD\SelectedItemFrame.png" />
     <None Remove="Assets\HUD\Selfie.png" />
     <None Remove="Assets\HUD\Toolbar.png" />
@@ -31,6 +33,8 @@
   <ItemGroup>
     <Resource Include="Assets\Fonts\MinecraftRegular.otf" />
     <Resource Include="Assets\HUD\InventoryFrame.png" />
+    <Resource Include="Assets\HUD\MenuButton.png" />
+    <Resource Include="Assets\HUD\MenuButton_selected.png" />
     <Resource Include="Assets\HUD\SelectedItemFrame.png" />
     <Resource Include="Assets\HUD\ItemFrame.png" />
     <Resource Include="Assets\HUD\Selfie.png" />
