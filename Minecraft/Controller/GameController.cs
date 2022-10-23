@@ -52,8 +52,7 @@ namespace Minecraft.Controller
 
             playerController.InitPlayerCamera();
 
-            renderWindow.Hotbar = Player.Hotbar;
-
+            RenderWindow.Hotbar = Player.Hotbar;
             RenderWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
             RenderWindow.Loaded += (object sender, RoutedEventArgs e) => renderer.SetupRenderer((int)renderWindow.Width, (int)renderWindow.Height);
 

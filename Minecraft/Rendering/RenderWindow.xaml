@@ -43,7 +43,7 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <Grid Name="HotbarGrid" VerticalAlignment="Bottom" Margin="0,30" MouseDown="HotbarGridMouseDown"/>
+        <Grid Name="HotbarGrid" VerticalAlignment="Bottom" Margin="0,10" MouseDown="HotbarGridMouseDown"/>
         <Grid Visibility="Hidden" Width="900" Name="InventoryGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,30" PreviewMouseDown="InventoryMouseDown"/>
 
         <TextBox Name="CommandLine" Visibility="Hidden" HorizontalAlignment="Left" Margin="30,900,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" Background="#59000000" BorderBrush="{x:Null}" FontSize="36"/>
@@ -67,7 +67,7 @@
             </Grid.RowDefinitions>
 
             <Image Name="SelfieImage" Height="200" Source="..\Assets\HUD\Selfie.png" Grid.Row="0"/>
-            <Label Name="CharacterName" Content="Pista" HorizontalAlignment="Center" Foreground="White" FontSize="16" Grid.Row="1" Margin="0,30" Style="{StaticResource lblDesign}">
+            <Label Name="CharacterName" Content="Pista_mc2013" HorizontalAlignment="Center" Foreground="White" FontSize="16" Grid.Row="1" Margin="0,30" Style="{StaticResource lblDesign}">
                 <Label.Effect>
                     <DropShadowEffect/>
                 </Label.Effect>

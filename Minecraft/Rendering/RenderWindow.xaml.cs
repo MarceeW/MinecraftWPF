@@ -16,6 +16,7 @@ using System.Windows.Media;
 
 using ToolTip = System.Windows.Controls.ToolTip;
 using System.Windows.Media.Effects;
+using Cursors = System.Windows.Input.Cursors;
 
 namespace Minecraft
 {
@@ -37,6 +38,7 @@ namespace Minecraft
 
         public Vector2 CenterPosition;
         public event Action<float>? RenderSizeChange;
+        public event Action<bool>? Pause;
         public bool ShouldClose { get; set; }
         public Hotbar? Hotbar { get; set; }
         public Inventory Inventory { get; set; } = new Inventory();
@@ -44,6 +46,7 @@ namespace Minecraft
         public WindowController Controller;
 
         public bool IsInventoryOpened = false;
+        private bool paused = false;
 
         private Renderer renderer;
 
@@ -199,19 +202,13 @@ namespace Minecraft
 
             RenderSizeChange?.Invoke((float)OpenTkControl.FrameBufferWidth / OpenTkControl.FrameBufferHeight);
         }
-        private void OpenCloseInventory()
+        private void PauseGame()
         {
-            pickedItem = null;
-            PickedItemImage.Source = null;
+            paused = !paused;
 
-            IsInventoryOpened = !IsInventoryOpened;
+            Pause?.Invoke(paused);
 
-            PauseMenuDarkener.Visibility = PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-            InventoryData.Visibility = InventoryData.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-            InventoryGrid.Visibility = InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-            InventoryText.Visibility = InventoryText.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-
-            if (IsInventoryOpened)
+            if (paused)
             {
                 var effect = new BlurEffect();
                 effect.Radius = 15;
@@ -221,13 +218,29 @@ namespace Minecraft
             else
                 OpenTkControl.Effect = null;
 
+            PauseMenuDarkener.Visibility = PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
 
             Controller.NeedsToResetMouse = !Controller.NeedsToResetMouse;
 
             if (Controller.NeedsToResetMouse)
                 MouseController.HideMouse();
             else
+            {
                 MouseController.ShowMouse();
+            }
+        }
+        private void OpenCloseInventory()
+        {
+            pickedItem = null;
+            PickedItemImage.Source = null;
+
+            IsInventoryOpened = !IsInventoryOpened;
+
+            InventoryData.Visibility = InventoryData.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            InventoryGrid.Visibility = InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            InventoryText.Visibility = InventoryText.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+
+            PauseGame();
         }
         private void CreateInventory()
         {
@@ -279,6 +292,9 @@ namespace Minecraft
                         Image item = new Image();
                         item.Name = $"InventoryItem_{x}_{y}";
                         item.Width = 48;
+
+                        item.MouseEnter += OnMouseEnterBlockImage;
+                        item.MouseLeave += OnMouseLeaveBlockImage;
 
                         var tooltip = new ToolTip();
                         tooltip.Content = Inventory.Blocks[y, x];
@@ -351,6 +367,9 @@ namespace Minecraft
                     item.Name = "HotbarItem_" + i;
                     item.Width = 40;
 
+                    item.MouseEnter += OnMouseEnterBlockImage;
+                    item.MouseLeave += OnMouseLeaveBlockImage;
+
                     item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Items[i]));
 
                     RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
@@ -365,16 +384,26 @@ namespace Minecraft
         }
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
-            if (Controller.ShowGrids)
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-            else
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+            if (!paused)
+            {
+                if (Controller.ShowGrids)
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+                else
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 
+                renderer.RenderFrame();
+            }
+            fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);
             if (ShouldClose)
                 Close();
-
-            fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);
-            renderer.RenderFrame();
+        }
+        private void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Cursor = Cursors.Hand;
+        }
+        private void OnMouseLeaveBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            Cursor = Cursors.Arrow;
         }
         private void InventoryMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
