@@ -16,7 +16,7 @@ uniform mat4 projection;
 uniform double renderDistance;
 
 float density;
-float gradient = 10.0;
+float gradient = 16.0;
 
 void main(void)
 {

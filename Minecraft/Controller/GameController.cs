@@ -88,28 +88,31 @@ namespace Minecraft.Controller
 
                 if (hit && !renderWindow.IsInventoryOpened)
                 {
-                    switch (hitFace)
+                    if(World.GetBlock(blockHit) != BlockType.Grass && World.GetBlock(blockHit) != BlockType.SparseGrass)
                     {
-                        case FaceDirection.Top:
-                            blockHit.Y++;
-                            break;
-                        case FaceDirection.Bot:
-                            blockHit.Y--;
-                            break;
-                        case FaceDirection.Right:
-                            blockHit.X++;
-                            break;
-                        case FaceDirection.Left:
-                            blockHit.X--;
-                            break;
-                        case FaceDirection.Front:
-                            blockHit.Z++;
-                            break;
-                        case FaceDirection.Back:
-                            blockHit.Z--;
-                            break;
-                        default:
-                            break;
+                        switch (hitFace)
+                        {
+                            case FaceDirection.Top:
+                                blockHit.Y++;
+                                break;
+                            case FaceDirection.Bot:
+                                blockHit.Y--;
+                                break;
+                            case FaceDirection.Right:
+                                blockHit.X++;
+                                break;
+                            case FaceDirection.Left:
+                                blockHit.X--;
+                                break;
+                            case FaceDirection.Front:
+                                blockHit.Z++;
+                                break;
+                            case FaceDirection.Back:
+                                blockHit.Z--;
+                                break;
+                            default:
+                                break;
+                        }
                     }
 
                     World.AddBlock(blockHit, Player.Hotbar.GetSelectedBlock());
