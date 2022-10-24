@@ -103,21 +103,7 @@ namespace Minecraft.Logic
         }
         public void ChangeView()
         {
-            //needs to move out from here
-            player.Camera.ChangePitch(-MathHelper.DegreesToRadians(MouseController.DeltaY) * mouseSpeed);
-            player.Camera.ChangeYaw(MathHelper.DegreesToRadians(MouseController.DeltaX) * mouseSpeed);
-
-            if (player.Camera.Pitch > MathHelper.DegreesToRadians(89.0))
-                player.Camera.ResetPitch((float)MathHelper.DegreesToRadians(89.0));
-            else if (player.Camera.Pitch < MathHelper.DegreesToRadians(-89.0))
-                player.Camera.ResetPitch((float)MathHelper.DegreesToRadians(-89.0));
-
-            Vector3 front = new Vector3();
-            front.X = (float)(Math.Cos(player.Camera.Pitch) * Math.Cos(player.Camera.Yaw));
-            front.Y = (float)Math.Sin(player.Camera.Pitch);
-            front.Z = (float)(Math.Cos(player.Camera.Pitch) * Math.Sin(player.Camera.Yaw));
-
-            player.Camera.Front = Vector3.Normalize(front);
+            player.Camera.ChangeView(MouseController.DeltaX, MouseController.DeltaY,mouseSpeed);
         }
     }
 }

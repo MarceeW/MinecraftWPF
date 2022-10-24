@@ -18,13 +18,14 @@ namespace Minecraft.Render
         private WorldRenderer worldRenderer;
         private ICamera camera;
         private Skybox skybox;
-        public Scene(Camera camera,World world,WorldRenderer worldRenderer)
+        private CharacterHand characterHand;
+        public Scene(Camera camera,World world, WorldRenderer worldRenderer, CharacterHand characterHand)
         {
             Shader skyboxShader = new Shader(@"..\..\..\Graphics\Shaders\Skybox\skyboxVert.glsl", @"..\..\..\Graphics\Shaders\Skybox\skyboxFrag.glsl");
 
             skybox = new Skybox(
                 skyboxShader,
-                new Texture(@"..\..\..\Assets\Textures\McSkybox\",true,false));
+                new Texture(@"..\..\..\Assets\Textures\McSkybox\", true, false));
 
             this.camera = camera;
             this.worldRenderer = worldRenderer;
@@ -41,18 +42,24 @@ namespace Minecraft.Render
             LineRenderer.InitShader();
             camera.ViewMatrixChange += LineRenderer.Shader.SetMat4;
             ProjectionMatrixChange += LineRenderer.Shader.SetMat4;
+
+            this.characterHand = characterHand;
+            camera.FrontChange += characterHand.Shader.SetVec3;
+            ProjectionMatrixChange += characterHand.Shader.SetMat4;
         }
         public void OnProjectionMatrixChange(float aspectRatio)
         {
             Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(camera.Fov), aspectRatio , near, far);
             ProjectionMatrixChange.Invoke("projection",Projection);
         }
-        public void Render()
+        public void Render(float delta)
         {
             camera.UpdateViewMatrix();
+            camera.UpdateFront();
             skybox.Reposition(camera.Position);
             skybox.Render();
             worldRenderer.RenderWorld();
+            characterHand.Render(delta);
         }
 
         public void Dispose()

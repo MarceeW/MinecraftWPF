@@ -74,19 +74,19 @@ namespace Minecraft.Graphics
 
                                     if (neighborBlock == null || (BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block)))
                                     {
-                                        nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+                                        nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x,z] - y));
                                         chunk.Mesh.nFaceCount++;
                                     }
                                     else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block==BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                     {
                                         if (BlockData.IsVegetationBlock(block))
                                         {
-                                            vVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                            vVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                             chunk.Mesh.vFaceCount++;
                                         }
                                         else
                                         {
-                                            tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+                                            tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                             chunk.Mesh.tFaceCount++;
                                         }
 
@@ -104,7 +104,7 @@ namespace Minecraft.Graphics
 
                                             if (topBlockY < neighborPos.Y)
                                             {
-                                                nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+                                                nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                                 chunk.Mesh.nFaceCount++;
                                             }
                                         }
@@ -115,19 +115,19 @@ namespace Minecraft.Graphics
                                     
                                         if(BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block))
                                         {
-                                            nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+                                            nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                             chunk.Mesh.nFaceCount++;
                                         }
                                         else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0)
                                         {
                                             if (BlockData.IsVegetationBlock(block))
                                             {
-                                                vVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                                vVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                                 chunk.Mesh.vFaceCount++;
                                             }
                                             else
                                             {
-                                                tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+                                                tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                                 chunk.Mesh.tFaceCount++;
                                             }
                                         }
@@ -140,19 +140,19 @@ namespace Minecraft.Graphics
 
                                 if (neighborBlock == null || BlockData.IsBolckTransparent(neighborBlock) && !BlockData.IsBolckTransparent(block))
                                 {
-                                    nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+                                    nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                     chunk.Mesh.nFaceCount++;
                                 }
                                 else if (BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block == BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                 {
                                     if (BlockData.IsVegetationBlock(block))
                                     {
-                                        vVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos));
+                                        vVertices.AddRange(Face.GetVegetationFaceVertices((BlockType)block, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                         chunk.Mesh.vFaceCount++;
                                     }
                                     else
                                     {
-                                        tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos));
+                                        tVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x,y,z,chunk), chunk.TopBlockPositions[x, z] - y));
                                         chunk.Mesh.tFaceCount++;
                                     }
                                 }
@@ -242,6 +242,11 @@ namespace Minecraft.Graphics
                    blockPos.X == chunkRightCorner ||
                    blockPos.Z == chunkBotCorner ||
                    blockPos.Z == chunkTopCorner;
+        }
+        private static bool BlockNeedsShadow(int x,int y,int z,Chunk chunk)
+        {
+            return y < chunk.TopBlockPositions[x, z] && !BlockData.IsVegetationBlock(chunk.GetBlock(new Vector3(x, chunk.TopBlockPositions[x, z], z)))
+                || y < chunk.TopBlockPositions[x, z] - 1;
         }
     }
 }

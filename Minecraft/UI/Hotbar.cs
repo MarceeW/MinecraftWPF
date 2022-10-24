@@ -11,7 +11,8 @@ namespace Minecraft.UI
     public class Hotbar
     {
         public int SelectedItemIndex { get; private set; }
-        internal BlockType[] Items { get; set; } = new BlockType[MaxItems];
+        public Action? BlockChangeOnSelect;
+        internal BlockType[] Items { get; } = new BlockType[MaxItems];
         public const int MaxItems = 9;
         public Hotbar()
         {
@@ -24,6 +25,13 @@ namespace Minecraft.UI
             Items[6] = BlockType.OakTrunk;
             Items[7] = BlockType.OakLeaves;
             Items[8] = BlockType.Bedrock;
+        }
+        public void ChangeBlock(int index,BlockType toChange)
+        {
+            Items[index] = toChange;
+
+            if (index == SelectedItemIndex)
+                BlockChangeOnSelect?.Invoke();
         }
         internal BlockType GetSelectedBlock()
         {
@@ -38,6 +46,8 @@ namespace Minecraft.UI
 
             else if (SelectedItemIndex == MaxItems)
                 SelectedItemIndex = 0;
+
+            BlockChangeOnSelect?.Invoke();
         }
     }
 }

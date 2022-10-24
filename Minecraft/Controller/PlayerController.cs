@@ -23,7 +23,7 @@ namespace Minecraft.Controller
             this.player = player;
             playerLogic = new PlayerLogic(player,world);
 
-            player.Camera.Fov = 90.0f;
+            player.Camera.Fov = 85.0f;
 
             player.Camera.Front = Vector3.UnitX;
         }

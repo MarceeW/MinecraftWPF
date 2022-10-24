@@ -47,9 +47,9 @@ namespace Minecraft.Render
             //LineRenderer.WireWrame(camera.Position - new Vector3(0.5f), new Vector3(0.0f));
             //LineRenderer.Axes(camera.Position - new Vector3(0.5f));
 
-            CreateMeshesInQueue();
+            CreateMeshesInQueue(0);
         }
-        public void CreateMeshesInQueue()
+        public void CreateMeshesInQueue(float delta)
         {
             if (renderQueue.Count > 0)
             {

@@ -5,6 +5,7 @@ layout(location = 1) in vec3 a_Normal;
 layout(location = 2) in vec2 a_TexCoord;
 layout(location = 3) in float a_Shade;
 
+out vec3 pos;
 out vec3 normal;
 out vec2 texCoord;
 out float shade;
@@ -21,6 +22,7 @@ void main(void)
 {
     density = 0.08 / float(renderDistance);
 
+    pos = a_Position;
     normal = a_Normal;
     texCoord = a_TexCoord;
     shade = a_Shade;

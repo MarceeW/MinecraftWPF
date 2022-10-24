@@ -10,7 +10,7 @@ namespace Minecraft.Render
 {
     class Renderer: IDisposable
     {
-        public event Action? OnRendering;
+        public event Action<float>? OnRendering;
 
         public Scene? Scene { get; set; }
         public static Stopwatch Stopwatch = new Stopwatch();
@@ -36,12 +36,12 @@ namespace Minecraft.Render
 
             Stopwatch.Start();
         }
-        public void RenderFrame()
+        public void RenderFrame(float delta)
         {
-            OnRendering?.Invoke();
+            OnRendering?.Invoke(delta);
 
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            Scene?.Render();
+            Scene?.Render(delta);
         }
     }
 }

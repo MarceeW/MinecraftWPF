@@ -12,15 +12,18 @@ namespace Minecraft.Graphics
         Matrix4 View { get; }
         float Yaw { get; }
 
+        event ShaderVec3Handler? FrontChange;
         event ShaderMat4Handler? ViewMatrixChange;
 
         void ChangeFront(Vector3 front);
         void ChangePitch(float change);
+        void ChangeView(float deltaX, float deltaY, float mouseSpeed);
         void ChangeYaw(float change);
         void Init();
         void ModPosition(Vector3 change);
         void ResetPitch(float resetValue);
         void SetPosition(Vector3 position);
+        void UpdateFront();
         void UpdateViewMatrix();
     }
 }

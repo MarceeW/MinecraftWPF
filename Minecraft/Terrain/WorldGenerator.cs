@@ -48,7 +48,7 @@ namespace Minecraft.Terrain
                     lock(world)
                         AddChunk(new Vector2(x, z));
         }
-        public void AddGeneratedChunksToWorld()
+        public void AddGeneratedChunksToWorld(float delta)
         {
             while(generatedChunks.Count > 0)
             {

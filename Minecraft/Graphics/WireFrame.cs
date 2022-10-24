@@ -11,7 +11,7 @@ namespace Minecraft.Graphics
 
         public static void InitShader()
         {
-            Shader = new Shader(@"..\..\..\Graphics\Shaders\Block\blockWireFrameVert.glsl",@"..\..\..\Graphics\Shaders\Block\blockWireFrameFrag.glsl");
+            Shader = new Shader(@"..\..\..\Graphics\Shaders\WireFrame\blockWireFrameVert.glsl",@"..\..\..\Graphics\Shaders\WireFrame\blockWireFrameFrag.glsl");
         }
         private static int wireFrameVBO = GL.GenBuffer();
         private static int wireFrameVAO = GL.GenVertexArray();

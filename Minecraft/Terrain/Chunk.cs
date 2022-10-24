@@ -90,8 +90,8 @@ namespace Minecraft.Terrain
                 Blocks[x, y, z] = 0;
 
             if (TopBlockPositions[x,z] == y)
-            {
-                while (y > 0 && Blocks[x, y, z] > 0)
+            {  
+                while (y > 0 && Blocks[x, y, z] == 0)
                     y--;
 
                 TopBlockPositions[x, z] = y;

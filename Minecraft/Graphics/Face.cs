@@ -1,5 +1,7 @@
-﻿using Minecraft.Terrain;
+﻿using Assimp;
+using Minecraft.Terrain;
 using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 using System.Windows.Documents;
 
@@ -35,7 +37,7 @@ namespace Minecraft.Graphics
     {
         public const int SingleFaceVertexCount = 54;
         public static int SingleVertexFloats = 9;
-        public static float[] GetBlockFaceVertices(BlockType? block, FaceDirection face, Vector3 position)
+        public static float[] GetBlockFaceVertices(BlockType? block, FaceDirection face, Vector3 position, bool needsToShade, int topBlockDifference, float? shadeValue = null)
         {
             if(block == BlockType.Air || block == null)
                 return new float[0];
@@ -48,94 +50,104 @@ namespace Minecraft.Graphics
                 position.Y -= 0.2f;
 
             if (face == FaceDirection.Top)
+            {
+                float shade = Math.Clamp(1 - topBlockDifference * 0.065f, 0.4f, 1.0f);
+
                 return
                 new float[SingleFaceVertexCount]
                 {  //Positions                                                 //Normals            //Block          Texture Coord  Shade
-                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
-                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
-                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
-                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
-                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
-                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f 
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[0],  texCoords[3], needsToShade ? shade : 1.0f,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[2],  texCoords[3], needsToShade ? shade : 1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[2],  texCoords[1], needsToShade ? shade : 1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[2],  texCoords[1], needsToShade ? shade : 1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[0],  texCoords[1], needsToShade ? shade : 1.0f,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[0],  texCoords[3], needsToShade ? shade : 1.0f
                 };
+            }     
             else if (face == FaceDirection.Bot)
                 return
                 new float[SingleFaceVertexCount]
                 {  //Positions                                                 //Normals            //Block Texture Coords        //Shade
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[0],  texCoords[3],  0.5f,
-                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[0],  texCoords[1],  0.5f,
-                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[2],  texCoords[1],  0.5f,
-                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[2],  texCoords[1],  0.5f,
-                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[2],  texCoords[3],  0.5f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[0],  texCoords[3],  0.5f   
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[0],  texCoords[3], shadeValue == null ? 0.5f : (float)shadeValue,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[0],  texCoords[1], shadeValue == null ? 0.5f : (float)shadeValue,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[2],  texCoords[1], shadeValue == null ? 0.5f : (float)shadeValue,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[2],  texCoords[1], shadeValue == null ? 0.5f : (float)shadeValue,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[2],  texCoords[3], shadeValue == null ? 0.5f : (float)shadeValue,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[0],  texCoords[3], shadeValue == null ? 0.5f : (float)shadeValue   
                 };
             else if (face == FaceDirection.Right)
                 return
                 new float[SingleFaceVertexCount]
                 {  //Positions                                                 //Normals            //Block Texture Coords        //Shade
-                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  0.5f,
-                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  0.5f,
-                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  0.5f,
-                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  0.5f,
-                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  0.5f,
-                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  0.5f
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3], shadeValue == null ?  0.5f : (float)shadeValue,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3], shadeValue == null ?  0.5f : (float)shadeValue,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1], shadeValue == null ?  0.5f : (float)shadeValue,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1], shadeValue == null ?  0.5f : (float)shadeValue,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1], shadeValue == null ?  0.5f : (float)shadeValue,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3], shadeValue == null ?  0.5f : (float)shadeValue
                 };
             else if (face == FaceDirection.Left)
                 return
                 new float[SingleFaceVertexCount]
                 {  //Positions                                                 //Normals            //Block Texture Coords        //Shade
-                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  0.5f,
-                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  0.5f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  0.5f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  0.5f,
-                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  0.5f,
-                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  0.5f
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  shadeValue == null ?  0.5f : (float)shadeValue,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  shadeValue == null ?  0.5f : (float)shadeValue,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  shadeValue == null ?  0.5f : (float)shadeValue,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  shadeValue == null ?  0.5f : (float)shadeValue,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  shadeValue == null ?  0.5f : (float)shadeValue,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  shadeValue == null ?  0.5f : (float)shadeValue
                 };
             else if (face == FaceDirection.Front)
                 return
                 new float[SingleFaceVertexCount]
                 {  //Positions                                                 //Normals            //Block Texture Coords        //Shade
-                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[0],  texCoords[1],  0.7f,
-                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[0],  texCoords[3],  0.7f,
-                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[2],  texCoords[3],  0.7f,
-                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[2],  texCoords[3],  0.7f,
-                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[2],  texCoords[1],  0.7f,
-                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[0],  texCoords[1],  0.7f
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[0],  texCoords[1],  shadeValue == null ?  0.7f : (float)shadeValue,
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[0],  texCoords[3],  shadeValue == null ?  0.7f : (float)shadeValue,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[2],  texCoords[3],  shadeValue == null ?  0.7f : (float)shadeValue,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[2],  texCoords[3],  shadeValue == null ?  0.7f : (float)shadeValue,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[2],  texCoords[1],  shadeValue == null ?  0.7f : (float)shadeValue,
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  texCoords[0],  texCoords[1],  shadeValue == null ?  0.7f : (float)shadeValue
                 };
             else
                 return
                 new float[SingleFaceVertexCount]
                 {  //Positions                                                 //Normals            //Block Texture Coords        //Shade
-                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[1],  0.7f,
-                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[2],  texCoords[1],  0.7f,
-                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[2],  texCoords[3],  0.7f,
-                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[2],  texCoords[3],  0.7f,
-                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[3],  0.7f,
-                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[1],  0.7f
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[1],  shadeValue == null ?  0.7f : (float)shadeValue,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[2],  texCoords[1],  shadeValue == null ?  0.7f : (float)shadeValue,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[2],  texCoords[3],  shadeValue == null ?  0.7f : (float)shadeValue,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[2],  texCoords[3],  shadeValue == null ?  0.7f : (float)shadeValue,
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[3],  shadeValue == null ?  0.7f : (float)shadeValue,
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[1],  shadeValue == null ?  0.7f : (float)shadeValue
                 };
         }
-        public static float[] GetVegetationFaceVertices(BlockType block, Vector3 position)
+        public static float[] GetHandFaceVertices(FaceDirection face,Vector3 position)
+        {
+            return new float[] { };
+        }
+        public static float[] GetVegetationFaceVertices(BlockType block, Vector3 position, bool needsToShade, int topBlockDifference)
         {
             var texCoords = AtlasTexturesData.GetTextureCoords(block,null);
 
             position += new Vector3(0.5f);
 
-                return
+            float shade = Math.Clamp(1 - topBlockDifference * 0.065f, 0.4f, 1.0f);
+            
+            return
                 new float[]
                 {
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
-                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
-                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
-                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
-                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
-                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
-
-                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1],  1.0f,
-                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
-                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
-                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3],  1.0f,
-                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3],  1.0f,
-                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1],  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1], needsToShade? shade : 1.0f,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1], needsToShade? shade : 1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3], needsToShade? shade : 1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3], needsToShade? shade : 1.0f,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3], needsToShade? shade : 1.0f,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1], needsToShade? shade : 1.0f,
+                                                                                                                                   
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1], needsToShade? shade : 1.0f,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1], needsToShade? shade : 1.0f,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3], needsToShade? shade : 1.0f,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3], needsToShade? shade : 1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3], needsToShade? shade : 1.0f,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1], needsToShade? shade : 1.0f,            
                 };
         }
         public static float[] GetBlockFaceWireFrames(Vector3 position,Vector3 color)

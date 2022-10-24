@@ -39,14 +39,14 @@ namespace Minecraft
         public Vector2 CenterPosition;
         public event Action<float>? RenderSizeChange;
         public event Action<bool>? Pause;
-        public bool ShouldClose { get; set; }
         public Hotbar? Hotbar { get; set; }
         public Inventory Inventory { get; set; } = new Inventory();
+
+        public bool PauseMenuOpened { get; private set; } = false;
 
         public WindowController Controller;
 
         public bool IsInventoryOpened = false;
-        private bool paused = false;
 
         private Renderer renderer;
 
@@ -76,10 +76,10 @@ namespace Minecraft
 
             CenterPosition = new Vector2(resolution.Width / 2, resolution.Height / 2);
 
-            float hudScale = 0.7f;
+            float hudScale = 0.6f;
 
-            HotbarGrid.Width = 900 * hudScale;
-            HotbarGrid.Height = 100 * hudScale;
+            HotbarGrid.Width *= hudScale;
+            HotbarGrid.Height *= hudScale;
 
             CreateHotbar();
             CreateInventory();
@@ -102,7 +102,7 @@ namespace Minecraft
             {
                 if (Hotbar != null && e.MiddleButton == MouseButtonState.Pressed && WorldRenderer.CurrentTarget != null)
                 {
-                    Hotbar.Items[Hotbar.SelectedItemIndex] = (BlockType)WorldRenderer.CurrentTarget;
+                    Hotbar.ChangeBlock(Hotbar.SelectedItemIndex, (BlockType)WorldRenderer.CurrentTarget);
 
                     var hotbarImage = (Image)HotbarGrid.FindName($"HotbarItem_{Hotbar.SelectedItemIndex}");
                     hotbarImage.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect((BlockType)WorldRenderer.CurrentTarget));
@@ -165,7 +165,7 @@ namespace Minecraft
                             }
                             else
                             {
-                                ShouldClose = true;
+                                Close();
                             }
                         }
                         break;
@@ -204,11 +204,11 @@ namespace Minecraft
         }
         private void PauseGame()
         {
-            paused = !paused;
+            PauseMenuOpened = !PauseMenuOpened;
 
-            Pause?.Invoke(paused);
+            Pause?.Invoke(PauseMenuOpened);
 
-            if (paused)
+            if (PauseMenuOpened)
             {
                 var effect = new BlurEffect();
                 effect.Radius = 15;
@@ -384,18 +384,14 @@ namespace Minecraft
         }
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
-            if (!paused)
-            {
-                if (Controller.ShowGrids)
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-                else
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+            if (Controller.ShowGrids)
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+            else
+                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 
-                renderer.RenderFrame();
-            }
-            fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);
-            if (ShouldClose)
-                Close();
+            renderer.RenderFrame(delta.Milliseconds / 1000.0f);
+
+            fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);                
         }
         private void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -464,7 +460,7 @@ namespace Minecraft
                         toChange = BlockType.Air;
                     }
 
-                    Hotbar.Items[(int)pos.X] = toChange;
+                    Hotbar.ChangeBlock((int)pos.X, toChange);
                 }
                 else if(pickedItem == null)
                 {
@@ -472,14 +468,14 @@ namespace Minecraft
 
                     clickedImage.Source = null;
                     PickedItemImage.Source = pickedItem.src;
-                    Hotbar.Items[(int)pos.X] = BlockType.Air;
+                    Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
 
                     PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
                 }
                 else if (e.RightButton == MouseButtonState.Pressed)
                 {
                     clickedImage.Source = null;
-                    Hotbar.Items[(int)pos.X] = BlockType.Air;
+                    Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
                 }
             }
         }

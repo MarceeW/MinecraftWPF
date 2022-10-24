@@ -4,6 +4,7 @@ using Minecraft.Render;
 using Minecraft.Terrain;
 using Minecraft.UI;
 using OpenTK.Mathematics;
+using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -40,7 +41,9 @@ namespace Minecraft.Controller
             WorldRendererer = new WorldRenderer(World,Player.Camera);
             worldGenerator.ChunkAdded += WorldRendererer.AddToQueue;
 
-            if(!WorldSerializer.WorldFileExists())
+            mouseListener = new MouseListener(RenderWindow);
+
+            if (!WorldSerializer.WorldFileExists())
                 worldGenerator.InitWorld();
 
             playerController = new PlayerController(Player, World);
@@ -48,7 +51,11 @@ namespace Minecraft.Controller
 
             renderer.OnRendering += WorldRendererer.CreateMeshesInQueue;
             renderer.OnRendering += worldGenerator.AddGeneratedChunksToWorld;
-            renderer.Scene = new Scene(Player.Camera, World, WorldRendererer);
+
+            var characterHand = new CharacterHand(Player.Hotbar);
+            mouseListener.LeftMouseClick += characterHand.OnHit;
+
+            renderer.Scene = new Scene(Player.Camera, World, WorldRendererer, characterHand);
 
             playerController.InitPlayerCamera();
 
@@ -75,7 +82,6 @@ namespace Minecraft.Controller
 
             MouseController.HideMouse();
 
-            mouseListener = new MouseListener();
             mouseListener.RightMouseClick += () =>
             {
                 var blockHit = Ray.Cast(Player.Camera, World, out bool hit, out FaceDirection hitFace);
@@ -107,6 +113,8 @@ namespace Minecraft.Controller
                     }
 
                     World.AddBlock(blockHit, Player.Hotbar.GetSelectedBlock());
+
+                    characterHand.OnBlockPlace();
                 }
             };
 
