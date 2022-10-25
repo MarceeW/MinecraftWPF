@@ -408,10 +408,12 @@ namespace Minecraft
         }
         private void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            (sender as Image).Width *= 1.2;
             Cursor = Cursors.Hand;
         }
         private void OnMouseLeaveBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
         {
+            (sender as Image).Width /= 1.2;
             Cursor = Cursors.Arrow;
         }
         private void InventoryMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

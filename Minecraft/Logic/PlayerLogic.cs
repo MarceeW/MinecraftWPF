@@ -94,7 +94,7 @@ namespace Minecraft.Logic
                     if (player.IsFlying)
                         deltaPos = player.Camera.Front * speed * delta;
                     else
-                        deltaPos = new Vector3(player.Camera.Front.X,0, player.Camera.Front.Z) * speed * delta;
+                        deltaPos = new Vector3(player.Camera.Front.X, 0, player.Camera.Front.Z) * speed * delta;
                     break;
                 case Direction.Back:
                     if (player.IsFlying)
