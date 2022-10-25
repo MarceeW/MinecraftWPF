@@ -10,20 +10,19 @@ namespace Minecraft.Game
         public Camera Camera { get; private set; }
         public const float PlayerHeight = 2.0f;
         public const float EyeHeight = 1.5f;
+        public bool IsFlying { get; set; } = true;
         public Vector3 Position
         {
             get
             {
-                return Camera.Position;
+                return Camera.Position - new Vector3(0,1,0);
             }
         }
 
-        public bool IsFlying { get; private set; }
         public Force Force { get; private set; }
         public Hotbar Hotbar { get; }
         public Player(Vector3 position)
         {
-            IsFlying = true;
             Camera = new Camera(position);
             Force = new Force();
             Hotbar = new Hotbar();

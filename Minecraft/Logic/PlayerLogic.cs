@@ -34,6 +34,7 @@ namespace Minecraft.Logic
         private const float mouseSpeed = 0.125f;
 
         private bool jumping = false;
+        private bool grounded = false;
         private bool falling = false;
 
         private IBoxCollider collider;
@@ -46,7 +47,7 @@ namespace Minecraft.Logic
             force = new Force();
             force.SetForceType(ForceType.Rise);
 
-            collider = new BoxCollider(player.Position, 1, 1, world);
+            collider = new BoxCollider(player.Position, 1, 2, world);
         }
         public void Jump()
         {
@@ -58,12 +59,15 @@ namespace Minecraft.Logic
         }
         public void Update(float delta)
         {
-            //force.Apply(out Vector3 deltaPos, ref jumping);
-            //deltaPos *= delta;
-            //collider.Collision(ref deltaPos);
+            if (!player.IsFlying)
+            {
+                force.Apply(out Vector3 deltaPos, ref jumping);
+                deltaPos *= delta;
+                collider.Collision(ref deltaPos);
 
-            //player.Camera.ModPosition(deltaPos);
-            //collider.Position = player.Position - new Vector3(0.5f);
+                player.Camera.ModPosition(deltaPos);
+                collider.Position = player.Position - new Vector3(0.5f);
+            }
         }
         public void Move(Direction dir, float delta)
         {

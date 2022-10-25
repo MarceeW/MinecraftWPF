@@ -1,2 +1,2 @@
-﻿fák átlógása a szomszédos chunk-ba
-ha eltünik az összes átlátszó block a chunkbol hiba lép fel
+﻿playerlogic átszervezése
+ui  dinamikussá tétele

@@ -11,6 +11,28 @@ namespace Minecraft.Controller
     delegate void ChunkGeneratorHandler(Direction dir,Vector2 position);
     internal class PlayerController
     {
+        class DoubleKeyPressChecker
+        {
+            public DoubleKeyPressChecker(Key key, Stopwatch stopwatch)
+            {
+                KeyToListen = key;
+                Stopwatch = stopwatch;
+            }
+
+            public Key KeyToListen { get; private set; }
+            public Stopwatch Stopwatch { get; private set; }
+            private int pressCount = 0;
+            public void Press()
+            {
+                pressCount++;
+
+                if(pressCount < 3)
+                {
+
+                }
+            }
+        }
+
         public event ChunkGeneratorHandler? ChangedChunk;
         public event Action<Vector2>? Moved;
 
@@ -24,8 +46,8 @@ namespace Minecraft.Controller
             playerLogic = new PlayerLogic(player,world);
 
             player.Camera.Fov = 85.0f;
-
             player.Camera.Front = Vector3.UnitX;
+
         }
         public void InitPlayerCamera()
         {
@@ -54,8 +76,14 @@ namespace Minecraft.Controller
                 if (Keyboard.IsKeyDown(Key.A))
                     playerLogic.Move(Direction.Left, delta);
                 if (Keyboard.IsKeyDown(Key.Space))
-                    //playerLogic.Jump();
-                    playerLogic.Move(Direction.Up, delta);
+                {
+                    Debug.WriteLine("press");
+
+                    if(player.IsFlying)
+                        playerLogic.Move(Direction.Up, delta);
+                    else
+                        playerLogic.Jump();
+                }
                 if (Keyboard.IsKeyDown(Key.LeftShift))
                     playerLogic.Move(Direction.Down, delta);
 

@@ -83,8 +83,7 @@ namespace Minecraft
 
             CreateHotbar();
             CreateInventory();
-
-            Loaded += (object sender, RoutedEventArgs e) => SetupHotbar();
+            SetupHotbar();
 
             Controller = new WindowController(this);
         }
