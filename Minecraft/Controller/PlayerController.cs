@@ -102,7 +102,14 @@ namespace Minecraft.Controller
                         playerLogic.Jump();
                 }
                 if (Keyboard.IsKeyDown(Key.LeftShift))
-                    playerLogic.Move(Direction.Down, delta);
+                {
+                    if (player.IsFlying)
+                        playerLogic.Move(Direction.Down, delta);
+                    else
+                        playerLogic.Crouch = true;
+                }
+                else
+                    playerLogic.Crouch = false;
 
                 Vector2 playerPos = player.GetPosition().Xz;
 

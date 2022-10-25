@@ -8,9 +8,8 @@ namespace Minecraft.Logic
     {
         public ForceType Type { get; private set; }
 
-        private const float gravityStrength = 0.1f;
-        private const float maxFallSpeed = 40.0f;
-        private const float riseForce = 15.0f;
+        private const float maxFallSpeed = 80.0f;
+        private const float riseForce = 10.0f;
 
         private double forceGraphStep;
         private double currentStep;

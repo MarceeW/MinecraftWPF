@@ -24,13 +24,15 @@ namespace Minecraft.Logic
     internal class PlayerLogic : IPlayerLogic
     {
         public bool Sprint = false;
+        public bool Crouch = false;
         public static bool CollisionEnabled = true;
 
         private World world;
         private Player player;
 
         private const float moveSpeed = 5.0f;
-        private const float sprintSpeed = 50.0f;
+        private const float sprintSpeed = moveSpeed * 2;
+        private const float crouchSpeed = moveSpeed / 5;
 
         private bool jumping = false;
         private bool grounded = false;
@@ -68,7 +70,10 @@ namespace Minecraft.Logic
                 if (headHit && force.Type == ForceType.Rise)
                     force.SetForceType(ForceType.Fall);
                 else if (groundHit)
+                {
                     jumping = false;
+                    force.Reset();
+                }             
 
                 player.Camera.ModPosition(deltaPos);
                 collider.Position = player.Position - new Vector3(0.5f);
@@ -76,17 +81,26 @@ namespace Minecraft.Logic
         }
         public void Move(Direction dir, float delta)
         {
-            float speed = Sprint ? sprintSpeed : moveSpeed;
+            float speed = Sprint ? sprintSpeed : Crouch ? crouchSpeed : moveSpeed;
+
+            if (player.IsFlying)
+                speed *= 5;
 
             Vector3 deltaPos = new Vector3();
 
             switch (dir)
             {
                 case Direction.Front:
-                    deltaPos = player.Camera.Front * speed * delta;
+                    if (player.IsFlying)
+                        deltaPos = player.Camera.Front * speed * delta;
+                    else
+                        deltaPos = new Vector3(player.Camera.Front.X,0, player.Camera.Front.Z) * speed * delta;
                     break;
                 case Direction.Back:
-                    deltaPos = -player.Camera.Front * speed * delta;
+                    if (player.IsFlying)
+                        deltaPos = -player.Camera.Front * speed * delta;
+                    else
+                        deltaPos = -new Vector3(player.Camera.Front.X, 0, player.Camera.Front.Z) * speed * delta;
                     break;
                 case Direction.Up:
                     deltaPos = player.Camera.Up * speed * delta;
