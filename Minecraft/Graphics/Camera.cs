@@ -19,13 +19,13 @@ namespace Minecraft.Graphics
         public event ShaderMat4Handler? ViewMatrixChange;
         public event ShaderVec3Handler? FrontChange;
 
-        public Camera(Vector3 startPos)
+        public void Init(Vector3 startPos)
         {
             Position = startPos;
             Up = Vector3.UnitY;
-        }
-        public void Init()
-        {
+            Fov = 85.0f;
+            Front = Vector3.UnitX;
+
             UpdateViewMatrix();
         }
         public void SetPosition(Vector3 position)

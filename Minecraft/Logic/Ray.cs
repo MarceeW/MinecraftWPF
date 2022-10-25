@@ -1,4 +1,5 @@
-﻿using Minecraft.Graphics;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Graphics;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
@@ -8,8 +9,10 @@ namespace Minecraft.Game
     internal static class Ray
     {
         public static int MaxDistance { get; } = 6;
-        public static Vector3 Cast(Camera camera, World world, out bool hit,out FaceDirection hitFace)
+        public static Vector3 Cast(IWorld world, out bool hit,out FaceDirection hitFace)
         {
+            var camera = Ioc.Default.GetService<ICamera>();
+
             double xDeltaDist = Math.Abs(1 / camera.Front.X);
             double yDeltaDist = Math.Abs(1 / camera.Front.Y);
             double zDeltaDist = Math.Abs(1 / camera.Front.Z);

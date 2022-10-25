@@ -8,12 +8,11 @@ using System.Windows;
 
 namespace Minecraft.Render
 {
-    class Renderer: IDisposable
+    class Renderer : IDisposable
     {
         public event Action<float>? OnRendering;
 
-        public Scene? Scene { get; set; }
-        public static Stopwatch Stopwatch = new Stopwatch();
+        public IScene? Scene { get; set; }
         public void Dispose()
         {
             Scene?.Dispose();
@@ -33,14 +32,13 @@ namespace Minecraft.Render
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             Scene?.OnProjectionMatrixChange((float)width / height);
-
-            Stopwatch.Start();
         }
         public void RenderFrame(float delta)
         {
-            OnRendering?.Invoke(delta);
-
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            OnRendering?.Invoke(delta);
+            //LineRenderer.WireWrame(camera.Position - new Vector3(0.5f), new Vector3(0.0f));
+            //LineRenderer.Axes(camera.Position - new Vector3(0.5f));
             Scene?.Render(delta);
         }
     }

@@ -5,7 +5,7 @@ using System;
 namespace Minecraft.Terrain
 {
     [Serializable]
-    internal class Chunk
+    internal class Chunk : IChunk
     {
         public const int Size = 16;
         public const int Height = 256;
@@ -33,7 +33,7 @@ namespace Minecraft.Terrain
 
             mesh = new ChunkMesh();
         }
-        public void AddBlock(Vector3 pos,BlockType block,bool overWrite)
+        public void AddBlock(Vector3 pos, BlockType block, bool overWrite)
         {
             if (pos.Y >= Height)
                 return;
@@ -44,14 +44,14 @@ namespace Minecraft.Terrain
 
             if (x < 0)
                 x += Size;
-            
+
             if (z < 0)
                 z += Size;
 
             if (y > TopBlockPositions[x, z])
                 TopBlockPositions[x, z] = y;
 
-            if(Blocks[x, y, z] == 0 || overWrite)
+            if (Blocks[x, y, z] == 0 || overWrite)
             {
                 Blocks[x, y, z] = (byte)block;
 
@@ -89,8 +89,8 @@ namespace Minecraft.Terrain
             else
                 Blocks[x, y, z] = 0;
 
-            if (TopBlockPositions[x,z] == y)
-            {  
+            if (TopBlockPositions[x, z] == y)
+            {
                 while (y > 0 && Blocks[x, y, z] == 0)
                     y--;
 
@@ -99,7 +99,7 @@ namespace Minecraft.Terrain
         }
         public BlockType? GetBlock(Vector3 pos)
         {
-            if(pos.Y >= 0 && pos.Y < Height)
+            if (pos.Y >= 0 && pos.Y < Height)
             {
                 int x = (int)pos.X;
                 int y = (int)pos.Y;
@@ -115,7 +115,7 @@ namespace Minecraft.Terrain
 
                 if (x < 0)
                     x += Size;
-                
+
                 if (z < 0)
                     z += Size;
 

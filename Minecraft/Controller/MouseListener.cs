@@ -4,14 +4,16 @@ using System.Windows.Input;
 
 namespace Minecraft.Controller
 {
-    internal class MouseListener
+    public class MouseListener
     {
         public event Action? LeftMouseClick;
         public event Action? RightMouseClick;
-        private RenderWindow renderWindow;
-        public MouseListener(RenderWindow renderWindow)
+        private GameWindow renderWindow;
+        public MouseListener(GameWindow gameWindow)
         {
-            this.renderWindow = renderWindow;
+            this.renderWindow = gameWindow;
+
+            gameWindow.MouseDown += OnMouseDown;
         }
         public void OnMouseDown(object sender, MouseButtonEventArgs e)
         {

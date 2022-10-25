@@ -8,14 +8,16 @@ using System.Threading.Tasks;
 
 namespace Minecraft.UI
 {
-    public class Hotbar
+    public class Hotbar : IHotbar
     {
         public int SelectedItemIndex { get; private set; }
-        public Action? BlockChangeOnSelect;
-        internal BlockType[] Items { get; } = new BlockType[MaxItems];
-        public const int MaxItems = 9;
+        public Action? BlockChangeOnSelect { get; set; }
+        public BlockType[] Items { get; set; }
+        public int MaxItems { get; private set; } = 9;
         public Hotbar()
         {
+            Items = new BlockType[MaxItems];
+
             Items[0] = BlockType.GrassBlock;
             Items[1] = BlockType.Cobblestone;
             Items[2] = BlockType.WoodPlank;
@@ -26,14 +28,14 @@ namespace Minecraft.UI
             Items[7] = BlockType.OakLeaves;
             Items[8] = BlockType.Bedrock;
         }
-        public void ChangeBlock(int index,BlockType toChange)
+        public void ChangeBlock(int index, BlockType toChange)
         {
             Items[index] = toChange;
 
             if (index == SelectedItemIndex)
                 BlockChangeOnSelect?.Invoke();
         }
-        internal BlockType GetSelectedBlock()
+        public BlockType GetSelectedBlock()
         {
             return Items[SelectedItemIndex];
         }

@@ -40,7 +40,7 @@ namespace Minecraft.Graphics
                 GL.Enable(EnableCap.CullFace);
             }
         }
-        public static void CreateMesh(World world,Vector2 target)
+        public static void CreateMesh(IWorld world,Vector2 target)
         {
             var chunk = world.Chunks.GetValueOrDefault(target);
 
@@ -59,11 +59,14 @@ namespace Minecraft.Graphics
 
                         var block = chunk.GetBlock(blockPos);
 
-                        if (block == 0)
+                        if (block == BlockType.Air)
                             continue;
 
                         foreach (var face in FaceDirectionVectors.Vectors)
                         {
+                            if (block == BlockType.Bedrock && face.Key != FaceDirection.Top)
+                                continue;
+
                             Vector3 neighborPos = blockPos + face.Value;
 
                             if (BlockIsOnBorder(target, blockPos))
@@ -243,7 +246,7 @@ namespace Minecraft.Graphics
                    blockPos.Z == chunkBotCorner ||
                    blockPos.Z == chunkTopCorner;
         }
-        private static bool BlockNeedsShadow(int x,int y,int z,Chunk chunk)
+        private static bool BlockNeedsShadow(int x,int y,int z,IChunk chunk)
         {
             return y < chunk.TopBlockPositions[x, z] && !BlockData.IsVegetationBlock(chunk.GetBlock(new Vector3(x, chunk.TopBlockPositions[x, z], z)))
                 || y < chunk.TopBlockPositions[x, z] - 1;

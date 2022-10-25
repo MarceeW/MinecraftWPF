@@ -1,4 +1,5 @@
-﻿using Minecraft.Game;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Game;
 using Minecraft.Graphics;
 using Minecraft.Render;
 using Minecraft.Terrain;
@@ -17,31 +18,25 @@ namespace Minecraft.Controller
         public Player Player { get; private set; }
         public World World { get; private set; }
         public WorldRenderer WorldRendererer { get; }
-        public RenderWindow RenderWindow { get; }
         public bool IsGameRunning { get; private set; }
 
         private PlayerController playerController;
-        private WorldGenerator worldGenerator;
+        private IWorldGenerator worldGenerator;
+        private GameWindow gameWindow;
 
         private Thread updateThread;
         private Stopwatch gameStopwatch;
-
-        MouseListener mouseListener;
-        public GameController(Renderer renderer,RenderWindow renderWindow)
+        public GameController(Renderer renderer,GameWindow gameWindow)
         {
-
-            RenderWindow = renderWindow;
-
             World = new World();
-            WorldSerializer.World = World;
-
             Player = new Player(new Vector3(0, 40, 0));
-            
-            worldGenerator = new WorldGenerator(World);
-            WorldRendererer = new WorldRenderer(World,Player.Camera);
-            worldGenerator.ChunkAdded += WorldRendererer.AddToQueue;
+            WorldRendererer = new WorldRenderer(World);
+            this.gameWindow = gameWindow;
 
-            mouseListener = new MouseListener(RenderWindow);
+            WorldSerializer.World = World;
+    
+            worldGenerator = new WorldGenerator(World);
+            worldGenerator.ChunkAdded += WorldRendererer.AddToQueue;
 
             if (!WorldSerializer.WorldFileExists())
                 worldGenerator.InitWorld();
@@ -52,16 +47,16 @@ namespace Minecraft.Controller
             renderer.OnRendering += WorldRendererer.CreateMeshesInQueue;
             renderer.OnRendering += worldGenerator.AddGeneratedChunksToWorld;
 
-            var characterHand = new CharacterHand(Player.Hotbar);
-            mouseListener.LeftMouseClick += characterHand.OnHit;
+            var characterHand = new CharacterHand();
+            gameWindow.MouseListener.LeftMouseClick += characterHand.OnHit;
+            renderer.Scene = new Scene(WorldRendererer, characterHand);
 
-            renderer.Scene = new Scene(Player.Camera, World, WorldRendererer, characterHand);
+            Ioc.Default.GetService<ICamera>()?.Init(Player.Position);
 
-            playerController.InitPlayerCamera();
-
-            RenderWindow.Hotbar = Player.Hotbar;
-            RenderWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
-            RenderWindow.Loaded += (object sender, RoutedEventArgs e) => renderer.SetupRenderer((int)renderWindow.Width, (int)renderWindow.Height);
+            gameWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
+            gameWindow.Loaded += (object sender, RoutedEventArgs e) => renderer.SetupRenderer((int)gameWindow.Width, (int)gameWindow.Height);
+            gameWindow.PreviewKeyDown += playerController.OnKeyDown;
+            gameWindow.PreviewKeyUp += playerController.OnKeyUp;
 
             //renderWindow.Loaded += (object sender, RoutedEventArgs e) =>
             //{
@@ -75,18 +70,15 @@ namespace Minecraft.Controller
             //};
             //renderWindow.Closing += (object? sender,CancelEventArgs e) => WorldSerializer.SaveWorld();
 
-
             updateThread = new Thread(UpdateGameState);
             updateThread.SetApartmentState(ApartmentState.STA);
             gameStopwatch = new Stopwatch();
 
-            MouseController.HideMouse();
-
-            mouseListener.RightMouseClick += () =>
+            gameWindow.MouseListener.RightMouseClick += () =>
             {
-                var blockHit = Ray.Cast(Player.Camera, World, out bool hit, out FaceDirection hitFace);
+                var blockHit = Ray.Cast(World, out bool hit, out FaceDirection hitFace);
 
-                if (hit && !renderWindow.IsInventoryOpened)
+                if (hit && !gameWindow.IsInventoryOpened)
                 {
                     if(World.GetBlock(blockHit) != BlockType.Grass && World.GetBlock(blockHit) != BlockType.SparseGrass)
                     {
@@ -121,20 +113,18 @@ namespace Minecraft.Controller
                 }
             };
 
-            mouseListener.LeftMouseClick += () =>
+            gameWindow.MouseListener.LeftMouseClick += () =>
             {
-                var blockHit = Ray.Cast(Player.Camera, World, out bool hit, out FaceDirection hitFace);
+                var blockHit = Ray.Cast(World, out bool hit, out FaceDirection hitFace);
 
-                if (hit && !renderWindow.IsInventoryOpened)
+                if (hit && !gameWindow.IsInventoryOpened)
                 {
                     Debug.WriteLine(blockHit);
                     World.RemoveBlock(blockHit);
                 }
             };
 
-            RenderWindow.MouseDown += mouseListener.OnMouseDown;
-
-            RenderWindow.Loaded += (object sender, RoutedEventArgs e) =>
+            gameWindow.Loaded += (object sender, RoutedEventArgs e) =>
             { 
                 updateThread.Start();
                 IsGameRunning = true;
@@ -182,8 +172,7 @@ namespace Minecraft.Controller
 
                 while (accumulator > updateStep)
                 {
-                    RenderWindow.Controller.ResetMousePosition();
-
+                    gameWindow.ResetMousePosition();
                     worldGenerator.GenerateChunksToQueue();
                     playerController.Update((float)updateStep / 1000.0f);
                     accumulator -= updateStep;

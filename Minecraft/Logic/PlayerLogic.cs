@@ -21,7 +21,7 @@ namespace Minecraft.Logic
         Left,
         Right
     }
-    internal class PlayerLogic
+    internal class PlayerLogic : IPlayerLogic
     {
         public bool Sprint = false;
         public static bool CollisionEnabled = true;
@@ -31,7 +31,6 @@ namespace Minecraft.Logic
 
         private const float moveSpeed = 5.0f;
         private const float sprintSpeed = 50.0f;
-        private const float mouseSpeed = 0.125f;
 
         private bool jumping = false;
         private bool grounded = false;
@@ -61,9 +60,15 @@ namespace Minecraft.Logic
         {
             if (!player.IsFlying)
             {
-                force.Apply(out Vector3 deltaPos, ref jumping);
+                force.Apply(out Vector3 deltaPos);
                 deltaPos *= delta;
-                collider.Collision(ref deltaPos);
+
+                collider.Collision(ref deltaPos, out bool headHit, out bool groundHit);
+
+                if (headHit && force.Type == ForceType.Rise)
+                    force.SetForceType(ForceType.Fall);
+                else if (groundHit)
+                    jumping = false;
 
                 player.Camera.ModPosition(deltaPos);
                 collider.Position = player.Position - new Vector3(0.5f);
@@ -97,17 +102,13 @@ namespace Minecraft.Logic
                     break;
             }
 
-            if(CollisionEnabled)
-                collider.Collision(ref deltaPos);
+            if (CollisionEnabled)
+                collider.Collision(ref deltaPos, out bool headHit, out bool groundHit);
 
             player.Camera.ModPosition(deltaPos);
             collider.Position = player.Position - new Vector3(0.5f);
 
             //Debug.WriteLine(collider.Position);
-        }
-        public void ChangeView()
-        {
-            player.Camera.ChangeView(MouseController.DeltaX, MouseController.DeltaY,mouseSpeed);
         }
     }
 }

@@ -17,12 +17,14 @@ using System.Windows.Media;
 using ToolTip = System.Windows.Controls.ToolTip;
 using System.Windows.Media.Effects;
 using Cursors = System.Windows.Input.Cursors;
+using System.Diagnostics;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 
 namespace Minecraft
 {
     public delegate void MouseInputHandler(MouseMoveEventArgs mouseMoveEventArgs);
     public delegate void GameUpdateHandler();
-    partial class RenderWindow : Window
+    partial class GameWindow : Window
     {
         class PickedItem
         {
@@ -39,24 +41,26 @@ namespace Minecraft
         public Vector2 CenterPosition;
         public event Action<float>? RenderSizeChange;
         public event Action<bool>? Pause;
-        public Hotbar? Hotbar { get; set; }
+        public IHotbar Hotbar { get; }
         public Inventory Inventory { get; set; } = new Inventory();
 
         public bool PauseMenuOpened { get; private set; } = false;
 
-        public WindowController Controller;
-
         public bool IsInventoryOpened = false;
+        public bool NeedsToResetMouse = true;
+        public bool ShowWireFrames = false;
+        public MouseListener MouseListener { get; }
 
         private Renderer renderer;
 
         private PickedItem? pickedItem;
-        public RenderWindow()
+        private GameController gameController;
+        public GameWindow()
         {
             InitializeComponent();
 
             Title = "Minecraft";
-            WindowState = System.Windows.WindowState.Maximized;
+            WindowState = System.Windows.WindowState.Normal;
             WindowStyle = WindowStyle.None;
 
             var settings = new GLWpfControlSettings
@@ -66,8 +70,9 @@ namespace Minecraft
             };
             OpenTkControl.Start(settings);
 
+            MouseListener = new MouseListener(this);
             renderer = new Renderer();
-            new GameController(renderer, this);
+            gameController = new GameController(renderer, this);
 
             var resolution = Screen.PrimaryScreen.Bounds;
 
@@ -78,14 +83,16 @@ namespace Minecraft
 
             float hudScale = 0.6f;
 
+            Hotbar = Ioc.Default.GetService<IHotbar>();
+
             HotbarGrid.Width *= hudScale;
             HotbarGrid.Height *= hudScale;
+
+            MouseController.HideMouse();
 
             CreateHotbar();
             CreateInventory();
             SetupHotbar();
-
-            Controller = new WindowController(this);
         }
         protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
         {
@@ -135,15 +142,15 @@ namespace Minecraft
                         break;
                     case Key.G:
                         {
-                            Controller.ShowGrids = !Controller.ShowGrids;
+                            ShowWireFrames = !ShowWireFrames;
                             e.Handled = true;
                         }
                         break;
                     case Key.P:
                         {
-                            Controller.NeedsToResetMouse = !Controller.NeedsToResetMouse;
+                            NeedsToResetMouse = !NeedsToResetMouse;
 
-                            if(Controller.NeedsToResetMouse)
+                            if(NeedsToResetMouse)
                                 MouseController.HideMouse();
                             else
                                 MouseController.ShowMouse();
@@ -219,9 +226,9 @@ namespace Minecraft
 
             PauseMenuDarkener.Visibility = PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
 
-            Controller.NeedsToResetMouse = !Controller.NeedsToResetMouse;
+            NeedsToResetMouse = !NeedsToResetMouse;
 
-            if (Controller.NeedsToResetMouse)
+            if (NeedsToResetMouse)
                 MouseController.HideMouse();
             else
             {
@@ -381,9 +388,16 @@ namespace Minecraft
                 }
             }
         }
+        public void ResetMousePosition()
+        {
+            if (NeedsToResetMouse)
+            {
+                MouseController.MoveMouse(CenterPosition);
+            }
+        }
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
-            if (Controller.ShowGrids)
+            if (ShowWireFrames)
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
             else
                 GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);

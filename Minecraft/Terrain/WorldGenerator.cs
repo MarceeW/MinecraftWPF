@@ -7,7 +7,7 @@ using Minecraft.Terrain.Noise;
 
 namespace Minecraft.Terrain
 {
-    internal class WorldGenerator
+    internal class WorldGenerator : IWorldGenerator
     {
         public event Action<Vector2>? ChunkAdded;
 
@@ -16,12 +16,12 @@ namespace Minecraft.Terrain
         private const int worldDepth = 32;
         private const int noiseDepth = 32;
 
-        private World world;
-        private PriorityQueue<Vector2,float> generatorQueue;
+        private IWorld world;
+        private PriorityQueue<Vector2, float> generatorQueue;
         private Queue<KeyValuePair<Vector2, Chunk>> generatedChunks;
         private static Random random = new Random();
 
-        public WorldGenerator(World world)
+        public WorldGenerator(IWorld world)
         {
             generatorQueue = new PriorityQueue<Vector2, float>();
             generatedChunks = new Queue<KeyValuePair<Vector2, Chunk>>();
@@ -39,18 +39,17 @@ namespace Minecraft.Terrain
             noise.SetCellularJitter(0.005f);
 
             noise.SetFractalType(FastNoise.FractalType.FBM);
-
         }
         public void InitWorld()
         {
             for (int x = -WorldRenderer.RenderDistance; x <= WorldRenderer.RenderDistance; x++)
                 for (int z = -WorldRenderer.RenderDistance; z <= WorldRenderer.RenderDistance; z++)
-                    lock(world)
+                    lock (world)
                         AddChunk(new Vector2(x, z));
         }
         public void AddGeneratedChunksToWorld(float delta)
         {
-            while(generatedChunks.Count > 0)
+            while (generatedChunks.Count > 0)
             {
                 var chunk = generatedChunks.Dequeue();
                 world.AddChunk(chunk.Key, chunk.Value);
@@ -67,13 +66,13 @@ namespace Minecraft.Terrain
                     if (generatorQueue.Count == 0)
                         break;
                 }
-            }       
+            }
         }
         public int GetHeightAtPosition(Vector2 pos)
         {
             return (int)Math.Round((noise.GetValue(pos.X, pos.Y) + noise.GetSimplexFractal(pos.X, pos.Y)) / (1.0f / noiseDepth)) + worldDepth;
         }
-        public BlockType GetBlockAtHeight(int y,int depth = 0)
+        public BlockType GetBlockAtHeight(int y, int depth = 0)
         {
             if (y == 0)
                 return BlockType.Bedrock;
@@ -86,7 +85,7 @@ namespace Minecraft.Terrain
             else
                 return BlockType.GrassBlock;
         }
-        public void ExpandWorld(Direction dir,Vector2 position)
+        public void ExpandWorld(Direction dir, Vector2 position)
         {
             int x = (int)position.X;
             int z = (int)position.Y;
@@ -106,16 +105,16 @@ namespace Minecraft.Terrain
             }
             else if (dir == Direction.Up)
             {
-                AddChunkRange(-WorldRenderer.RenderDistance, WorldRenderer.RenderDistance, 0, WorldRenderer.RenderDistance, x, z, 1, 1);  
+                AddChunkRange(-WorldRenderer.RenderDistance, WorldRenderer.RenderDistance, 0, WorldRenderer.RenderDistance, x, z, 1, 1);
             }
         }
-        private void AddChunkRange(int fromXRange,int toXRgange,int fromZRange,int toZRange,int x,int z,int xSign,int zSign)
+        private void AddChunkRange(int fromXRange, int toXRgange, int fromZRange, int toZRange, int x, int z, int xSign, int zSign)
         {
             for (int xs = fromXRange; xs < toXRgange; xs++)
                 for (int zs = fromZRange; zs < toZRange; zs++)
                 {
                     Vector2 pos = new Vector2(x + xs * xSign, z + zs * zSign);
-                    generatorQueue.Enqueue(pos,(pos - new Vector2(x,z)).Length);
+                    generatorQueue.Enqueue(pos, (pos - new Vector2(x, z)).Length);
                 }
         }
         private void AddChunk(Vector2 position)
@@ -127,7 +126,7 @@ namespace Minecraft.Terrain
                 generatedChunks.Enqueue(new KeyValuePair<Vector2, Chunk>(position, chunk));
             }
         }
-        private void CreateChunk(Chunk chunk,Vector2 offset)
+        private void CreateChunk(Chunk chunk, Vector2 offset)
         {
             for (int x = 0; x < Chunk.Size; x++)
             {
@@ -157,7 +156,7 @@ namespace Minecraft.Terrain
 
                         if (block == BlockType.GrassBlock)
                         {
-                            if(chance <= 0.02)
+                            if (chance <= 0.02)
                             {
                                 chance = random.NextDouble();
 
@@ -185,16 +184,16 @@ namespace Minecraft.Terrain
                                 chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Allium, false);
                             }
                         }
-                        else if(block == BlockType.Sand)
+                        else if (block == BlockType.Sand)
                         {
                             if (chance <= 0.005)
                             {
                                 chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.DeadBush, false);
                             }
                         }
-                        
+
                         depth++;
-                    }       
+                    }
                 }
             }
         }

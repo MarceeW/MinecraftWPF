@@ -1,4 +1,5 @@
 ﻿using Assimp.Unmanaged;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Game;
 using Minecraft.Graphics;
 using Minecraft.Terrain;
@@ -12,15 +13,15 @@ namespace Minecraft.Render
     internal class WorldRenderer
     {
         public static BlockType? CurrentTarget { get; private set; }
-        public static int RenderDistance = 8;
+        public static int RenderDistance = 12;
         private PriorityQueue<Vector2,float> renderQueue;
-        private Camera camera;
+        private ICamera camera;
         public Shader Shader { get; }
-        private World world;
-        public WorldRenderer(World world,Camera camera)
+        private IWorld world;
+        public WorldRenderer(IWorld world)
         {
             this.world = world;
-            this.camera = camera;
+            camera = Ioc.Default.GetService<ICamera>();
 
             renderQueue = new PriorityQueue<Vector2,float>();
             Shader = new Shader(@"..\..\..\Graphics\Shaders\Block\blockVert.glsl", @"..\..\..\Graphics\Shaders\Block\blockFrag.glsl");
@@ -44,9 +45,6 @@ namespace Minecraft.Render
 
             RenderSelectedBlockFrame();
 
-            //LineRenderer.WireWrame(camera.Position - new Vector3(0.5f), new Vector3(0.0f));
-            //LineRenderer.Axes(camera.Position - new Vector3(0.5f));
-
             CreateMeshesInQueue(0);
         }
         public void CreateMeshesInQueue(float delta)
@@ -57,7 +55,7 @@ namespace Minecraft.Render
                     ChunkMesh.CreateMesh(world, chunk);
             }             
         }
-        private bool IsChunkInRange(in Chunk chunk)
+        private bool IsChunkInRange(in IChunk chunk)
         {
             float xDistance = Math.Abs(camera.Position.X - chunk.Position.X * Chunk.Size);
             float zDistance = Math.Abs(camera.Position.Z - chunk.Position.Y * Chunk.Size);
@@ -66,7 +64,7 @@ namespace Minecraft.Render
         }
         private void RenderSelectedBlockFrame()
         {
-            var blockHitPos = Ray.Cast(camera, world, out bool hit, out FaceDirection hitFace);
+            var blockHitPos = Ray.Cast(world, out bool hit, out FaceDirection hitFace);
 
             CurrentTarget = world.GetBlock(blockHitPos);
 

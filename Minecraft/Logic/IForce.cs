@@ -4,7 +4,8 @@ namespace Minecraft.Logic
 {
     internal interface IForce
     {
-        void Apply(out Vector3 deltaPos, ref bool riseState);
+        ForceType Type { get; }
+        void Apply(out Vector3 deltaPos);
         void Reset();
         void SetForceType(ForceType type);
     }

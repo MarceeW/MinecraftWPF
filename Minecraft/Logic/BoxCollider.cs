@@ -22,15 +22,18 @@ namespace Minecraft.Logic
             Height = height;
             this.worldToCollide = worldToCollide;
         }
-        public void Collision(ref Vector3 deltaPos)
+        public void Collision(ref Vector3 deltaPos,out bool headHit,out bool groundHit)
         {
             bool xBlocked = false, yBlocked = false, zBlocked = false;
 
-            BroadPhase(ref deltaPos, ref xBlocked, ref yBlocked, ref zBlocked);
-            BroadPhase(ref deltaPos, ref xBlocked, ref yBlocked, ref zBlocked);
-            BroadPhase(ref deltaPos, ref xBlocked, ref yBlocked, ref zBlocked);
+            headHit = false;
+            groundHit = false;
+
+            BroadPhase(ref deltaPos, ref xBlocked, ref yBlocked, ref zBlocked, ref headHit, ref groundHit);
+            BroadPhase(ref deltaPos, ref xBlocked, ref yBlocked, ref zBlocked, ref headHit, ref groundHit);
+            BroadPhase(ref deltaPos, ref xBlocked, ref yBlocked, ref zBlocked, ref headHit, ref groundHit);
         }
-        private bool BroadPhase(ref Vector3 deltaPos,ref bool xBlocked,ref bool yBlocked,ref bool zBlocked)
+        private bool BroadPhase(ref Vector3 deltaPos,ref bool xBlocked,ref bool yBlocked,ref bool zBlocked, ref bool headHit, ref bool groundHit)
         {
             int broadPhaseLeft;
             int broadPhaseRight;
@@ -124,6 +127,9 @@ namespace Minecraft.Logic
                             }
                         }
                     }
+
+            headHit = collisionNormal.Y == 1 || headHit;
+            groundHit = collisionNormal.Y == -1 || groundHit;
 
             if (minCollisionTime < 1f)
             {

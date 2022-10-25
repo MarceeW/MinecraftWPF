@@ -13,22 +13,45 @@ namespace Minecraft.Controller
     {
         class DoubleKeyPressChecker
         {
-            public DoubleKeyPressChecker(Key key, Stopwatch stopwatch)
+            public Key KeyToListen { get; private set; }
+            public event Action? OnDoublePress;
+            private Stopwatch stopwatch;
+            private long lastPress = 0;
+            private const int maxDoubleClickLatencyMs = 350;
+            private const int minDoubleClickLatencyMs = 1;
+
+            private bool valid = true;
+
+            public DoubleKeyPressChecker(Key key)
             {
                 KeyToListen = key;
-                Stopwatch = stopwatch;
+                stopwatch = new Stopwatch();
+
+                stopwatch.Start();
             }
-
-            public Key KeyToListen { get; private set; }
-            public Stopwatch Stopwatch { get; private set; }
-            private int pressCount = 0;
-            public void Press()
+            public void Check(Key key)
             {
-                pressCount++;
-
-                if(pressCount < 3)
+                if(key == KeyToListen)
                 {
+                    
+                    long delta = stopwatch.ElapsedMilliseconds - lastPress;
+                    
 
+                    if (valid && delta < maxDoubleClickLatencyMs && delta >= minDoubleClickLatencyMs)
+                    {
+                        OnDoublePress?.Invoke();
+                        stopwatch.Restart();
+                    }
+
+                    valid = false;
+                    lastPress = stopwatch.ElapsedMilliseconds;
+                }                
+            }
+            public void Validate(Key key)
+            {
+                if(key == KeyToListen)
+                {
+                    valid = true;
                 }
             }
         }
@@ -40,18 +63,14 @@ namespace Minecraft.Controller
 
         private Player player;
         private PlayerLogic playerLogic;
+        private const float mouseSpeed = 0.125f;
+        private DoubleKeyPressChecker jumpListener;
         public PlayerController(Player player,World world)
         {
             this.player = player;
             playerLogic = new PlayerLogic(player,world);
-
-            player.Camera.Fov = 85.0f;
-            player.Camera.Front = Vector3.UnitX;
-
-        }
-        public void InitPlayerCamera()
-        {
-            player.Camera.Init();
+            jumpListener = new DoubleKeyPressChecker(Key.Space);
+            jumpListener.OnDoublePress += () => player.IsFlying = !player.IsFlying;
         }
         public void Update(float delta)
         {
@@ -77,8 +96,6 @@ namespace Minecraft.Controller
                     playerLogic.Move(Direction.Left, delta);
                 if (Keyboard.IsKeyDown(Key.Space))
                 {
-                    Debug.WriteLine("press");
-
                     if(player.IsFlying)
                         playerLogic.Move(Direction.Up, delta);
                     else
@@ -117,8 +134,16 @@ namespace Minecraft.Controller
                 }
 
                 playerLogic.Update(delta);
-                playerLogic.ChangeView();
+                player.Camera.ChangeView(MouseController.DeltaX, MouseController.DeltaY, mouseSpeed);
             } 
+        }
+        public void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            jumpListener.Check(e.Key);
+        }
+        public void OnKeyUp(object sender, KeyEventArgs e)
+        {
+            jumpListener.Validate(e.Key);
         }
     }
 }

@@ -4,10 +4,11 @@ using Minecraft.Terrain;
 using Minecraft.Graphics.Shapes;
 using System;
 using System.Diagnostics;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 
 namespace Minecraft.Render
 {
-    class Scene : IDisposable
+    class Scene : IDisposable, IScene
     {
         private const float near = 0.1f;
         private const float far = 1000.0f;
@@ -19,7 +20,7 @@ namespace Minecraft.Render
         private ICamera camera;
         private Skybox skybox;
         private CharacterHand characterHand;
-        public Scene(Camera camera,World world, WorldRenderer worldRenderer, CharacterHand characterHand)
+        public Scene(WorldRenderer worldRenderer, CharacterHand characterHand)
         {
             Shader skyboxShader = new Shader(@"..\..\..\Graphics\Shaders\Skybox\skyboxVert.glsl", @"..\..\..\Graphics\Shaders\Skybox\skyboxFrag.glsl");
 
@@ -27,7 +28,7 @@ namespace Minecraft.Render
                 skyboxShader,
                 new Texture(@"..\..\..\Assets\Textures\McSkybox\", true, false));
 
-            this.camera = camera;
+            camera = Ioc.Default.GetService<ICamera>();
             this.worldRenderer = worldRenderer;
 
             camera.ViewMatrixChange += worldRenderer.Shader.SetMat4;
@@ -49,8 +50,8 @@ namespace Minecraft.Render
         }
         public void OnProjectionMatrixChange(float aspectRatio)
         {
-            Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(camera.Fov), aspectRatio , near, far);
-            ProjectionMatrixChange.Invoke("projection",Projection);
+            Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(camera.Fov), aspectRatio, near, far);
+            ProjectionMatrixChange.Invoke("projection", Projection);
         }
         public void Render(float delta)
         {
@@ -64,7 +65,7 @@ namespace Minecraft.Render
 
         public void Dispose()
         {
-            
+
         }
     }
 }

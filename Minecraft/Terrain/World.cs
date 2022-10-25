@@ -5,19 +5,19 @@ using System.Collections.Generic;
 
 namespace Minecraft.Terrain
 {
-    internal class World
+    internal class World : IWorld
     {
-        public Dictionary<Vector2, Chunk> Chunks { get; set; }
+        public Dictionary<Vector2, IChunk> Chunks { get; set; }
         public WorldGenerator? WorldGenerator { get; set; }
 
         private Dictionary<Vector2, List<Block>> blockQueue;
 
         public World()
         {
-            Chunks = new Dictionary<Vector2, Chunk>();
+            Chunks = new Dictionary<Vector2, IChunk>();
             blockQueue = new Dictionary<Vector2, List<Block>>();
         }
-        public Chunk? GetChunk(Vector3 pos,out Vector2 chunkPos)
+        public IChunk? GetChunk(Vector3 pos, out Vector2 chunkPos)
         {
             int chunkPosX = (int)(pos.X / Chunk.Size);
             int chunkPosZ = (int)(pos.Z / Chunk.Size);
@@ -33,18 +33,18 @@ namespace Minecraft.Terrain
         }
         public BlockType? GetBlock(Vector3 pos)
         {
-            var chunk = GetChunk(pos,out Vector2 chunkPos);
+            var chunk = GetChunk(pos, out Vector2 chunkPos);
 
-            if(chunk != null)
+            if (chunk != null)
             {
                 return chunk.GetBlock(pos);
             }
 
             return null;
         }
-        public void AddChunk(Vector2 pos,Chunk chunk)
-        {  
-            if(Chunks.TryAdd(pos, chunk))
+        public void AddChunk(Vector2 pos, IChunk chunk)
+        {
+            if (Chunks.TryAdd(pos, chunk))
             {
                 if (blockQueue.ContainsKey(pos))
                 {
@@ -65,10 +65,10 @@ namespace Minecraft.Terrain
                 chunk.RemoveBlock(pos);
                 ChunkMesh.CreateMesh(this, chunk.Position);
 
-                var left =  new Vector3(-1,0, 0);
-                var right = new Vector3( 1,0, 0);
-                var back =  new Vector3( 0,0,-1);
-                var front = new Vector3( 0,0, 1);
+                var left = new Vector3(-1, 0, 0);
+                var right = new Vector3(1, 0, 0);
+                var back = new Vector3(0, 0, -1);
+                var front = new Vector3(0, 0, 1);
 
                 GetChunk(pos + left, out Vector2 chunkPosLeft);
                 GetChunk(pos + right, out Vector2 chunkPosRight);
@@ -88,9 +88,9 @@ namespace Minecraft.Terrain
                     ChunkMesh.CreateMesh(this, chunkPosFront);
             }
         }
-        public void AddBlock(Vector3 pos,BlockType block)
+        public void AddBlock(Vector3 pos, BlockType block)
         {
-            var chunk = GetChunk(pos,out Vector2 chunkPos);
+            var chunk = GetChunk(pos, out Vector2 chunkPos);
 
             if (chunk != null)
             {
@@ -98,11 +98,11 @@ namespace Minecraft.Terrain
                 ChunkMesh.CreateMesh(this, chunk.Position);
             }
         }
-        public void AddEntity(Vector3 position,EntityType entityType, Chunk chunk)
+        public void AddEntity(Vector3 position, EntityType entityType, IChunk chunk)
         {
             var entity = EntityData.Entities[(int)entityType];
 
-            foreach(var block in entity.Blocks)
+            foreach (var block in entity.Blocks)
             {
                 Vector3 blockPos = block.Position + position;
 

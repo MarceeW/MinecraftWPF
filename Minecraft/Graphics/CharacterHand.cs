@@ -1,4 +1,5 @@
-﻿using Minecraft.Controller;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Controller;
 using Minecraft.Terrain;
 using Minecraft.UI;
 using OpenTK.Graphics.OpenGL;
@@ -13,7 +14,7 @@ namespace Minecraft.Graphics
     {
         public Shader Shader { get; } = new Shader(@"..\..\..\Graphics\Shaders\CharacterHand\handVert.glsl", @"..\..\..\Graphics\Shaders\CharacterHand\handFrag.glsl");
 
-        private Hotbar hotbar;
+        private IHotbar hotbar;
 
         private int VBO, VAO;
 
@@ -27,13 +28,13 @@ namespace Minecraft.Graphics
         private bool blockChangeHandled = true;
 
         private bool isHandEmpty = false;
-        public CharacterHand(Hotbar hotbar)
+        public CharacterHand()
         {
             position = new Vector3(0.5f,-1.15f,-1.05f);
             modelMatrix = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(40));
             modelMatrix *= Matrix4.CreateScale(0.6f);
 
-            this.hotbar = hotbar;
+            hotbar = Ioc.Default.GetService<IHotbar>();
             hotbar.BlockChangeOnSelect += OnSwitchBlock;
 
             UpdateModelMatrix();

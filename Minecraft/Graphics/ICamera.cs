@@ -19,7 +19,7 @@ namespace Minecraft.Graphics
         void ChangePitch(float change);
         void ChangeView(float deltaX, float deltaY, float mouseSpeed);
         void ChangeYaw(float change);
-        void Init();
+        void Init(Vector3 startPos);
         void ModPosition(Vector3 change);
         void ResetPitch(float resetValue);
         void SetPosition(Vector3 position);

@@ -7,6 +7,6 @@ namespace Minecraft.Logic
         Vector3 Position { get; set; }
         float Height { get; }
         float Width { get; }
-        void Collision(ref Vector3 deltaPos);
+        void Collision(ref Vector3 deltaPos,out bool headHit, out bool groundHit);
     }
 }
