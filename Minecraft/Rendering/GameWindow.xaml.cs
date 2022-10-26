@@ -66,13 +66,13 @@ namespace Minecraft
             InitializeComponent();
 
             Title = "Minecraft";
-            WindowState = System.Windows.WindowState.Normal;
+            WindowState = System.Windows.WindowState.Maximized;
             WindowStyle = WindowStyle.None;
 
             var settings = new GLWpfControlSettings
             {
                 MajorVersion = 3,
-                MinorVersion = 1,
+                MinorVersion = 3,
             };
             OpenTkControl.Start(settings);
 
@@ -161,6 +161,9 @@ namespace Minecraft
                             if(NeedsToResetMouse)
                                 MouseController.HideMouse();
                             else
+                            {
+                                ResetMousePosition();
+                            }
                                 MouseController.ShowMouse();
                         }
                         break;

@@ -11,10 +11,14 @@ namespace Minecraft.Controller
 
         internal static void ShowMouse()
         {
+            DeltaX = 0;
+            DeltaY = 0;
             Cursor.Show();
         }
         internal static void HideMouse()
         {
+            DeltaX = 0;
+            DeltaY = 0;
             Cursor.Hide();
         }
         internal static void MoveMouse(Vector2 pos)

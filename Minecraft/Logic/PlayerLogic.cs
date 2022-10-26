@@ -65,15 +65,18 @@ namespace Minecraft.Logic
                 force.Apply(out Vector3 deltaPos);
                 deltaPos *= delta;
 
-                collider.Collision(ref deltaPos, out bool headHit, out bool groundHit);
-
-                if (headHit && force.Type == ForceType.Rise)
-                    force.SetForceType(ForceType.Fall);
-                else if (groundHit)
+                if (CollisionEnabled)
                 {
-                    jumping = false;
-                    force.Reset();
-                }             
+                    collider.Collision(ref deltaPos, out bool headHit, out bool groundHit);
+
+                    if (headHit && force.Type == ForceType.Rise)
+                        force.SetForceType(ForceType.Fall);
+                    else if (groundHit)
+                    {
+                        jumping = false;
+                        force.Reset();
+                    }
+                }    
 
                 player.Camera.ModPosition(deltaPos);
                 collider.Position = player.Position - new Vector3(0.5f);
@@ -117,12 +120,15 @@ namespace Minecraft.Logic
             }
 
             if (CollisionEnabled)
+            {
                 collider.Collision(ref deltaPos, out bool headHit, out bool groundHit);
+
+                if (player.IsFlying && groundHit)
+                    player.IsFlying = false;
+            }
 
             player.Camera.ModPosition(deltaPos);
             collider.Position = player.Position - new Vector3(0.5f);
-
-            //Debug.WriteLine(collider.Position);
         }
     }
 }
