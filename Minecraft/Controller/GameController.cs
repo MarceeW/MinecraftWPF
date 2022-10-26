@@ -17,10 +17,10 @@ namespace Minecraft.Controller
     {
         public Player Player { get; private set; }
         public World World { get; private set; }
-        public WorldRenderer WorldRendererer { get; }
+        public WorldRenderer WorldRendererer { get; private set; }
         public bool IsGameRunning { get; private set; }
+        public PlayerController PlayerController { get; private set; }
 
-        private PlayerController playerController;
         private IWorldGenerator worldGenerator;
         private GameWindow gameWindow;
 
@@ -30,19 +30,21 @@ namespace Minecraft.Controller
         {
             World = new World();
             Player = new Player(new Vector3(0, 40, 0));
-            WorldRendererer = new WorldRenderer(World);
+            WorldRendererer = new WorldRenderer();
+            WorldRendererer.SetWorld(World);
             this.gameWindow = gameWindow;
 
             WorldSerializer.World = World;
     
-            worldGenerator = new WorldGenerator(World);
+            worldGenerator = new WorldGenerator(World,WorldRendererer.RenderDistance);
             worldGenerator.ChunkAdded += WorldRendererer.AddToQueue;
+            WorldRendererer.RenderDistanceChanged += (int rd) => worldGenerator.RenderDistance = rd;
 
             if (!WorldSerializer.WorldFileExists())
                 worldGenerator.InitWorld();
 
-            playerController = new PlayerController(Player, World);
-            playerController.ChangedChunk += worldGenerator.ExpandWorld;
+            PlayerController = new PlayerController(Player, World);
+            PlayerController.ChangedChunk += worldGenerator.ExpandWorld;
 
             renderer.OnRendering += WorldRendererer.CreateMeshesInQueue;
             renderer.OnRendering += worldGenerator.AddGeneratedChunksToWorld;
@@ -55,8 +57,8 @@ namespace Minecraft.Controller
 
             gameWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
             gameWindow.Loaded += (object sender, RoutedEventArgs e) => renderer.SetupRenderer((int)gameWindow.Width, (int)gameWindow.Height);
-            gameWindow.PreviewKeyDown += playerController.OnKeyDown;
-            gameWindow.PreviewKeyUp += playerController.OnKeyUp;
+            gameWindow.PreviewKeyDown += PlayerController.OnKeyDown;
+            gameWindow.PreviewKeyUp += PlayerController.OnKeyUp;
 
             //renderWindow.Loaded += (object sender, RoutedEventArgs e) =>
             //{
@@ -174,7 +176,7 @@ namespace Minecraft.Controller
                 {
                     gameWindow.ResetMousePosition();
                     worldGenerator.GenerateChunksToQueue();
-                    playerController.Update((float)updateStep / 1000.0f);
+                    PlayerController.Update((float)updateStep / 1000.0f);
                     accumulator -= updateStep;
                 }
 

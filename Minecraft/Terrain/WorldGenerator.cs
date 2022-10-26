@@ -4,12 +4,14 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using Minecraft.Terrain.Noise;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 
 namespace Minecraft.Terrain
 {
     internal class WorldGenerator : IWorldGenerator
     {
         public event Action<Vector2>? ChunkAdded;
+        public int RenderDistance { get; set; }
 
         private FastNoise noise;
 
@@ -18,13 +20,15 @@ namespace Minecraft.Terrain
 
         private IWorld world;
         private PriorityQueue<Vector2, float> generatorQueue;
-        private Queue<KeyValuePair<Vector2, Chunk>> generatedChunks;
+        private Queue<KeyValuePair<Vector2, IChunk>> generatedChunks;
         private static Random random = new Random();
 
-        public WorldGenerator(IWorld world)
+        public WorldGenerator(IWorld world,int renderDistance)
         {
+            RenderDistance = renderDistance;
+
             generatorQueue = new PriorityQueue<Vector2, float>();
-            generatedChunks = new Queue<KeyValuePair<Vector2, Chunk>>();
+            generatedChunks = new Queue<KeyValuePair<Vector2, IChunk>>();
 
             this.world = world;
             this.world.WorldGenerator = this;
@@ -42,8 +46,8 @@ namespace Minecraft.Terrain
         }
         public void InitWorld()
         {
-            for (int x = -WorldRenderer.RenderDistance; x <= WorldRenderer.RenderDistance; x++)
-                for (int z = -WorldRenderer.RenderDistance; z <= WorldRenderer.RenderDistance; z++)
+            for (int x = -RenderDistance; x <= RenderDistance; x++)
+                for (int z = -RenderDistance; z <= RenderDistance; z++)
                     lock (world)
                         AddChunk(new Vector2(x, z));
         }
@@ -92,20 +96,20 @@ namespace Minecraft.Terrain
 
             if (dir == Direction.Left)
             {
-                AddChunkRange(0, WorldRenderer.RenderDistance, -WorldRenderer.RenderDistance, WorldRenderer.RenderDistance, x, z, -1, 1);
+                AddChunkRange(0, RenderDistance, -RenderDistance, RenderDistance, x, z, -1, 1);
             }
             else if (dir == Direction.Right)
             {
-                AddChunkRange(0, WorldRenderer.RenderDistance, -WorldRenderer.RenderDistance, WorldRenderer.RenderDistance, x, z, 1, 1);
+                AddChunkRange(0, RenderDistance, -RenderDistance, RenderDistance, x, z, 1, 1);
             }
             else if (dir == Direction.Down)
             {
-                AddChunkRange(-WorldRenderer.RenderDistance, WorldRenderer.RenderDistance, 0, WorldRenderer.RenderDistance, x, z, 1, -1);
+                AddChunkRange(-RenderDistance, RenderDistance, 0, RenderDistance, x, z, 1, -1);
 
             }
             else if (dir == Direction.Up)
             {
-                AddChunkRange(-WorldRenderer.RenderDistance, WorldRenderer.RenderDistance, 0, WorldRenderer.RenderDistance, x, z, 1, 1);
+                AddChunkRange(-RenderDistance, RenderDistance, 0, RenderDistance, x, z, 1, 1);
             }
         }
         private void AddChunkRange(int fromXRange, int toXRgange, int fromZRange, int toZRange, int x, int z, int xSign, int zSign)
@@ -123,10 +127,10 @@ namespace Minecraft.Terrain
             {
                 Chunk chunk = new Chunk(position);
                 CreateChunk(chunk, position * Chunk.Size);
-                generatedChunks.Enqueue(new KeyValuePair<Vector2, Chunk>(position, chunk));
+                generatedChunks.Enqueue(new KeyValuePair<Vector2, IChunk>(position, chunk));
             }
         }
-        private void CreateChunk(Chunk chunk, Vector2 offset)
+        private void CreateChunk(IChunk chunk, Vector2 offset)
         {
             for (int x = 0; x < Chunk.Size; x++)
             {

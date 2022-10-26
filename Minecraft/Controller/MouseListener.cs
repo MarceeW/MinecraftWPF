@@ -17,7 +17,7 @@ namespace Minecraft.Controller
         }
         public void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!renderWindow.PauseMenuOpened)
+            if (!renderWindow.IsGamePaused)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {

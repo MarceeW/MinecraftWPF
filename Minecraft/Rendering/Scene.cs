@@ -5,6 +5,7 @@ using Minecraft.Graphics.Shapes;
 using System;
 using System.Diagnostics;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using System.ComponentModel;
 
 namespace Minecraft.Render
 {
@@ -47,10 +48,12 @@ namespace Minecraft.Render
             this.characterHand = characterHand;
             camera.FrontChange += characterHand.Shader.SetVec3;
             ProjectionMatrixChange += characterHand.Shader.SetMat4;
+
+            camera.PropertyChanged += (object? sender, PropertyChangedEventArgs e) => OnProjectionMatrixChange();
         }
-        public void OnProjectionMatrixChange(float aspectRatio)
+        public void OnProjectionMatrixChange()
         {
-            Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(camera.Fov), aspectRatio, near, far);
+            Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(camera.Fov), 16f/9f, near, far);
             ProjectionMatrixChange.Invoke("projection", Projection);
         }
         public void Render(float delta)

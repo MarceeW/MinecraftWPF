@@ -1,4 +1,5 @@
 ﻿using Assimp.Unmanaged;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Game;
 using Minecraft.Graphics;
@@ -6,26 +7,38 @@ using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Chunk = Minecraft.Terrain.Chunk;
 
 namespace Minecraft.Render
 {
-    internal class WorldRenderer
+    internal class WorldRenderer : ObservableObject
     {
         public static BlockType? CurrentTarget { get; private set; }
-        public static int RenderDistance = 8;
+        public Action<int>? RenderDistanceChanged;
+        public int RenderDistance { get => renderDistance; set { SetProperty(ref renderDistance, value); OnRenderSizeChanged(); } }
+        private int renderDistance = 8;
+
         private PriorityQueue<Vector2,float> renderQueue;
         private ICamera camera;
         public Shader Shader { get; }
         private IWorld world;
-        public WorldRenderer(IWorld world)
+        public WorldRenderer()
         {
-            this.world = world;
             camera = Ioc.Default.GetService<ICamera>();
 
             renderQueue = new PriorityQueue<Vector2,float>();
             Shader = new Shader(@"..\..\..\Graphics\Shaders\Block\blockVert.glsl", @"..\..\..\Graphics\Shaders\Block\blockFrag.glsl");
             Shader.SetDouble("renderDistance", RenderDistance);
+        }
+        public void OnRenderSizeChanged()
+        {
+            RenderDistanceChanged?.Invoke(renderDistance);
+            Shader.SetDouble("renderDistance", renderDistance);
+        }
+        public void SetWorld(IWorld world)
+        {
+            this.world = world;
         }
         public void AddToQueue(Vector2 toRender)
         {
@@ -49,11 +62,15 @@ namespace Minecraft.Render
         }
         public void CreateMeshesInQueue(float delta)
         {
+
             if (renderQueue.Count > 0)
+                ChunkMesh.CreateMesh(world, renderQueue.Dequeue());
+
+            if (world.ChunksNeedsToBeRegenerated.Count > 0)
             {
-                var chunk = renderQueue.Dequeue();
-                    ChunkMesh.CreateMesh(world, chunk);
-            }             
+                Debug.WriteLine(world.ChunksNeedsToBeRegenerated.Count);
+                ChunkMesh.CreateMesh(world, world.ChunksNeedsToBeRegenerated.Dequeue());
+            }
         }
         private bool IsChunkInRange(in IChunk chunk)
         {

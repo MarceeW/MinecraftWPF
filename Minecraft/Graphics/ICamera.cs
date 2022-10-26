@@ -1,8 +1,9 @@
 ﻿using OpenTK.Mathematics;
+using System.ComponentModel;
 
 namespace Minecraft.Graphics
 {
-    internal interface ICamera
+    internal interface ICamera : INotifyPropertyChanged
     {
         float Fov { get; set; }
         Vector3 Front { get; set; }

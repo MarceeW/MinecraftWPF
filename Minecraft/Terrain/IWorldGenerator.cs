@@ -7,6 +7,7 @@ namespace Minecraft.Terrain
     internal interface IWorldGenerator
     {
         event Action<Vector2>? ChunkAdded;
+        int RenderDistance { get; set; }
 
         void AddGeneratedChunksToWorld(float delta);
         void ExpandWorld(Direction dir, Vector2 position);

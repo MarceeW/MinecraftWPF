@@ -7,7 +7,7 @@ namespace Minecraft.Render
         event ShaderMat4Handler ProjectionMatrixChange;
 
         void Dispose();
-        void OnProjectionMatrixChange(float aspectRatio);
+        void OnProjectionMatrixChange();
         void Render(float delta);
     }
 }

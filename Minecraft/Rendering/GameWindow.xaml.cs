@@ -19,6 +19,9 @@ using System.Windows.Media.Effects;
 using Cursors = System.Windows.Input.Cursors;
 using System.Diagnostics;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Graphics;
+using System.Windows.Data;
+using Binding = System.Windows.Data.Binding;
 
 namespace Minecraft
 {
@@ -39,16 +42,19 @@ namespace Minecraft
         }
 
         public Vector2 CenterPosition;
-        public event Action<float>? RenderSizeChange;
+        public event Action? RenderSizeChange;
         public event Action<bool>? Pause;
         public IHotbar Hotbar { get; }
         public Inventory Inventory { get; set; } = new Inventory();
 
-        public bool PauseMenuOpened { get; private set; } = false;
-
-        public bool IsInventoryOpened = false;
         public bool NeedsToResetMouse = true;
         public bool ShowWireFrames = false;
+
+        public bool IsInventoryOpened = false;
+        public bool IsInMainMenu = false;
+        public bool IsGamePaused = false;
+        public bool IsSettingsMenuOpened = false;
+        public bool IsPauseMenuOpened = false;
         public MouseListener MouseListener { get; }
 
         private Renderer renderer;
@@ -74,6 +80,7 @@ namespace Minecraft
             renderer = new Renderer();
             gameController = new GameController(renderer, this);
 
+            
             var resolution = Screen.PrimaryScreen.Bounds;
 
             Left = resolution.Width / 2 - Width / 2;
@@ -82,7 +89,7 @@ namespace Minecraft
             CenterPosition = new Vector2(resolution.Width / 2, resolution.Height / 2);
 
             float hudScale = 0.6f;
-
+            
             Hotbar = Ioc.Default.GetService<IHotbar>();
 
             HotbarGrid.Width *= hudScale;
@@ -93,6 +100,7 @@ namespace Minecraft
             CreateHotbar();
             CreateInventory();
             SetupHotbar();
+            SetupBindings();
         }
         protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
         {
@@ -171,7 +179,7 @@ namespace Minecraft
                             }
                             else
                             {
-                                Close();
+                                OpenClosePauseMenu();
                             }
                         }
                         break;
@@ -206,15 +214,15 @@ namespace Minecraft
             base.OnRenderSizeChanged(sizeInfo);
             CenterPosition = new Vector2((float)(Left + Width / 2), (float)(Top + Height / 2));
 
-            RenderSizeChange?.Invoke((float)OpenTkControl.FrameBufferWidth / OpenTkControl.FrameBufferHeight);
+            RenderSizeChange?.Invoke();
         }
         private void PauseGame()
         {
-            PauseMenuOpened = !PauseMenuOpened;
+            IsGamePaused = !IsGamePaused;
 
-            Pause?.Invoke(PauseMenuOpened);
+            Pause?.Invoke(IsGamePaused);
 
-            if (PauseMenuOpened)
+            if (IsGamePaused)
             {
                 var effect = new BlurEffect();
                 effect.Radius = 15;
@@ -225,6 +233,7 @@ namespace Minecraft
                 OpenTkControl.Effect = null;
 
             PauseMenuDarkener.Visibility = PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            Crosshair.Visibility = Crosshair.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
 
             NeedsToResetMouse = !NeedsToResetMouse;
 
@@ -237,16 +246,19 @@ namespace Minecraft
         }
         private void OpenCloseInventory()
         {
-            pickedItem = null;
-            PickedItemImage.Source = null;
+            if(!IsPauseMenuOpened && !IsInMainMenu)
+            {
+                pickedItem = null;
+                PickedItemImage.Source = null;
 
-            IsInventoryOpened = !IsInventoryOpened;
+                IsInventoryOpened = !IsInventoryOpened;
 
-            InventoryData.Visibility = InventoryData.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-            InventoryGrid.Visibility = InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-            InventoryText.Visibility = InventoryText.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                InventoryData.Visibility = InventoryData.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                InventoryGrid.Visibility = InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                InventoryText.Visibility = InventoryText.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
 
-            PauseGame();
+                PauseGame();
+            }
         }
         private void CreateInventory()
         {
@@ -388,6 +400,13 @@ namespace Minecraft
                 }
             }
         }
+        private void SetupBindings()
+        {
+            FovSlider.DataContext = Ioc.Default.GetService<ICamera>();
+            RenderDistanceSlider.DataContext = gameController.WorldRendererer;
+            SensitivitySlider.DataContext = gameController.PlayerController;
+        }
+
         public void ResetMousePosition()
         {
             if (NeedsToResetMouse)
@@ -505,6 +524,39 @@ namespace Minecraft
         {
             var img = e.Source as Image;
             img.Source = (BitmapSource)Resources["MenuButtonFrame"];
+        }
+
+        private void Button_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if(e.Source == BackToGame)
+            {
+                OpenClosePauseMenu();
+            }
+            else if(e.Source == Settings || e.Source == SettingsMenuBack)
+            {
+                OpenCloseSettingsMenu();
+            }
+            else if(e.Source == SaveAndExit)
+            {
+                Close();
+            }
+        }
+        private void OpenClosePauseMenu()
+        {
+            IsPauseMenuOpened = !IsPauseMenuOpened;
+
+            PauseMenu.Visibility = PauseMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            HotbarGrid.Visibility = HotbarGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+
+            PauseGame();
+        }
+        private void OpenCloseSettingsMenu()
+        {
+            IsSettingsMenuOpened = !IsSettingsMenuOpened;
+
+            PauseMenu.Visibility = PauseMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+
+            SettingsMenu.Visibility = SettingsMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
     }
 }
