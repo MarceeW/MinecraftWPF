@@ -13,9 +13,9 @@ namespace Minecraft.Logic
         public float Width { get; }
         public float Height { get; }
 
-        private World worldToCollide;
+        private IWorld worldToCollide;
 
-        public BoxCollider(Vector3 position, float width, float height, World worldToCollide)
+        public BoxCollider(Vector3 position, float width, float height, IWorld worldToCollide)
         {
             Position = position;
             Width = width;

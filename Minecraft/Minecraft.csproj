@@ -57,6 +57,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\HUD\Toolbar.png" />
     <Resource Include="Assets\Textures\terrain.png" />
   </ItemGroup>

@@ -31,7 +31,7 @@ namespace Minecraft.Render
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            Scene?.OnProjectionMatrixChange((float)width / height);
+            Scene?.OnProjectionMatrixChange();
         }
         public void RenderFrame(float delta)
         {

@@ -3,16 +3,19 @@ using OpenTK.Input;
 using Minecraft.Controller;
 using Minecraft.Game;
 using System;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Minecraft.Graphics
 {
-    internal class Camera : ICamera
+    internal class Camera : ObservableObject, ICamera
     {
+        private float fov;
+
         public Vector3 Position { get; private set; }
         public Vector3 Up { get; private set; }
         public Vector3 Front { get; set; }
         public Matrix4 View { get; private set; }
-        public float Fov { get; set; }
+        public float Fov { get => fov; set => SetProperty(ref fov,value); }
         public float Pitch { get; private set; }
         public float Yaw { get; private set; }
 

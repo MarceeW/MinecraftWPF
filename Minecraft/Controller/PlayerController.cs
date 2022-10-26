@@ -5,11 +5,12 @@ using OpenTK.Mathematics;
 using System;
 using System.Windows.Input;
 using System.Diagnostics;
+using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Minecraft.Controller
 {
     delegate void ChunkGeneratorHandler(Direction dir,Vector2 position);
-    internal class PlayerController
+    internal class PlayerController : ObservableObject
     {
         class DoubleKeyPressChecker
         {
@@ -31,11 +32,11 @@ namespace Minecraft.Controller
             }
             public void Check(Key key)
             {
-                if(key == KeyToListen)
+                if (key == KeyToListen)
                 {
-                    
+
                     long delta = stopwatch.ElapsedMilliseconds - lastPress;
-                    
+
 
                     if (valid && delta < maxDoubleClickLatencyMs && delta >= minDoubleClickLatencyMs)
                     {
@@ -45,11 +46,11 @@ namespace Minecraft.Controller
 
                     valid = false;
                     lastPress = stopwatch.ElapsedMilliseconds;
-                }                
+                }
             }
             public void Validate(Key key)
             {
-                if(key == KeyToListen)
+                if (key == KeyToListen)
                 {
                     valid = true;
                 }
@@ -61,14 +62,16 @@ namespace Minecraft.Controller
 
         public static bool CanMove = true;
 
-        private Player player;
-        private PlayerLogic playerLogic;
-        private const float mouseSpeed = 0.125f;
+        private IPlayer player;
+        private IPlayerLogic playerLogic;
+        public float MouseSpeed { get => mouseSpeed; set => SetProperty(ref mouseSpeed, value);  }
         private DoubleKeyPressChecker jumpListener;
-        public PlayerController(Player player,World world)
+        private float mouseSpeed = 0.125f;
+
+        public PlayerController(IPlayer player, IWorld world)
         {
             this.player = player;
-            playerLogic = new PlayerLogic(player,world);
+            playerLogic = new PlayerLogic(player, world);
             jumpListener = new DoubleKeyPressChecker(Key.Space);
             jumpListener.OnDoublePress += () => player.IsFlying = !player.IsFlying;
         }
@@ -96,7 +99,7 @@ namespace Minecraft.Controller
                     playerLogic.Move(Direction.Left, delta);
                 if (Keyboard.IsKeyDown(Key.Space))
                 {
-                    if(player.IsFlying)
+                    if (player.IsFlying)
                         playerLogic.Move(Direction.Up, delta);
                     else
                         playerLogic.Jump();
@@ -120,7 +123,6 @@ namespace Minecraft.Controller
                 {
                     if (currChunkX != lastChunkX || currChunkZ != lastChunkZ)
                     {
-                        Debug.WriteLine("Chunk: " + new Vector2(currChunkX, currChunkZ));
                         int deltaX = currChunkX - lastChunkX;
                         int deltaZ = currChunkZ - lastChunkZ;
 
@@ -142,7 +144,7 @@ namespace Minecraft.Controller
 
                 playerLogic.Update(delta);
                 player.Camera.ChangeView(MouseController.DeltaX, MouseController.DeltaY, mouseSpeed);
-            } 
+            }
         }
         public void OnKeyDown(object sender, KeyEventArgs e)
         {

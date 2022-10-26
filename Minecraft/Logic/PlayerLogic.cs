@@ -23,12 +23,13 @@ namespace Minecraft.Logic
     }
     internal class PlayerLogic : IPlayerLogic
     {
-        public bool Sprint = false;
-        public bool Crouch = false;
-        public static bool CollisionEnabled = true;
+        public bool Sprint { get; set; } = false;
+        public bool Crouch { get; set; } = false;
+        public bool IsWalking { get; set; } = false;
+        public static bool CollisionEnabled { get; set; } = true;
 
-        private World world;
-        private Player player;
+        private IWorld world;
+        private IPlayer player;
 
         private const float moveSpeed = 5.0f;
         private const float sprintSpeed = moveSpeed * 2;
@@ -36,11 +37,10 @@ namespace Minecraft.Logic
 
         private bool jumping = false;
         private bool grounded = false;
-        private bool falling = false;
 
         private IBoxCollider collider;
         private IForce force;
-        public PlayerLogic(Player player, World world)
+        public PlayerLogic(IPlayer player, IWorld world)
         {
             this.world = world;
             this.player = player;
@@ -54,6 +54,7 @@ namespace Minecraft.Logic
         {
             if (!jumping)
             {
+                grounded = false;
                 jumping = true;
                 force.SetForceType(ForceType.Rise);
             }
@@ -70,11 +71,11 @@ namespace Minecraft.Logic
                 if (headHit && force.Type == ForceType.Rise)
                     force.SetForceType(ForceType.Fall);
                 else if (groundHit)
-                {
+                {                  
                     jumping = false;
                     force.Reset();
-                }             
-
+                }
+                grounded = groundHit;
                 player.Camera.ModPosition(deltaPos);
                 collider.Position = player.Position - new Vector3(0.5f);
             }

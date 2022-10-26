@@ -7,6 +7,7 @@ namespace Minecraft.Terrain
     {
         Dictionary<Vector2, IChunk> Chunks { get; set; }
         WorldGenerator? WorldGenerator { get; set; }
+        Queue<Vector2> ChunksNeedsToBeRegenerated { get; }
 
         void AddBlock(Vector3 pos, BlockType block);
         void AddChunk(Vector2 pos, IChunk chunk);

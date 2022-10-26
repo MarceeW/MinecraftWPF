@@ -9,12 +9,14 @@ namespace Minecraft.Terrain
     {
         public Dictionary<Vector2, IChunk> Chunks { get; set; }
         public WorldGenerator? WorldGenerator { get; set; }
+        public Queue<Vector2> ChunksNeedsToBeRegenerated { get; }
 
         private Dictionary<Vector2, List<Block>> blockQueue;
 
         public World()
         {
             Chunks = new Dictionary<Vector2, IChunk>();
+            ChunksNeedsToBeRegenerated = new Queue<Vector2>();
             blockQueue = new Dictionary<Vector2, List<Block>>();
         }
         public IChunk? GetChunk(Vector3 pos, out Vector2 chunkPos)
@@ -102,6 +104,7 @@ namespace Minecraft.Terrain
         {
             var entity = EntityData.Entities[(int)entityType];
 
+            int blockIndex = 0;
             foreach (var block in entity.Blocks)
             {
                 Vector3 blockPos = block.Position + position;
@@ -116,6 +119,9 @@ namespace Minecraft.Terrain
                     if (Chunks.ContainsKey(whereShouldBlockBe))
                     {
                         Chunks[whereShouldBlockBe].AddBlock(block.Position + position, block.Type, true);
+
+                        //if (blockIndex == entity.Blocks.Length - 1)
+                            //ChunksNeedsToBeRegenerated.Enqueue(whereShouldBlockBe);
                     }
                     else
                     {
@@ -130,6 +136,7 @@ namespace Minecraft.Terrain
                         }
                     }
                 }
+                blockIndex++;
             }
         }
     }

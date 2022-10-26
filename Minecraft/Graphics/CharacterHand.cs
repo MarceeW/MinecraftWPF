@@ -22,7 +22,7 @@ namespace Minecraft.Graphics
         private Matrix4 modelMatrix;
         private Matrix4 viewMatrix;
 
-        private enum AnimationType { None, BlockChange, Hit, Place }
+        private enum AnimationType { None, BlockChange, Hit, Place, Walk }
         private double currentAnimationStep = 0;
         private AnimationType animation = AnimationType.None;
         private bool blockChangeHandled = true;
