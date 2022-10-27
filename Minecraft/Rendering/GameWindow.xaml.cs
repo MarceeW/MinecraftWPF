@@ -72,7 +72,7 @@ namespace Minecraft
             var settings = new GLWpfControlSettings
             {
                 MajorVersion = 3,
-                MinorVersion = 3,
+                MinorVersion = 1,
             };
             OpenTkControl.Start(settings);
 

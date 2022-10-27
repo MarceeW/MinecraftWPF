@@ -23,8 +23,6 @@ namespace Minecraft.Logic
     }
     internal class PlayerLogic : IPlayerLogic
     {
-        public bool Sprint = false;
-        public bool Crouch = false;
         public static bool CollisionEnabled = true;
 
         private World world;
@@ -40,6 +38,10 @@ namespace Minecraft.Logic
 
         private IBoxCollider collider;
         private IForce force;
+
+        public bool Crouch { get; set; }
+        public bool Sprint { get; set; }
+
         public PlayerLogic(Player player, World world)
         {
             this.world = world;
