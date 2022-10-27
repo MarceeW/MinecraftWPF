@@ -23,13 +23,12 @@ namespace Minecraft.Logic
     }
     internal class PlayerLogic : IPlayerLogic
     {
-        public bool Sprint { get; set; } = false;
-        public bool Crouch { get; set; } = false;
-        public bool IsWalking { get; set; } = false;
-        public static bool CollisionEnabled { get; set; } = true;
+        public bool Sprint = false;
+        public bool Crouch = false;
+        public static bool CollisionEnabled = true;
 
-        private IWorld world;
-        private IPlayer player;
+        private World world;
+        private Player player;
 
         private const float moveSpeed = 5.0f;
         private const float sprintSpeed = moveSpeed * 2;
@@ -37,10 +36,11 @@ namespace Minecraft.Logic
 
         private bool jumping = false;
         private bool grounded = false;
+        private bool falling = false;
 
         private IBoxCollider collider;
         private IForce force;
-        public PlayerLogic(IPlayer player, IWorld world)
+        public PlayerLogic(Player player, World world)
         {
             this.world = world;
             this.player = player;
@@ -54,7 +54,6 @@ namespace Minecraft.Logic
         {
             if (!jumping)
             {
-                grounded = false;
                 jumping = true;
                 force.SetForceType(ForceType.Rise);
             }
@@ -66,16 +65,19 @@ namespace Minecraft.Logic
                 force.Apply(out Vector3 deltaPos);
                 deltaPos *= delta;
 
-                collider.Collision(ref deltaPos, out bool headHit, out bool groundHit);
+                if (CollisionEnabled)
+                {
+                    collider.Collision(ref deltaPos, out bool headHit, out bool groundHit);
 
-                if (headHit && force.Type == ForceType.Rise)
-                    force.SetForceType(ForceType.Fall);
-                else if (groundHit)
-                {                  
-                    jumping = false;
-                    force.Reset();
-                }
-                grounded = groundHit;
+                    if (headHit && force.Type == ForceType.Rise)
+                        force.SetForceType(ForceType.Fall);
+                    else if (groundHit)
+                    {
+                        jumping = false;
+                        force.Reset();
+                    }
+                }    
+
                 player.Camera.ModPosition(deltaPos);
                 collider.Position = player.Position - new Vector3(0.5f);
             }
@@ -118,12 +120,15 @@ namespace Minecraft.Logic
             }
 
             if (CollisionEnabled)
+            {
                 collider.Collision(ref deltaPos, out bool headHit, out bool groundHit);
+
+                if (player.IsFlying && groundHit)
+                    player.IsFlying = false;
+            }
 
             player.Camera.ModPosition(deltaPos);
             collider.Position = player.Position - new Vector3(0.5f);
-
-            //Debug.WriteLine(collider.Position);
         }
     }
 }

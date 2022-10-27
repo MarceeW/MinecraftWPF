@@ -151,23 +151,8 @@
             <TextBlock Text="Back" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="4" Style="{StaticResource McText}"/>
         </Grid>
 
-        <Grid x:Name="MainMenu" Visibility="Hidden">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
-
-            <Image x:Name="Play" Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
-            <TextBlock Text="Play" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="1" Style="{StaticResource McText}"/>
-
-            <Image x:Name="MainMenuSettings" Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="2" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
-            <TextBlock Text="Settings" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-
-            <Image x:Name="ExitGame" Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="3" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
-            <TextBlock Text="Exit Game" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="3" Style="{StaticResource McText}"/>
+        <Grid x:Name="MainMenu">
+            
         </Grid>
     </Grid>
 </Window>

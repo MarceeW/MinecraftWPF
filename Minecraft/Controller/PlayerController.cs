@@ -62,13 +62,13 @@ namespace Minecraft.Controller
 
         public static bool CanMove = true;
 
-        private IPlayer player;
-        private IPlayerLogic playerLogic;
-        public float MouseSpeed { get => mouseSpeed; set => SetProperty(ref mouseSpeed, value);  }
+        private Player player;
+        private PlayerLogic playerLogic;
+        public float MouseSpeed { get => mouseSpeed; set => SetProperty(ref mouseSpeed, value); }
         private DoubleKeyPressChecker jumpListener;
         private float mouseSpeed = 0.125f;
 
-        public PlayerController(IPlayer player, IWorld world)
+        public PlayerController(Player player, World world)
         {
             this.player = player;
             playerLogic = new PlayerLogic(player, world);
@@ -123,6 +123,7 @@ namespace Minecraft.Controller
                 {
                     if (currChunkX != lastChunkX || currChunkZ != lastChunkZ)
                     {
+                        Debug.WriteLine("Chunk: " + new Vector2(currChunkX, currChunkZ));
                         int deltaX = currChunkX - lastChunkX;
                         int deltaZ = currChunkZ - lastChunkZ;
 
