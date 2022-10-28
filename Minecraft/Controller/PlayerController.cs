@@ -6,6 +6,7 @@ using System;
 using System.Windows.Input;
 using System.Diagnostics;
 using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 
 namespace Minecraft.Controller
 {
@@ -62,16 +63,18 @@ namespace Minecraft.Controller
 
         public static bool CanMove = true;
 
-        private Player player;
-        private PlayerLogic playerLogic;
+        private IPlayer player;
+        private IPlayerLogic playerLogic;
         public float MouseSpeed { get => mouseSpeed; set => SetProperty(ref mouseSpeed, value); }
         private DoubleKeyPressChecker jumpListener;
         private float mouseSpeed = 0.125f;
 
-        public PlayerController(Player player, World world)
+        public PlayerController(IPlayer player, IWorld world)
         {
             this.player = player;
-            playerLogic = new PlayerLogic(player, world);
+            playerLogic = Ioc.Default.GetService<IPlayerLogic>();
+            playerLogic.Init(player,world);
+
             jumpListener = new DoubleKeyPressChecker(Key.Space);
             jumpListener.OnDoublePress += () => player.IsFlying = !player.IsFlying;
         }

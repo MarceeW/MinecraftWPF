@@ -1,5 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Controller;
+using Minecraft.Logic;
 using Minecraft.Terrain;
 using Minecraft.UI;
 using OpenTK.Graphics.OpenGL;
@@ -24,6 +25,9 @@ namespace Minecraft.Graphics
 
         private enum AnimationType { None, BlockChange, Hit, Place, Walk }
         private double currentAnimationStep = 0;
+
+        private double currentAnimationWalkingStep = 0;
+
         private AnimationType animation = AnimationType.None;
         private bool blockChangeHandled = true;
 
@@ -36,6 +40,8 @@ namespace Minecraft.Graphics
 
             hotbar = Ioc.Default.GetService<IHotbar>();
             hotbar.BlockChangeOnSelect += OnSwitchBlock;
+
+            Ioc.Default.GetService<IPlayerLogic>().Walking += OnWalking;
 
             UpdateModelMatrix();
             UpdateViewMatrix(Vector3.Zero);
@@ -70,9 +76,16 @@ namespace Minecraft.Graphics
             Shader.Use();
             Shader.SetMat4("view", viewMatrix);
         }
+        private void ResetViewMatrix()
+        {
+            viewMatrix = Matrix4.CreateTranslation(position);
+            Shader.Use();
+            Shader.SetMat4("view", viewMatrix);
+        }
         private void ResetAnimation()
         {
             currentAnimationStep = 0;
+            currentAnimationWalkingStep = 0;
             animation = AnimationType.None;
         }
         private void ResetModel()
@@ -87,7 +100,9 @@ namespace Minecraft.Graphics
                 if(currentAnimationStep >= Math.PI)
                 {
                     ResetAnimation();
-                    UpdateViewMatrix(Vector3.Zero);
+                    ResetViewMatrix();
+
+                    animation = AnimationType.None;
                 }
                 else
                 {
@@ -110,6 +125,8 @@ namespace Minecraft.Graphics
                     ResetAnimation();
                     ResetModel();
                     UpdateModelMatrix();
+
+                    animation = AnimationType.None;
                 }
                 else
                 {
@@ -123,28 +140,47 @@ namespace Minecraft.Graphics
                 }
 
             }
+            else if(animation == AnimationType.Walk)
+            {
+                UpdateViewMatrix(new Vector3((float)Math.Cos(currentAnimationWalkingStep / 2) / 10, -(float)Math.Sin(currentAnimationWalkingStep) / 15, 0));
+                animation = AnimationType.None;
+            }
         }
         public void OnBlockPlace()
         {
-            currentAnimationStep = 0;
+            ResetViewMatrix();
+            ResetAnimation();
             animation = AnimationType.Place;
         }
         public void OnHit()
         {
-            currentAnimationStep = 0;
+            ResetViewMatrix();
+            ResetAnimation();
             animation = AnimationType.Hit;
         }
         public void OnSwitchBlock()
         {
-            if(animation == AnimationType.Hit || animation == AnimationType.Place)
+            ResetViewMatrix();
+
+            if (animation == AnimationType.Hit || animation == AnimationType.Place)
             {
-                currentAnimationStep = 0;
+                ResetAnimation();
                 ResetModel();
                 UpdateModelMatrix();
             }
                 
             animation = AnimationType.BlockChange;
             blockChangeHandled = false;
+        }
+        public void OnWalking(float delta)
+        {
+            if(animation == AnimationType.None)
+            {
+                animation = AnimationType.Walk;
+
+                int animationSpeed = 6;
+                currentAnimationWalkingStep += Math.PI * delta * animationSpeed;
+            }
         }
         private void SetupVBO()
         {

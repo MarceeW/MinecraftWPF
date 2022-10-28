@@ -55,8 +55,8 @@
         
         <Canvas Name="Crosshair" HorizontalAlignment="Center" VerticalAlignment="Center" Width="24">
 
-            <Rectangle Height="24" Fill="WhiteSmoke" Width="4" HorizontalAlignment="Left" Canvas.Left="10" VerticalAlignment="Center"/>
-            <Rectangle Height="4" Fill="WhiteSmoke" Width="24" HorizontalAlignment="Center" Canvas.Top="10" VerticalAlignment="Top"/>
+            <Rectangle Height="24" Fill="WhiteSmoke" Width="3" HorizontalAlignment="Left" Canvas.Left="10" VerticalAlignment="Center"/>
+            <Rectangle Height="3" Fill="WhiteSmoke" Width="24" HorizontalAlignment="Center" Canvas.Top="10" VerticalAlignment="Top"/>
 
         </Canvas>
 

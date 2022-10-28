@@ -132,7 +132,9 @@ namespace Minecraft.Terrain
                         else
                         {
                             blockQueue.Add(whereShouldBlockBe, new List<Block>());
-                            blockQueue[whereShouldBlockBe].Add(new Block(blockPos, block.Type));
+
+                            if(blockQueue.ContainsKey(whereShouldBlockBe))
+                                blockQueue[whereShouldBlockBe].Add(new Block(blockPos, block.Type));
                         }
                     }
                 }

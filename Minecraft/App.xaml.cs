@@ -22,6 +22,7 @@ namespace Minecraft
             Ioc.Default.ConfigureServices(
             new ServiceCollection()
                 .AddSingleton<ICamera, Camera>()
+                .AddSingleton<IPlayerLogic, PlayerLogic>()
                 .AddSingleton<IHotbar, Hotbar>()
                 .AddSingleton<IForce, Force>()
                 .BuildServiceProvider()

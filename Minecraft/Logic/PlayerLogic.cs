@@ -23,14 +23,15 @@ namespace Minecraft.Logic
     }
     internal class PlayerLogic : IPlayerLogic
     {
-        public static bool CollisionEnabled = true;
+        public bool CollisionEnabled = true;
+        public event Action<float>? Walking; 
 
-        private World world;
-        private Player player;
+        private IWorld world;
+        private IPlayer player;
 
         private const float moveSpeed = 5.0f;
-        private const float sprintSpeed = moveSpeed * 2;
-        private const float crouchSpeed = moveSpeed / 5;
+        private const float sprintSpeed = 1.5f;
+        private const float crouchSpeed = .5f;
 
         private bool jumping = false;
         private bool grounded = false;
@@ -41,8 +42,7 @@ namespace Minecraft.Logic
 
         public bool Crouch { get; set; }
         public bool Sprint { get; set; }
-
-        public PlayerLogic(Player player, World world)
+        public void Init(IPlayer player, IWorld world)
         {
             this.world = world;
             this.player = player;
@@ -71,6 +71,8 @@ namespace Minecraft.Logic
                 {
                     collider.Collision(ref deltaPos, out bool headHit, out bool groundHit);
 
+                    grounded = groundHit;
+
                     if (headHit && force.Type == ForceType.Rise)
                         force.SetForceType(ForceType.Fall);
                     else if (groundHit)
@@ -86,7 +88,7 @@ namespace Minecraft.Logic
         }
         public void Move(Direction dir, float delta)
         {
-            float speed = Sprint ? sprintSpeed : Crouch ? crouchSpeed : moveSpeed;
+            float speed = Sprint ? moveSpeed * sprintSpeed : Crouch ? moveSpeed * crouchSpeed : moveSpeed;
 
             if (player.IsFlying)
                 speed *= 5;
@@ -99,13 +101,23 @@ namespace Minecraft.Logic
                     if (player.IsFlying)
                         deltaPos = player.Camera.Front * speed * delta;
                     else
-                        deltaPos = new Vector3(player.Camera.Front.X, 0, player.Camera.Front.Z) * speed * delta;
+                    {
+                        if(grounded)
+                            Walking?.Invoke(Crouch ? delta * crouchSpeed : Sprint ? delta * sprintSpeed : delta);
+
+                        deltaPos = Vector3.Normalize(new Vector3(player.Camera.Front.X, 0, player.Camera.Front.Z)) * speed * delta;
+                    }                       
                     break;
                 case Direction.Back:
                     if (player.IsFlying)
                         deltaPos = -player.Camera.Front * speed * delta;
                     else
-                        deltaPos = -new Vector3(player.Camera.Front.X, 0, player.Camera.Front.Z) * speed * delta;
+                    {
+                        if (grounded)
+                            Walking?.Invoke(Crouch ? delta * crouchSpeed : Sprint ? delta * sprintSpeed : delta);
+
+                        deltaPos = Vector3.Normalize(-new Vector3(player.Camera.Front.X, 0, player.Camera.Front.Z)) * speed * delta;
+                    }
                     break;
                 case Direction.Up:
                     deltaPos = player.Camera.Up * speed * delta;
@@ -115,9 +127,15 @@ namespace Minecraft.Logic
                     break;
                 case Direction.Left:
                     deltaPos = -Vector3.Normalize(Vector3.Cross(player.Camera.Front, player.Camera.Up)) * speed * delta;
+
+                    if (!player.IsFlying && grounded)
+                        Walking?.Invoke(Crouch ? delta * crouchSpeed : Sprint ? delta * sprintSpeed : delta);
                     break;
                 case Direction.Right:
                     deltaPos = Vector3.Normalize(Vector3.Cross(player.Camera.Front, player.Camera.Up)) * speed * delta;
+
+                    if (!player.IsFlying && grounded)
+                        Walking?.Invoke(Crouch ? delta * crouchSpeed : Sprint ? delta * sprintSpeed : delta);
                     break;
             }
 

@@ -8,7 +8,7 @@ namespace Minecraft.Terrain
     internal static class WorldSerializer
     {
         private static string worldPath = @"..\..\..\Saves\world.bin";
-        public static World? World { get; set; } = null;
+        public static IWorld? World { get; set; } = null;
         public static void SaveWorld()
         {
             if(World != null)
@@ -21,7 +21,7 @@ namespace Minecraft.Terrain
                 stream.Close();
             }  
         }
-        public static Dictionary<Vector2, Chunk> LoadWorld()
+        public static Dictionary<Vector2, IChunk> LoadWorld()
         {
             if (WorldFileExists())
             {
@@ -29,7 +29,7 @@ namespace Minecraft.Terrain
 
                 FileStream stream = File.OpenRead(worldPath);
 
-                var world = formatter.Deserialize(stream) as Dictionary<Vector2,Chunk>;
+                var world = formatter.Deserialize(stream) as Dictionary<Vector2,IChunk>;
 
                 return world;
             }

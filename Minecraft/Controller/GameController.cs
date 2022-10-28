@@ -6,6 +6,7 @@ using Minecraft.Terrain;
 using Minecraft.UI;
 using OpenTK.Mathematics;
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -60,17 +61,20 @@ namespace Minecraft.Controller
             gameWindow.PreviewKeyDown += PlayerController.OnKeyDown;
             gameWindow.PreviewKeyUp += PlayerController.OnKeyUp;
 
-            //renderWindow.Loaded += (object sender, RoutedEventArgs e) =>
+            //gameWindow.Loaded += (object sender, RoutedEventArgs e) =>
             //{
-            //    World.Chunks = WorldSerializer.LoadWorld();
-            //
-            //    foreach (var chunk in World.Chunks)
+            //    if (WorldSerializer.WorldFileExists())
             //    {
-            //        chunk.Value.Mesh = new ChunkMesh();
-            //        worldRendererer.AddToQueue(chunk.Key);
+            //        World.Chunks = WorldSerializer.LoadWorld();
+            //
+            //        foreach (var chunk in World.Chunks)
+            //        {
+            //            chunk.Value.Mesh = new ChunkMesh();
+            //            WorldRendererer.AddToQueue(chunk.Key);
+            //        }
             //    }
             //};
-            //renderWindow.Closing += (object? sender,CancelEventArgs e) => WorldSerializer.SaveWorld();
+            //gameWindow.Closing += (object? sender,CancelEventArgs e) => WorldSerializer.SaveWorld();
 
             updateThread = new Thread(UpdateGameState);
             updateThread.SetApartmentState(ApartmentState.STA);
