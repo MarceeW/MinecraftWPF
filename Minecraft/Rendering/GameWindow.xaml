@@ -147,8 +147,18 @@
                 <Slider x:Name="SensitivitySlider" IsSnapToTickEnabled="True" Value="{Binding MouseSpeed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0.05" Maximum="1" Cursor="Hand" Width="400" Foreground="Black" TickFrequency="0.025"/>
             </StackPanel>
 
-            <Image x:Name="SettingsMenuBack" Width="200" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="4" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
-            <TextBlock Text="Back" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="4" Style="{StaticResource McText}"/>
+            <Grid Grid.Row="4">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <Image x:Name="LoadTexture" Width="180" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
+                <TextBlock Text="Load texture" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Column="1" Style="{StaticResource McText}"/>
+                
+                <Image x:Name="SettingsMenuBack" Width="180" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="0" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
+                <TextBlock Text="Back" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Column="0" Style="{StaticResource McText}"/>
+            </Grid>
         </Grid>
 
         <Grid x:Name="MainMenu">

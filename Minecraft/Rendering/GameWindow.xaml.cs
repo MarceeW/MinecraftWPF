@@ -180,6 +180,10 @@ namespace Minecraft
                             {
                                 OpenCloseInventory();
                             }
+                            else if (IsSettingsMenuOpened)
+                            {
+                                OpenCloseSettingsMenu();
+                            }
                             else
                             {
                                 OpenClosePauseMenu();
@@ -335,6 +339,31 @@ namespace Minecraft
                 }
             }
         }
+        private void ReloadTextures(BitmapImage newImage)
+        {
+            foreach(var img in InventoryGrid.Children)
+            {
+                if(img is Image i)
+                {
+                    var data = i.Name.Split('_');
+                    if (data[0] == "InventoryItem")
+                    {
+                        i.Source = new CroppedBitmap((BitmapSource)newImage, AtlasTexturesData.GetTextureRect(Inventory.Blocks[int.Parse(data[2]), int.Parse(data[1])]));
+                    }
+                }
+            }
+            foreach (var img in HotbarGrid.Children)
+            {
+                if (img is Image i)
+                {
+                    var data = i.Name.Split('_');
+                    if (data[0] == "HotbarItem")
+                    {
+                        i.Source = new CroppedBitmap((BitmapSource)newImage, AtlasTexturesData.GetTextureRect(Hotbar.Items[int.Parse(data[1])]));
+                    }
+                }
+            }
+        }
         private void CreateHotbar()
         {
             RowDefinition row = new RowDefinition();
@@ -386,7 +415,7 @@ namespace Minecraft
 
                     Image item = new Image();
                     item.Name = "HotbarItem_" + i;
-                    item.Width = 40;
+                    item.Width = 36;
 
                     item.MouseEnter += OnMouseEnterBlockImage;
                     item.MouseLeave += OnMouseLeaveBlockImage;
@@ -542,6 +571,20 @@ namespace Minecraft
             else if(e.Source == SaveAndExit)
             {
                 Close();
+            }
+            else if(e.Source == LoadTexture)
+            {
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "Png images (*.png;)|*.png;";
+
+                var result = openFileDialog.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK)
+                {;
+                    ReloadTextures(new BitmapImage(new Uri(openFileDialog.FileName, UriKind.RelativeOrAbsolute)));
+                    AtlasTexturesData.TexturePath = openFileDialog.FileName;
+                }
+                    
             }
         }
         private void OpenClosePauseMenu()

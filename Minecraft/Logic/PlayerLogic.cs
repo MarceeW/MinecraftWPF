@@ -50,7 +50,7 @@ namespace Minecraft.Logic
             force = new Force();
             force.SetForceType(ForceType.Rise);
 
-            collider = new BoxCollider(player.Position, .5f, 2, world);
+            collider = new BoxCollider(player.Position, .5f, 1.75f, world);
         }
         public void Jump()
         {

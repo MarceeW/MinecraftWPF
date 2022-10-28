@@ -15,6 +15,8 @@ namespace Minecraft.Terrain
     }
     internal static class AtlasTexturesData
     {
+        public static string TexturePath { get => texturePath; set { texturePath = value; atlas = new Texture(texturePath, false); } }
+        private static string texturePath = @"..\..\..\Assets\Textures\terrain.png";
         //Top = 1st Bot = 2nd Other = 3rd
         public static readonly Position2D[][] TexturePositions =
         {
@@ -86,13 +88,14 @@ namespace Minecraft.Terrain
             {
                 if (atlas == null)
                 {
-                    atlas = new Texture(@"..\..\..\Assets\Textures\terrain.png", false);
+                    atlas = new Texture(texturePath, false);
                 }
                 return atlas;
             }
         }
 
         private static Texture? atlas;
+
         public static Int32Rect GetTextureRect(BlockType type)
         {
             return new Int32Rect(TexturePositions[(int)type][0].column * TextureSize, TexturePositions[(int)type][0].row * TextureSize, TextureSize, TextureSize);
@@ -111,7 +114,7 @@ namespace Minecraft.Terrain
 
             return new float[] {
                 TexturePosition[retIndex].column * PositionDeltaPerColumn,       (maxTexturesInRow - TexturePosition[retIndex].row - 1) * PositionDeltaPerRow,
-               (TexturePosition[retIndex].column + 1) * PositionDeltaPerColumn, (maxTexturesInRow - TexturePosition[retIndex].row) * PositionDeltaPerRow
+               (TexturePosition[retIndex].column + 1) * PositionDeltaPerColumn, (maxTexturesInColumn - TexturePosition[retIndex].row) * PositionDeltaPerRow
             };
         }
     }

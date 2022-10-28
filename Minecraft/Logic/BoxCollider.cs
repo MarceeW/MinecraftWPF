@@ -78,12 +78,12 @@ namespace Minecraft.Logic
                 if (deltaPos.Y == 0)
                 {
                     broadPhaseBottom = (int)Math.Floor(Position.Y);
-                    broadPhaseTop = (int)Math.Ceiling(Position.Y);
+                    broadPhaseTop = (int)Math.Ceiling(Position.Y + Height / 2);
                 }
                 else
                 {
                     broadPhaseBottom = (int)Math.Floor(Position.Y);
-                    broadPhaseTop = (int)Math.Ceiling(Position.Y + deltaPos.Y + Height);
+                    broadPhaseTop = (int)Math.Ceiling(Position.Y + deltaPos.Y + Height / 2);
                 }
 
             }
