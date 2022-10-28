@@ -6,7 +6,7 @@ namespace Minecraft.UI
     public class Inventory
     {
         public int Rows { get; }
-        public int Columns { get; } = 10;
+        public int Columns { get; } = 12;
 
         public BlockType[,] Blocks;
         public Inventory()

@@ -20,7 +20,7 @@ namespace Minecraft.UI
 
             Items[0] = BlockType.GrassBlock;
             Items[1] = BlockType.Cobblestone;
-            Items[2] = BlockType.WoodPlank;
+            Items[2] = BlockType.OakPlank;
             Items[3] = BlockType.Glass;
             Items[4] = BlockType.GreyConcrete;
             Items[5] = BlockType.BlackConcrete;

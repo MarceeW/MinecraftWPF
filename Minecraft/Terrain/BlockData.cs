@@ -19,9 +19,13 @@ namespace Minecraft.Terrain
                    type == BlockType.MagentaStainedGlass||
                    type == BlockType.PurpleStainedGlass ||
                    type == BlockType.RedStainedGlass ||
+                   type == BlockType.LimeStainedGlass ||
                    type == BlockType.OakLeaves||
                    type == BlockType.BirchLeaves ||
+                   type == BlockType.AcaciaLeaves ||
+                   type == BlockType.SpruceLeaves ||
                    type == BlockType.Air ||
+                   type == BlockType.Scaffolding ||
                    
                    IsVegetationBlock(type);
         }
@@ -31,7 +35,20 @@ namespace Minecraft.Terrain
                    type == BlockType.SparseGrass ||
                    type == BlockType.Allium ||
                    type == BlockType.Poppy ||
-                   type == BlockType.DeadBush;
+                   type == BlockType.DeadBush ||
+                   type == BlockType.OakSapling ||
+                   type == BlockType.BirchSapling ||
+                   type == BlockType.AcaciaSapling ||
+                   type == BlockType.SpruceSapling ||
+                   type == BlockType.Torch ||
+                   type == BlockType.RedstoneTorch ||
+                   type == BlockType.RedMushroom ||
+                   type == BlockType.BrownMushroom ||
+                   type == BlockType.CobWeb ||
+                   type == BlockType.BlueOrchid ||
+                   type == BlockType.AzureBluet ||
+                   type == BlockType.AmethystCluster ||
+                   type == BlockType.Fire;
         }
     }
 }

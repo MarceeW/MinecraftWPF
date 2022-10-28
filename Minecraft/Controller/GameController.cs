@@ -84,7 +84,7 @@ namespace Minecraft.Controller
             {
                 var blockHit = Ray.Cast(World, out bool hit, out FaceDirection hitFace);
 
-                if (hit && !gameWindow.IsInventoryOpened)
+                if (hit && !gameWindow.IsGamePaused)
                 {
                     if(World.GetBlock(blockHit) != BlockType.Grass && World.GetBlock(blockHit) != BlockType.SparseGrass)
                     {

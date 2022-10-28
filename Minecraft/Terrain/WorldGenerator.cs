@@ -34,6 +34,7 @@ namespace Minecraft.Terrain
             this.world.WorldGenerator = this;
 
             noise = new FastNoise();
+            //noise.SetSeed(35351);
 
             noise.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
             noise.SetInterp(FastNoise.Interp.Linear);

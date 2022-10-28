@@ -64,7 +64,7 @@ namespace Minecraft.Graphics
 
                         foreach (var face in FaceDirectionVectors.Vectors)
                         {
-                            if (block == BlockType.Bedrock && face.Key != FaceDirection.Top)
+                            if (y == 0 && face.Key != FaceDirection.Top)
                                 continue;
 
                             Vector3 neighborPos = blockPos + face.Value;

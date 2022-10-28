@@ -75,11 +75,6 @@ namespace Minecraft
                 MinorVersion = 1,
             };
             OpenTkControl.Start(settings);
-
-            MouseListener = new MouseListener(this);
-            renderer = new Renderer();
-            gameController = new GameController(renderer, this);
-
             
             var resolution = Screen.PrimaryScreen.Bounds;
 
@@ -88,15 +83,17 @@ namespace Minecraft
 
             CenterPosition = new Vector2(resolution.Width / 2, resolution.Height / 2);
 
+            MouseListener = new MouseListener(this);
+            renderer = new Renderer();
             float hudScale = 0.6f;
             
             Hotbar = Ioc.Default.GetService<IHotbar>();
-
+            
             HotbarGrid.Width *= hudScale;
             HotbarGrid.Height *= hudScale;
 
             MouseController.HideMouse();
-
+            gameController = new GameController(renderer, this);
             CreateHotbar();
             CreateInventory();
             SetupHotbar();
