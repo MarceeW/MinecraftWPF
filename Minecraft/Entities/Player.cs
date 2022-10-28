@@ -9,8 +9,6 @@ namespace Minecraft.Game
     internal class Player : IPlayer
     {
         public ICamera Camera { get; private set; }
-        public const float PlayerHeight = 2.0f;
-        public const float EyeHeight = 1.5f;
         public bool IsFlying { get; set; } = false;
         public Vector3 Position
         {

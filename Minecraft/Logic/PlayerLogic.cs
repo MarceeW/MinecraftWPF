@@ -50,7 +50,7 @@ namespace Minecraft.Logic
             force = new Force();
             force.SetForceType(ForceType.Rise);
 
-            collider = new BoxCollider(player.Position, 1, 2, world);
+            collider = new BoxCollider(player.Position, .5f, 2, world);
         }
         public void Jump()
         {
@@ -83,7 +83,7 @@ namespace Minecraft.Logic
                 }    
 
                 player.Camera.ModPosition(deltaPos);
-                collider.Position = player.Position - new Vector3(0.5f);
+                collider.UpdatePosition(player.Position);
             }
         }
         public void Move(Direction dir, float delta)
@@ -148,7 +148,7 @@ namespace Minecraft.Logic
             }
 
             player.Camera.ModPosition(deltaPos);
-            collider.Position = player.Position - new Vector3(0.5f);
+            collider.UpdatePosition(player.Position);
         }
     }
 }

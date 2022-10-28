@@ -9,7 +9,7 @@ namespace Minecraft.Logic
 {
     internal class BoxCollider : IBoxCollider
     {
-        public Vector3 Position { get; set; }
+        public Vector3 Position { get; private set; }
         public float Width { get; }
         public float Height { get; }
 
@@ -17,12 +17,13 @@ namespace Minecraft.Logic
 
         public BoxCollider(Vector3 position, float width, float height, IWorld worldToCollide)
         {
-            Position = position;
             Width = width;
             Height = height;
+
+            UpdatePosition(position);
             this.worldToCollide = worldToCollide;
         }
-        public void Collision(ref Vector3 deltaPos,out bool headHit,out bool groundHit)
+        public void Collision(ref Vector3 deltaPos, out bool headHit, out bool groundHit)
         {
             bool xBlocked = false, yBlocked = false, zBlocked = false;
 
@@ -33,7 +34,11 @@ namespace Minecraft.Logic
             BroadPhase(ref deltaPos, ref xBlocked, ref yBlocked, ref zBlocked, ref headHit, ref groundHit);
             BroadPhase(ref deltaPos, ref xBlocked, ref yBlocked, ref zBlocked, ref headHit, ref groundHit);
         }
-        private bool BroadPhase(ref Vector3 deltaPos,ref bool xBlocked,ref bool yBlocked,ref bool zBlocked, ref bool headHit, ref bool groundHit)
+        public void UpdatePosition(Vector3 pos)
+        {
+            Position = pos - new Vector3(Width / 2, 0.5f, Width / 2);
+        }
+        private bool BroadPhase(ref Vector3 deltaPos, ref bool xBlocked, ref bool yBlocked, ref bool zBlocked, ref bool headHit, ref bool groundHit)
         {
             int broadPhaseLeft;
             int broadPhaseRight;
@@ -60,7 +65,7 @@ namespace Minecraft.Logic
                 {
                     broadPhaseLeft = (int)Math.Floor(Position.X);
                     broadPhaseRight = (int)Math.Ceiling(Position.X + deltaPos.X + Width);
-                }           
+                }
             }
 
             if (deltaPos.Y < 0.0)
@@ -253,21 +258,21 @@ namespace Minecraft.Logic
                 else
                     collisionNormal = new Vector3(0, 0, Math.Sign(deltaPos.Z));
 
-                int precisedSides = 0;
-
-                if (Position.X - (int)Position.X == 0)
-                    precisedSides++;
-
-                if (Position.Y - (int)Position.Y == 0)
-                    precisedSides++;
-
-                if (Position.Z - (int)Position.Z == 0)
-                    precisedSides++;
-
-                //Debug.WriteLine(collisionNormal);
-
-                if (precisedSides == 3 && !BlockData.IsBlockSolid(worldToCollide.GetBlock(Position + collisionNormal)))
-                    return false;
+                //int precisedSides = 0;
+                //
+                //if (Position.X - (int)Position.X == 0)
+                //    precisedSides++;
+                //
+                //if (Position.Y - (int)Position.Y == 0)
+                //    precisedSides++;
+                //
+                //if (Position.Z - (int)Position.Z == 0)
+                //    precisedSides++;
+                //
+                ////Debug.WriteLine(collisionNormal);
+                //
+                //if (precisedSides == 3 && !BlockData.IsBlockSolid(worldToCollide.GetBlock(Position + collisionNormal)))
+                //    return false;
 
                 return true;
             }
