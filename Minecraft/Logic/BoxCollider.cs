@@ -52,7 +52,7 @@ namespace Minecraft.Logic
             if (deltaPos.X < 0.0)
             {
                 broadPhaseLeft = (int)Math.Floor(Position.X + deltaPos.X - Width);
-                broadPhaseRight = (int)Math.Floor(Position.X + Width);
+                broadPhaseRight = (int)Math.Ceiling(Position.X);
             }
             else
             {
@@ -78,12 +78,12 @@ namespace Minecraft.Logic
                 if (deltaPos.Y == 0)
                 {
                     broadPhaseBottom = (int)Math.Floor(Position.Y);
-                    broadPhaseTop = (int)Math.Ceiling(Position.Y + Height / 2);
+                    broadPhaseTop = (int)Math.Floor(Position.Y + Height);
                 }
                 else
                 {
                     broadPhaseBottom = (int)Math.Floor(Position.Y);
-                    broadPhaseTop = (int)Math.Ceiling(Position.Y + deltaPos.Y + Height / 2);
+                    broadPhaseTop = (int)Math.Ceiling(Position.Y + deltaPos.Y + Height);
                 }
 
             }
@@ -91,7 +91,7 @@ namespace Minecraft.Logic
             if (deltaPos.Z < 0.0)
             {
                 broadPhaseBack = (int)Math.Floor(Position.Z + deltaPos.Z - Width);
-                broadPhaseFront = (int)Math.Floor(Position.Z + Width);
+                broadPhaseFront = (int)Math.Floor(Position.Z);
             }
             else
             {
@@ -103,7 +103,7 @@ namespace Minecraft.Logic
                 else
                 {
                     broadPhaseBack = (int)Math.Floor(Position.Z);
-                    broadPhaseFront = (int)Math.Ceiling(Position.Z + deltaPos.Z + Width);
+                    broadPhaseFront = (int)Math.Floor(Position.Z + deltaPos.Z + Width);
                 }
             }
 
@@ -258,21 +258,6 @@ namespace Minecraft.Logic
                 else
                     collisionNormal = new Vector3(0, 0, Math.Sign(deltaPos.Z));
 
-                //int precisedSides = 0;
-                //
-                //if (Position.X - (int)Position.X == 0)
-                //    precisedSides++;
-                //
-                //if (Position.Y - (int)Position.Y == 0)
-                //    precisedSides++;
-                //
-                //if (Position.Z - (int)Position.Z == 0)
-                //    precisedSides++;
-                //
-                ////Debug.WriteLine(collisionNormal);
-                //
-                //if (precisedSides == 3 && !BlockData.IsBlockSolid(worldToCollide.GetBlock(Position + collisionNormal)))
-                //    return false;
 
                 return true;
             }

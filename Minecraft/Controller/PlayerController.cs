@@ -87,7 +87,7 @@ namespace Minecraft.Controller
                 else
                     playerLogic.Sprint = false;
 
-                Vector2 lastPlayerPos = player.GetPosition().Xz;
+                Vector2 lastPlayerPos = player.Position.Xz;
 
                 int lastChunkX = (int)(lastPlayerPos.X / Chunk.Size);
                 int lastChunkZ = (int)(lastPlayerPos.Y / Chunk.Size);
@@ -117,7 +117,7 @@ namespace Minecraft.Controller
                 else
                     playerLogic.Crouch = false;
 
-                Vector2 playerPos = player.GetPosition().Xz;
+                Vector2 playerPos = player.Position.Xz;
 
                 int currChunkX = (int)(playerPos.X / Chunk.Size);
                 int currChunkZ = (int)(playerPos.Y / Chunk.Size);

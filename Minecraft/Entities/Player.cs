@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Graphics;
 using Minecraft.Logic;
+using Minecraft.Terrain;
 using Minecraft.UI;
 using OpenTK.Mathematics;
 
@@ -16,6 +17,10 @@ namespace Minecraft.Game
             {
                 return Camera.Position - new Vector3(0, 1, 0);
             }
+            set
+            {
+                Camera.SetPosition(value + new Vector3(0, 1, 0));
+            }
         }
 
         public IForce Force { get; private set; }
@@ -26,15 +31,7 @@ namespace Minecraft.Game
             Force = Ioc.Default.GetService<IForce>();
             Hotbar = Ioc.Default.GetService<IHotbar>();
 
-            SetPosition(position);
-        }
-        public Vector3 GetPosition()
-        {
-            return Camera.Position;
-        }
-        public void SetPosition(Vector3 position)
-        {
-            Camera.SetPosition(position);
+            Position = position;
         }
     }
 }

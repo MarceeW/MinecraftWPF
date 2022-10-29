@@ -16,8 +16,7 @@ namespace Minecraft.Controller
 {
     internal class GameController
     {
-        public Player Player { get; private set; }
-        public World World { get; private set; }
+        public GameSession Session { get; set; }
         public WorldRenderer WorldRendererer { get; private set; }
         public bool IsGameRunning { get; private set; }
         public PlayerController PlayerController { get; private set; }
@@ -27,24 +26,23 @@ namespace Minecraft.Controller
 
         private Thread updateThread;
         private Stopwatch gameStopwatch;
-        public GameController(Renderer renderer,GameWindow gameWindow)
+        public GameController(Renderer renderer,GameWindow gameWindow,GameSession session)
         {
-            World = new World();
-            Player = new Player(new Vector3(0, 40, 0));
+            Session = session;
             WorldRendererer = new WorldRenderer();
-            WorldRendererer.SetWorld(World);
+            WorldRendererer.SetWorld(Session.World);
             this.gameWindow = gameWindow;
 
-            WorldSerializer.World = World;
+            WorldSerializer.World = Session.World;
     
-            worldGenerator = new WorldGenerator(World,WorldRendererer.RenderDistance);
+            worldGenerator = new WorldGenerator(Session.World,WorldRendererer.RenderDistance);
             worldGenerator.ChunkAdded += WorldRendererer.AddToQueue;
             WorldRendererer.RenderDistanceChanged += (int rd) => worldGenerator.RenderDistance = rd;
 
             if (!WorldSerializer.WorldFileExists())
                 worldGenerator.InitWorld();
 
-            PlayerController = new PlayerController(Player, World);
+            PlayerController = new PlayerController(Session.Player, Session.World);
             PlayerController.ChangedChunk += worldGenerator.ExpandWorld;
 
             renderer.OnRendering += WorldRendererer.CreateMeshesInQueue;
@@ -54,7 +52,7 @@ namespace Minecraft.Controller
             gameWindow.MouseListener.LeftMouseClick += characterHand.OnHit;
             renderer.Scene = new Scene(WorldRendererer, characterHand);
 
-            Ioc.Default.GetService<ICamera>()?.Init(Player.Position);
+            Ioc.Default.GetService<ICamera>()?.Init(Session.Player.Position);
 
             gameWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
             gameWindow.Loaded += (object sender, RoutedEventArgs e) => renderer.SetupRenderer((int)gameWindow.Width, (int)gameWindow.Height);
@@ -82,11 +80,11 @@ namespace Minecraft.Controller
 
             gameWindow.MouseListener.RightMouseClick += () =>
             {
-                var blockHit = Ray.Cast(World, out bool hit, out FaceDirection hitFace);
+                var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
 
                 if (hit && !gameWindow.IsGamePaused)
                 {
-                    if(World.GetBlock(blockHit) != BlockType.Grass && World.GetBlock(blockHit) != BlockType.SparseGrass)
+                    if(Session.World.GetBlock(blockHit) != BlockType.Grass && Session.World.GetBlock(blockHit) != BlockType.SparseGrass)
                     {
                         switch (hitFace)
                         {
@@ -113,7 +111,7 @@ namespace Minecraft.Controller
                         }
                     }
 
-                    World.AddBlock(blockHit, Player.Hotbar.GetSelectedBlock());
+                    Session.World.AddBlock(blockHit, Session.Player.Hotbar.GetSelectedBlock());
 
                     characterHand.OnBlockPlace();
                 }
@@ -121,12 +119,12 @@ namespace Minecraft.Controller
 
             gameWindow.MouseListener.LeftMouseClick += () =>
             {
-                var blockHit = Ray.Cast(World, out bool hit, out FaceDirection hitFace);
+                var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
 
                 if (hit && !gameWindow.IsInventoryOpened)
                 {
                     Debug.WriteLine(blockHit);
-                    World.RemoveBlock(blockHit);
+                    Session.World.RemoveBlock(blockHit);
                 }
             };
 

@@ -8,16 +8,16 @@ namespace Minecraft.Controller
     {
         public event Action? LeftMouseClick;
         public event Action? RightMouseClick;
-        private GameWindow renderWindow;
+        private GameWindow gameWindow;
         public MouseListener(GameWindow gameWindow)
         {
-            this.renderWindow = gameWindow;
+            this.gameWindow = gameWindow;
 
             gameWindow.MouseDown += OnMouseDown;
         }
         public void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!renderWindow.IsGamePaused)
+            if (!gameWindow.IsGamePaused)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                 {
@@ -31,7 +31,6 @@ namespace Minecraft.Controller
         }
         public void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
-
         }
     }
 }

@@ -33,7 +33,7 @@
     </Window.Resources>
 
     <Grid x:Name="RenderCanvas">
-        
+
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
             Render="OpenTkControl_OnRender">
@@ -44,7 +44,7 @@
                 </LinearGradientBrush>
             </glWpfControl:GLWpfControl.OpacityMask>
         </glWpfControl:GLWpfControl>
-        
+
         <Rectangle Visibility="Hidden" x:Name="UnderWaterCover" Height="1080" VerticalAlignment="Center" HorizontalAlignment="Left" Width="1920">
             <Rectangle.Fill>
                 <SolidColorBrush Color="#FF3963B7" Opacity=".5"/>
@@ -52,12 +52,10 @@
         </Rectangle>
         
         <Label x:Name="fpsCounter" HorizontalAlignment="Left" Margin="54,47,0,0" VerticalAlignment="Top" Background="#7F000000" Foreground="White" FontSize="14" FontFamily="Century Gothic"/>
-        
-        <Canvas Name="Crosshair" HorizontalAlignment="Center" VerticalAlignment="Center" Width="24">
 
+        <Canvas Name="Crosshair" HorizontalAlignment="Center" VerticalAlignment="Center" Width="24">
             <Rectangle Height="24" Fill="WhiteSmoke" Width="3" HorizontalAlignment="Left" Canvas.Left="10" VerticalAlignment="Center"/>
             <Rectangle Height="3" Fill="WhiteSmoke" Width="24" HorizontalAlignment="Center" Canvas.Top="10" VerticalAlignment="Top"/>
-
         </Canvas>
 
         <Rectangle Visibility="Hidden" x:Name="PauseMenuDarkener" Height="1080" VerticalAlignment="Center" HorizontalAlignment="Left" Width="1920">
@@ -66,8 +64,8 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <Grid x:Name="HotbarGrid" Width="900" Height="100" VerticalAlignment="Bottom" Margin="0,10" MouseDown="HotbarGridMouseDown"/>
-        <Grid Visibility="Hidden" Width="900" Name="InventoryGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,30" PreviewMouseDown="InventoryMouseDown"/>
+        <Grid x:Name="HotbarGrid" Width="900" Height="100" VerticalAlignment="Bottom" Margin="0,10" MouseDown="HotbarMouseDown"/>
+        <Grid Visibility="Hidden" Width="900" Name="InventoryGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,30"/>
 
         <TextBox x:Name="CommandLine" Visibility="Hidden" HorizontalAlignment="Left" Margin="30,900,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" Background="#59000000" BorderBrush="{x:Null}" FontSize="36"/>
 

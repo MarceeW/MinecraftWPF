@@ -15,7 +15,7 @@ namespace Minecraft.Terrain
     }
     internal static class AtlasTexturesData
     {
-        public static string TexturePath { get => texturePath; set { texturePath = value; atlas = new Texture(texturePath, false); } }
+        public static string TexturePath { get => texturePath; set { texturePath = value; atlas = new Texture(texturePath, false); TextureSize = atlas.Width / 16;  } }
         private static string texturePath = @"..\..\..\Assets\Textures\terrain.png";
         //Top = 1st Bot = 2nd Other = 3rd
         public static readonly Position2D[][] TexturePositions =
@@ -128,7 +128,7 @@ namespace Minecraft.Terrain
             //Torch
             new Position2D[1]{ new Position2D(6,15) },
             //CobWeb
-            new Position2D[1]{ new Position2D(5,12) },
+            new Position2D[1]{ new Position2D(5,7) },
             //Ores...:
             new Position2D[1]{ new Position2D(6,0) },
             new Position2D[1]{ new Position2D(6,1) },
@@ -174,14 +174,14 @@ namespace Minecraft.Terrain
             //PurpurPillarBlock
             new Position2D[3]{ new Position2D(5,15), new Position2D(5, 15), new Position2D(5, 14), },
             //BookShelf
-            new Position2D[3]{ new Position2D(1,6), new Position2D(1, 6), new Position2D(0, 5), },
+            new Position2D[3]{ new Position2D(1,6), new Position2D(1, 6), new Position2D(5, 0), },
             //Bricks...:
             new Position2D[1]{ new Position2D(7,11) },
             new Position2D[1]{ new Position2D(5,11) },
             new Position2D[1]{ new Position2D(1,9) },
             new Position2D[1]{ new Position2D(5,8) },
         };
-        public const int TextureSize = 16;
+        public static int TextureSize = 16;
         public static Texture Atlas
         {
             get
@@ -198,6 +198,9 @@ namespace Minecraft.Terrain
 
         public static Int32Rect GetTextureRect(BlockType type)
         {
+            if(TexturePositions[(int)type].Length > 1)
+                return new Int32Rect(TexturePositions[(int)type][2].column * TextureSize, TexturePositions[(int)type][2].row * TextureSize, TextureSize, TextureSize);
+
             return new Int32Rect(TexturePositions[(int)type][0].column * TextureSize, TexturePositions[(int)type][0].row * TextureSize, TextureSize, TextureSize);
         }
         public static float[] GetTextureCoords(BlockType type, FaceDirection? face)

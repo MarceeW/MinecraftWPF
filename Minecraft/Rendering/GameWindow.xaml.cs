@@ -31,10 +31,10 @@ namespace Minecraft
     {
         class PickedItem
         {
-            public CroppedBitmap src;
+            public ImageSource src;
             public BlockType type;
 
-            public PickedItem(CroppedBitmap src, BlockType type)
+            public PickedItem(ImageSource src, BlockType type)
             {
                 this.src = src;
                 this.type = type;
@@ -44,8 +44,8 @@ namespace Minecraft
         public Vector2 CenterPosition;
         public event Action? RenderSizeChange;
         public event Action<bool>? Pause;
-        public IHotbar Hotbar { get; }
-        public Inventory Inventory { get; set; } = new Inventory();
+        public IHotbar Hotbar { get; private set; }
+        public Inventory Inventory { get; private set; } 
 
         public bool NeedsToResetMouse = true;
         public bool ShowWireFrames = false;
@@ -84,20 +84,27 @@ namespace Minecraft
             CenterPosition = new Vector2(resolution.Width / 2, resolution.Height / 2);
 
             MouseListener = new MouseListener(this);
-            renderer = new Renderer();
-            float hudScale = 0.6f;
-            
-            Hotbar = Ioc.Default.GetService<IHotbar>();
-            
-            HotbarGrid.Width *= hudScale;
-            HotbarGrid.Height *= hudScale;
 
-            MouseController.HideMouse();
-            gameController = new GameController(renderer, this);
+            EnterGame();
+
             CreateHotbar();
             CreateInventory();
             SetupHotbar();
             SetupBindings();
+        }
+        private void EnterGame()
+        {
+            renderer = new Renderer();
+            float hudScale = 0.6f;
+
+            Inventory = new Inventory();
+            Hotbar = Ioc.Default.GetService<IHotbar>();
+
+            HotbarGrid.Width *= hudScale;
+            HotbarGrid.Height *= hudScale;
+
+            MouseController.HideMouse();
+            gameController = new GameController(renderer, this, new GameSession());
         }
         protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
         {
@@ -317,6 +324,7 @@ namespace Minecraft
 
                         item.MouseEnter += OnMouseEnterBlockImage;
                         item.MouseLeave += OnMouseLeaveBlockImage;
+                        item.MouseDown += InventoryItemMouseDown;
 
                         var tooltip = new ToolTip();
                         tooltip.Content = Inventory.Blocks[y, x];
@@ -345,7 +353,7 @@ namespace Minecraft
                     var data = i.Name.Split('_');
                     if (data[0] == "InventoryItem")
                     {
-                        i.Source = new CroppedBitmap((BitmapSource)newImage, AtlasTexturesData.GetTextureRect(Inventory.Blocks[int.Parse(data[2]), int.Parse(data[1])]));
+                        i.Source = new CroppedBitmap(newImage, AtlasTexturesData.GetTextureRect(Inventory.Blocks[int.Parse(data[2]), int.Parse(data[1])]));
                     }
                 }
             }
@@ -354,7 +362,7 @@ namespace Minecraft
                 if (img is Image i)
                 {
                     var data = i.Name.Split('_');
-                    if (data[0] == "HotbarItem")
+                    if (data[0] == "HotbarItem" && Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
                     {
                         i.Source = new CroppedBitmap((BitmapSource)newImage, AtlasTexturesData.GetTextureRect(Hotbar.Items[int.Parse(data[1])]));
                     }
@@ -445,14 +453,17 @@ namespace Minecraft
         }
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
-            if (ShowWireFrames)
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-            else
-                GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+            if (!IsInMainMenu)
+            {
+                if (ShowWireFrames)
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+                else
+                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 
-            renderer.RenderFrame(delta.Milliseconds / 1000.0f);
+                renderer.RenderFrame(delta.Milliseconds / 1000.0f);
 
-            fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);                
+                fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);
+            }       
         }
         private void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -464,27 +475,16 @@ namespace Minecraft
             (sender as Image).Width /= 1.2;
             Cursor = Cursors.Arrow;
         }
-        private void InventoryMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void InventoryItemMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if(e.LeftButton == MouseButtonState.Pressed)
             {
-                var grid = sender as Grid;
+                var item = sender as Image;
+                var itemData = item.Name.Split('_');
 
-                var pos = e.GetPosition(grid);
-
-                pos.X /= grid.Width / Inventory.Columns;
-                pos.Y /= grid.Height / Inventory.Rows;
-
-                var blockType = Inventory.Blocks[(int)pos.Y, (int)pos.X];
-
-                if(blockType != BlockType.Air)
-                {
-                    pickedItem = new PickedItem(new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(blockType)), blockType);
-
-                    PickedItemImage.Source = pickedItem.src;
-                }
-
-                PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
+                PickedItemImage.Source = item.Source;
+                
+                pickedItem = new PickedItem(item.Source.Clone(), Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
             }
             else
             {
@@ -492,9 +492,9 @@ namespace Minecraft
                 pickedItem = null;
             }
         }
-        private void HotbarGridMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void HotbarMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(Hotbar != null)
+            if (Hotbar != null)
             {
                 var grid = sender as Grid;
 
@@ -510,7 +510,7 @@ namespace Minecraft
 
                     if (e.LeftButton == MouseButtonState.Pressed)
                     {
-                        pickedItem.src = (CroppedBitmap)clickedImage.Source;
+                        pickedItem.src = clickedImage.Source?.Clone();
                         pickedItem.type = Hotbar.Items[(int)pos.X];
 
                         clickedImage.Source = PickedItemImage.Source;
@@ -525,7 +525,7 @@ namespace Minecraft
 
                     Hotbar.ChangeBlock((int)pos.X, toChange);
                 }
-                else if(pickedItem == null)
+                else if (pickedItem == null)
                 {
                     pickedItem = new PickedItem((CroppedBitmap)clickedImage.Source, Hotbar.Items[(int)pos.X]);
 

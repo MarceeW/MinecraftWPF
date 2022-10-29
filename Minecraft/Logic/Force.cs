@@ -7,6 +7,7 @@ namespace Minecraft.Logic
     internal class Force : IForce
     {
         public ForceType Type { get; private set; }
+        public Direction SlideDirection { get; set; }
 
         private const float maxFallSpeed = 60.0f;
         private const float riseForce = 10.0f;
@@ -28,8 +29,9 @@ namespace Minecraft.Logic
         {
             currentStep = 0;
         }
-        public void Apply(out Vector3 deltaPos)
+        public void ApplyGravity(out Vector3 deltaPos)
         {
+
             double deltaY = 0;
             deltaPos = new Vector3();
 

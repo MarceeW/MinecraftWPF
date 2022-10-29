@@ -11,9 +11,6 @@ namespace Minecraft.Game
         IForce Force { get; }
         IHotbar Hotbar { get; }
         bool IsFlying { get; set; }
-        Vector3 Position { get; }
-
-        Vector3 GetPosition();
-        void SetPosition(Vector3 position);
+        Vector3 Position { get; set; }
     }
 }
