@@ -264,18 +264,21 @@ namespace Minecraft.Terrain
                 int x = random.Next(range);
                 int z = random.Next(range);
 
-                int topBlockY = world.GetChunk(new Vector3(x, 0, z), out Vector2 chunkPos).TopBlockPositions[x, z];
-                var topBlock = world.GetBlock(new Vector3(x, topBlockY, z));
-
-                while (BlockData.IsBolckTransparent(topBlock))
-                    topBlock = world.GetBlock(new Vector3(x, topBlockY--, z));
-
-                if (topBlock == BlockType.GrassBlock || topBlock == BlockType.Sand && world.GetBlock(new Vector3(x, topBlockY + 1, z)) != BlockType.Water)
+                if (world.Chunks.ContainsKey(new Vector2(x, z)))
                 {
-                    return new Vector3(x, topBlockY + 2, z);
+                    int topBlockY = world.GetChunk(new Vector3(x, 0, z), out Vector2 chunkPos).TopBlockPositions[x % Chunk.Size, z % Chunk.Size];
+                    var topBlock = world.GetBlock(new Vector3(x, topBlockY, z));
+
+                    while (BlockData.IsBolckTransparent(topBlock))
+                        topBlock = world.GetBlock(new Vector3(x, topBlockY--, z));
+
+                    if (topBlock == BlockType.GrassBlock || topBlock == BlockType.Sand && world.GetBlock(new Vector3(x, topBlockY + 1, z)) != BlockType.Water)
+                    {
+                        return new Vector3(x, topBlockY + 2, z);
+                    }
+                    else if (BlockData.IsVegetationBlock(topBlock) || topBlock == BlockType.Water)
+                        return new Vector3(x, topBlockY, z);
                 }
-                else if (BlockData.IsVegetationBlock(topBlock) || topBlock == BlockType.Water)
-                    return new Vector3(x, topBlockY, z);
             }
         }
     }
