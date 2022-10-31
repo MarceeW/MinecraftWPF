@@ -7,6 +7,7 @@ namespace Minecraft.Terrain
     internal interface IWorldGenerator
     {
         event Action<Vector2>? ChunkAdded;
+        event Action? WorldInitalized;
         int RenderDistance { get; set; }
 
         void AddGeneratedChunksToWorld(float delta);
@@ -14,6 +15,6 @@ namespace Minecraft.Terrain
         void GenerateChunksToQueue();
         BlockType GetBlockAtHeight(int y, int depth = 0);
         int GetHeightAtPosition(Vector2 pos);
-        void InitWorld();
+        Vector3 GetSpawnPosition(int range);
     }
 }

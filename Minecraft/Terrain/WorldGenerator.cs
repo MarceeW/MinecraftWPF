@@ -5,12 +5,15 @@ using System;
 using System.Collections.Generic;
 using Minecraft.Terrain.Noise;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Game;
+using OpenTK.Platform.Windows;
 
 namespace Minecraft.Terrain
 {
     internal class WorldGenerator : IWorldGenerator
     {
         public event Action<Vector2>? ChunkAdded;
+        public event Action? WorldInitalized;
         public int RenderDistance { get; set; }
 
         private FastNoise noise;
@@ -22,11 +25,10 @@ namespace Minecraft.Terrain
         private PriorityQueue<Vector2, float> generatorQueue;
         private Queue<KeyValuePair<Vector2, IChunk>> generatedChunks;
         private static Random random = new Random();
+        private bool worldInit = false;
 
         public WorldGenerator(IWorld world,int renderDistance)
         {
-            RenderDistance = renderDistance;
-
             generatorQueue = new PriorityQueue<Vector2, float>();
             generatedChunks = new Queue<KeyValuePair<Vector2, IChunk>>();
 
@@ -34,23 +36,19 @@ namespace Minecraft.Terrain
             this.world.WorldGenerator = this;
 
             noise = new FastNoise();
-            //noise.SetSeed(35351);
-
+            noise.SetSeed(world.Seed);
             noise.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
             noise.SetInterp(FastNoise.Interp.Linear);
             noise.SetFractalOctaves(4);
             noise.SetFrequency(0.005f);
             noise.SetFractalGain(0.55f);
             noise.SetCellularJitter(0.005f);
-
             noise.SetFractalType(FastNoise.FractalType.FBM);
-        }
-        public void InitWorld()
-        {
-            for (int x = -RenderDistance; x <= RenderDistance; x++)
-                for (int z = -RenderDistance; z <= RenderDistance; z++)
-                    lock (world)
-                        AddChunk(new Vector2(x, z));
+
+            if (world.Chunks.Count == 0)
+                InitWorld(renderDistance);
+            else
+                worldInit = true;
         }
         public void AddGeneratedChunksToWorld(float delta)
         {
@@ -59,6 +57,11 @@ namespace Minecraft.Terrain
                 var chunk = generatedChunks.Dequeue();
                 world.AddChunk(chunk.Key, chunk.Value);
                 ChunkAdded?.Invoke(chunk.Key);
+            }
+            if(generatedChunks.Count == 0 && !worldInit)
+            {
+                worldInit = true;
+                WorldInitalized?.Invoke();
             }
         }
         public void GenerateChunksToQueue()
@@ -82,7 +85,22 @@ namespace Minecraft.Terrain
             if (y == 0)
                 return BlockType.Bedrock;
             else if (depth > 5)
+            {
+                if (random.NextDouble() > 0.98)
+                    return BlockType.CopperOre;
+                else if (depth > 10 && random.NextDouble() > 0.98)
+                    return BlockType.IronOre;
+                else if (depth > 15 && random.NextDouble() > 0.98)
+                    return BlockType.GoldOre;
+                else if(depth > 25)
+                {
+                    if (random.NextDouble() > 0.98)
+                        return BlockType.DiamondOre;
+                    else if (random.NextDouble() > 0.99)
+                        return BlockType.EmeraldOre;
+                }
                 return BlockType.Stone;
+            }   
             else if (y < worldDepth - 8)
                 return BlockType.Sand;
             else if (depth >= 1)
@@ -112,6 +130,13 @@ namespace Minecraft.Terrain
             {
                 AddChunkRange(-RenderDistance, RenderDistance, 0, RenderDistance, x, z, 1, 1);
             }
+        }
+        private void InitWorld(int renderDistance)
+        {
+            for (int x = -renderDistance; x <= renderDistance; x++)
+                for (int z = -renderDistance; z <= renderDistance; z++)
+                    lock (world)
+                        AddChunk(new Vector2(x, z));
         }
         private void AddChunkRange(int fromXRange, int toXRgange, int fromZRange, int toZRange, int x, int z, int xSign, int zSign)
         {
@@ -172,7 +197,7 @@ namespace Minecraft.Terrain
                                 else
                                     world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.OakTree, chunk);
                             }
-                            else if (chance > 0.02 && chance <= 0.3)
+                            else if (chance > 0.1 && chance <= 0.3)
                             {
                                 chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Grass, false);
                             }
@@ -188,6 +213,18 @@ namespace Minecraft.Terrain
                             {
                                 chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Allium, false);
                             }
+                            else if (chance > 0.365 && chance <= 0.366)
+                            {
+                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.BlueOrchid, false);
+                            }
+                            else if (chance > 0.366 && chance <= 0.3665)
+                            {
+                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.AzureBluet, false);
+                            }
+                            else if (chance > 0.3665 && chance <= 0.37)
+                            {
+                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.RedMushroom, false);
+                            }
                         }
                         else if (block == BlockType.Sand)
                         {
@@ -202,6 +239,44 @@ namespace Minecraft.Terrain
                 }
             }
         }
+        public static int GenerateSeed(string seed)
+        {
+            if (seed == "")
+            {
+                return random.Next();
+            }
+            else if (int.TryParse(seed, out int s))
+                return s;
 
+            int finalSeed = 0;
+
+            for (int i = 0; i < seed.Length; i++)
+            {
+                finalSeed += (i + 1) * seed[i]; 
+            }
+
+            return finalSeed;
+        }
+        public Vector3 GetSpawnPosition(int range)
+        {
+            while (true)
+            {
+                int x = random.Next(range);
+                int z = random.Next(range);
+
+                int topBlockY = world.GetChunk(new Vector3(x, 0, z), out Vector2 chunkPos).TopBlockPositions[x, z];
+                var topBlock = world.GetBlock(new Vector3(x, topBlockY, z));
+
+                while (BlockData.IsBolckTransparent(topBlock))
+                    topBlock = world.GetBlock(new Vector3(x, topBlockY--, z));
+
+                if (topBlock == BlockType.GrassBlock || topBlock == BlockType.Sand && world.GetBlock(new Vector3(x, topBlockY + 1, z)) != BlockType.Water)
+                {
+                    return new Vector3(x, topBlockY + 2, z);
+                }
+                else if (BlockData.IsVegetationBlock(topBlock) || topBlock == BlockType.Water)
+                    return new Vector3(x, topBlockY, z);
+            }
+        }
     }
 }

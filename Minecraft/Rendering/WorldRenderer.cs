@@ -17,7 +17,7 @@ namespace Minecraft.Render
         public static BlockType? CurrentTarget { get; private set; }
         public Action<int>? RenderDistanceChanged;
         public int RenderDistance { get => renderDistance; set { SetProperty(ref renderDistance, value); OnRenderSizeChanged(); } }
-        private int renderDistance = 8;
+        private int renderDistance;
 
         private PriorityQueue<Vector2,float> renderQueue;
         private ICamera camera;
@@ -29,7 +29,7 @@ namespace Minecraft.Render
 
             renderQueue = new PriorityQueue<Vector2,float>();
             Shader = new Shader(@"..\..\..\Graphics\Shaders\Block\blockVert.glsl", @"..\..\..\Graphics\Shaders\Block\blockFrag.glsl");
-            Shader.SetDouble("renderDistance", RenderDistance);
+            Shader.SetDouble("renderDistance", renderDistance);
         }
         public void OnRenderSizeChanged()
         {
@@ -39,6 +39,15 @@ namespace Minecraft.Render
         public void SetWorld(IWorld world)
         {
             this.world = world;
+
+            if(world.Chunks.Count > 0)
+            {
+                foreach (var chunk in world.Chunks)
+                {
+                    chunk.Value.Mesh = new ChunkMesh();
+                    AddToQueue(chunk.Key);
+                }
+            }
         }
         public void AddToQueue(Vector2 toRender)
         {
@@ -77,7 +86,7 @@ namespace Minecraft.Render
             float xDistance = Math.Abs(camera.Position.X - chunk.Position.X * Chunk.Size);
             float zDistance = Math.Abs(camera.Position.Z - chunk.Position.Y * Chunk.Size);
 
-            return xDistance <= RenderDistance * Chunk.Size && zDistance <= RenderDistance * Chunk.Size;
+            return xDistance <= renderDistance * Chunk.Size && zDistance <= renderDistance * Chunk.Size;
         }
         private void RenderSelectedBlockFrame()
         {

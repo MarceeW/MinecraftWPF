@@ -6,7 +6,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="MainWindow" Height="700"  Width="1200">
+        Title="Minecraft" Height="1080"  Width="1920">
 
     <Window.Resources>
         <BitmapImage x:Key="BlockAtlas" UriSource="..\Assets\Textures\terrain.png"/>
@@ -15,21 +15,67 @@
         <BitmapImage x:Key="InventoryFrame" UriSource="..\Assets\HUD\InventoryFrame.png"/>
         <BitmapImage x:Key="MenuButtonFrame" UriSource="..\Assets\HUD\MenuButton.png"/>
         <BitmapImage x:Key="MenuButtonSelectedFrame" UriSource="..\Assets\HUD\MenuButton_selected.png"/>
+        <BitmapImage x:Key="MainMenuBackground" UriSource="..\Assets\HUD\MainMenuWallpaper.png"/>
+        <BitmapImage x:Key="MainMenuTitle" UriSource="..\Assets\HUD\MainMenuTitle.png"/>
+        <BitmapImage x:Key="OverWorldBackground" UriSource="..\Assets\HUD\Overworld_background.png"/>
 
         <Style x:Key="McText" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="..\Assets\Fonts\MinecraftRegular.otf #Minecraft"/>
             <Setter Property="Effect">
                 <Setter.Value>
                     <DropShadowEffect 
-                              ShadowDepth="2"
-                              BlurRadius="2"
-                              Direction="300"
+                              Opacity=".65"
+                              ShadowDepth="3"
+                              BlurRadius="0"
+                              Direction="315"
                               Color="Black"
                               RenderingBias="Performance"/>
                 </Setter.Value>
             </Setter>
         </Style>
         
+        <Style x:Key="ItemToolTip" TargetType="ToolTip">
+            <Setter Property="FontFamily" Value="..\Assets\Fonts\MinecraftRegular.otf #Minecraft"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect 
+                              Opacity=".65"
+                              ShadowDepth="3"
+                              BlurRadius="0"
+                              Direction="315"
+                              Color="Black"
+                              RenderingBias="Performance"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Background">
+                <Setter.Value>
+                    <SolidColorBrush Color="#232456"/>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="Foreground">
+                <Setter.Value>
+                    <SolidColorBrush Color="#fce7ce"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ButtonStyle" TargetType="Image"/>
+
+        <Style x:Key="McTextBox" TargetType="TextBox">
+            <Setter Property="FontFamily" Value="..\Assets\Fonts\MinecraftRegular.otf #Minecraft"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect 
+                              ShadowDepth="0"
+                              BlurRadius="2"
+                              Opacity=".5"
+                              Direction="300"
+                              Color="Black"
+                              RenderingBias="Performance"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </Window.Resources>
 
     <Grid x:Name="RenderCanvas">
@@ -45,18 +91,20 @@
             </glWpfControl:GLWpfControl.OpacityMask>
         </glWpfControl:GLWpfControl>
 
+        <Canvas x:Name="MainMenuCover" Visibility="{Binding ElementName=MainMenu, Path=Visibility}">
+            <Image Width="1920" Height="1080" Source="{StaticResource MainMenuBackground}"/>
+        </Canvas>
+        <Canvas x:Name="OverWorldCover" Visibility="Hidden">
+            <Image Width="1920" Height="1080" Source="{StaticResource OverWorldBackground}" RenderOptions.BitmapScalingMode="NearestNeighbor"/>
+        </Canvas>
+
         <Rectangle Visibility="Hidden" x:Name="UnderWaterCover" Height="1080" VerticalAlignment="Center" HorizontalAlignment="Left" Width="1920">
             <Rectangle.Fill>
                 <SolidColorBrush Color="#FF3963B7" Opacity=".5"/>
             </Rectangle.Fill>
         </Rectangle>
-        
-        <Label x:Name="fpsCounter" HorizontalAlignment="Left" Margin="54,47,0,0" VerticalAlignment="Top" Background="#7F000000" Foreground="White" FontSize="14" FontFamily="Century Gothic"/>
 
-        <Canvas Name="Crosshair" HorizontalAlignment="Center" VerticalAlignment="Center" Width="24">
-            <Rectangle Height="24" Fill="WhiteSmoke" Width="3" HorizontalAlignment="Left" Canvas.Left="10" VerticalAlignment="Center"/>
-            <Rectangle Height="3" Fill="WhiteSmoke" Width="24" HorizontalAlignment="Center" Canvas.Top="10" VerticalAlignment="Top"/>
-        </Canvas>
+        <Label x:Name="fpsCounter" Visibility="Hidden" HorizontalAlignment="Left" Margin="54,47,0,0" VerticalAlignment="Top" Background="#7F000000" Foreground="White" FontSize="14" FontFamily="Century Gothic"/>
 
         <Rectangle Visibility="Hidden" x:Name="PauseMenuDarkener" Height="1080" VerticalAlignment="Center" HorizontalAlignment="Left" Width="1920">
             <Rectangle.Fill>
@@ -64,10 +112,13 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <Grid x:Name="HotbarGrid" Width="900" Height="100" VerticalAlignment="Bottom" Margin="0,10" MouseDown="HotbarMouseDown"/>
-        <Grid Visibility="Hidden" Width="900" Name="InventoryGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,30"/>
+        <Grid Visibility="Hidden" x:Name="HotbarGrid" Width="900" Height="100" VerticalAlignment="Bottom" Margin="0,10" MouseDown="HotbarMouseDown"/>
+        <Grid Visibility="Hidden" Width="1280" Name="InventoryGrid" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="0,30"/>
 
-        <TextBox x:Name="CommandLine" Visibility="Hidden" HorizontalAlignment="Left" Margin="30,900,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="600" Background="#59000000" BorderBrush="{x:Null}" FontSize="36"/>
+        <Canvas Name="Crosshair" Visibility="Hidden" HorizontalAlignment="Center" VerticalAlignment="Center" Width="24">
+            <Rectangle Height="24" Fill="WhiteSmoke" Width="3" HorizontalAlignment="Left" Canvas.Left="10" VerticalAlignment="Center"/>
+            <Rectangle Height="3" Fill="WhiteSmoke" Width="24" HorizontalAlignment="Center" Canvas.Top="10" VerticalAlignment="Top"/>
+        </Canvas>
 
         <Canvas x:Name="PickedItemCanvas" VerticalAlignment="Top" HorizontalAlignment="Left">
             <Image Width="32" Name="PickedItemImage" RenderOptions.BitmapScalingMode="NearestNeighbor">
@@ -76,21 +127,6 @@
                 </Image.Effect>
             </Image>
         </Canvas>
-
-        <Grid x:Name="InventoryData" Visibility="Hidden" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="300">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
-
-            <Grid.RowDefinitions>
-                <RowDefinition Height="3*"/>
-                <RowDefinition Height="1*"/>
-            </Grid.RowDefinitions>
-
-            <Image x:Name="SelfieImage" Height="200" Source="..\Assets\HUD\Selfie.png" Grid.Row="0"/>
-            <TextBlock x:Name="CharacterName" Text="Pista_mc2013" HorizontalAlignment="Center" Foreground="White" FontSize="16" Grid.Row="1" Margin="0,30" Style="{StaticResource McText}"/>
-
-        </Grid>
 
         <TextBlock Visibility="Hidden" x:Name="InventoryText" Text="Creative Inventory" VerticalAlignment="Top" HorizontalAlignment="Center" Foreground="White" FontSize="48" Margin="0,60" Style="{StaticResource McText}"/>
 
@@ -108,18 +144,18 @@
 
             <TextBlock Text="Pause menu" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="48" Grid.Row="0" Style="{StaticResource McText}"/>
 
-            <Image x:Name="BackToGame" Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
+            <Image x:Name="BackToGame" Stretch="Fill" Width="300" Height="60" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
             <TextBlock Text="Back to game" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="1" Style="{StaticResource McText}"/>
 
-            <Image x:Name="Settings" Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="2" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
+            <Image x:Name="Settings"  Stretch="Fill" Width="300" Height="60" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="2" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
             <TextBlock Text="Settings" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
 
-            <Image x:Name="SaveAndExit" Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="3" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
+            <Image x:Name="SaveAndExit" Stretch="Fill" Width="300" Height="60" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="3" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
             <TextBlock Text="Save and exit" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="3" Style="{StaticResource McText}"/>
-            
+
         </Grid>
 
-        <Grid x:Name="SettingsMenu" Visibility="Hidden" Width="400" Height="400">
+        <Grid x:Name="SettingsMenu" Visibility="Hidden" Width="400" Height="600">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="1*"/>
@@ -132,17 +168,32 @@
 
             <StackPanel Grid.Row="1" VerticalAlignment="Center">
                 <TextBlock Text="{Binding ElementName=FovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <Slider x:Name="FovSlider" IsSnapToTickEnabled="True" Value="{Binding Fov, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="60" Maximum="105" Cursor="Hand" Width="400" Foreground="Black"/>
+                <Slider x:Name="FovSlider" IsSnapToTickEnabled="True" Value="{Binding Fov, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="60" Maximum="105" Cursor="Hand" Width="400" Foreground="Black">
+                    <Slider.Effect>
+                        <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
+                    </Slider.Effect>
+                </Slider>
+                <TextBlock Text="Fov" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
             </StackPanel>
-            
+
             <StackPanel Grid.Row="2" VerticalAlignment="Center">
                 <TextBlock Text="{Binding ElementName=RenderDistanceSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <Slider x:Name="RenderDistanceSlider" IsSnapToTickEnabled="True" Value="{Binding RenderDistance, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="2" Maximum="32" Cursor="Hand" Width="400" Foreground="Black"/>
+                <Slider x:Name="RenderDistanceSlider" IsSnapToTickEnabled="True" Value="{Binding RenderDistance, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="2" Maximum="32" Cursor="Hand" Width="400" Foreground="Black">
+                    <Slider.Effect>
+                        <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
+                    </Slider.Effect>
+                </Slider>
+                <TextBlock Text="Render Distance (Chunks)" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
             </StackPanel>
 
             <StackPanel Grid.Row="3" VerticalAlignment="Center">
                 <TextBlock Text="{Binding ElementName=SensitivitySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <Slider x:Name="SensitivitySlider" IsSnapToTickEnabled="True" Value="{Binding MouseSpeed, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0.05" Maximum="1" Cursor="Hand" Width="400" Foreground="Black" TickFrequency="0.025"/>
+                <Slider x:Name="SensitivitySlider" IsSnapToTickEnabled="True" Value="{Binding MouseSpeed, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0.05" Maximum="1" Cursor="Hand" Width="400" Foreground="Black" TickFrequency="0.025">
+                    <Slider.Effect>
+                        <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
+                    </Slider.Effect>
+                </Slider>
+                <TextBlock Text="Sensitivity" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
             </StackPanel>
 
             <Grid Grid.Row="4">
@@ -151,16 +202,124 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
-                <Image x:Name="LoadTexture" Width="180" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
+                <Image x:Name="LoadTexture" Width="180" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
                 <TextBlock Text="Load texture" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Column="1" Style="{StaticResource McText}"/>
-                
-                <Image x:Name="SettingsMenuBack" Width="180" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="0" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand"/>
+
+                <Image x:Name="SettingsMenuBack" Width="180" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="0" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
                 <TextBlock Text="Back" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Column="0" Style="{StaticResource McText}"/>
             </Grid>
         </Grid>
 
-        <Grid x:Name="MainMenu">
-            
+        <Grid x:Name="MainMenu" Visibility="Visible">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="3*"/>
+            </Grid.RowDefinitions>
+
+            <Image x:Name="MainMenuTitle" Width="1000" Source="{StaticResource MainMenuTitle}" Grid.Row="0"/>
+
+            <Image x:Name="Play" Width="400" Height="60" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
+            <TextBlock Text="Singleplayer" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="1" Style="{StaticResource McText}"/>
+
+            <Image x:Name="MainMenuSettings" Width="400" Height="60" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="2" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
+            <TextBlock Text="Settings..." VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
+
+            <Image x:Name="ExitGame" Width="400" Height="60" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="3" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
+            <TextBlock Text="Quit Game" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="3" Style="{StaticResource McText}"/>
+
+        </Grid>
+        <Grid x:Name="WorldSelectorMenu" Visibility="Hidden">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="4*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+            <ListBox x:Name="WorldSelector" Width="620" Grid.Row="1" BorderBrush="{x:Null}" Foreground="{x:Null}" MouseDoubleClick="WorldSelector_MouseDoubleClick" BorderThickness="0,0,0,0" Cursor="Arrow" Background="{x:Null}">
+                <ListBox.Effect>
+                    <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".5" Direction="-135"/>
+                </ListBox.Effect>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0,5" VerticalAlignment="Top" Width="585" Background="#3F000000">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0" Margin="20,0">
+                                <TextBlock Text="World Name:" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
+                                <TextBlock Text="Seed:" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
+                                <TextBlock Text="Last played:" VerticalAlignment="Center" HorizontalAlignment="Right" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="{Binding WorldName}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
+                                <TextBlock Text="{Binding WorldSeed}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
+                                <TextBlock Text="{Binding LastPlayed}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
+                            </StackPanel>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <Rectangle Grid.Row="0" Fill="#59000000"/>
+            <Rectangle Grid.Row="2" Fill="#59000000"/>
+            <TextBlock Text="World Selector" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="48" Style="{StaticResource McText}"/>
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+
+                <Image x:Name="CreateNewWorld" Width="250" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
+                <TextBlock Text="Create New World" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Column="1" Style="{StaticResource McText}"/>
+
+                <Image x:Name="EnterSelectedWorld" Width="250" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="2" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
+                <TextBlock Text="Enter Selected World" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Column="2" Style="{StaticResource McText}"/>
+
+                <Image x:Name="DeleteSelectedWorld" Width="250" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="3" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
+                <TextBlock Text="Delete Selected World" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Column="3" Style="{StaticResource McText}"/>
+
+                <Image x:Name="BackToMainMenu" Width="200" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="0" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
+                <TextBlock Text="Back to menu" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="16" Grid.Column="0" Style="{StaticResource McText}"/>
+
+            </Grid>
+        </Grid>
+        <Grid x:Name="WorldCreatorMenu" Visibility="Hidden" Height="800" Width="650">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Text="New World Details" Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="48" Style="{StaticResource McText}"/>
+
+            <StackPanel Grid.Row="1">
+                <TextBlock Text="World name" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5" Foreground="White" FontSize="28" Style="{StaticResource McText}"/>
+                <TextBox Text="New World" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" x:Name="WorldName" Height="50" FontSize="28" Style="{StaticResource McTextBox}" SelectionTextBrush="Black" SelectionBrush="White" BorderBrush="{x:Null}" Background="#59000000"/>
+            </StackPanel>
+            <StackPanel Grid.Row="2">
+                <TextBlock Text="Seed (optional)" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5" Foreground="White" FontSize="28" Style="{StaticResource McText}"/>
+                <TextBox Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" x:Name="WorldSeed" Height="50" FontSize="28" Style="{StaticResource McTextBox}" SelectionTextBrush="Black" SelectionBrush="White" BorderBrush="{x:Null}" Background="#59000000"/>
+            </StackPanel>
+
+            <Grid Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+
+                <Image x:Name="Create" Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="0" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
+                <TextBlock Text="Create" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Grid.Column="0" FontSize="28" Style="{StaticResource McText}"/>
+
+                <Image x:Name="WorldDetailsCancel" Width="300" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Column="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
+                <TextBlock Text="Cancel" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" Grid.Column="1" FontSize="28" Style="{StaticResource McText}"/>
+            </Grid>
         </Grid>
     </Grid>
 </Window>

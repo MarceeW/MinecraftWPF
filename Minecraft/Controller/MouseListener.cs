@@ -15,6 +15,11 @@ namespace Minecraft.Controller
 
             gameWindow.MouseDown += OnMouseDown;
         }
+        public void Reset()
+        {
+            LeftMouseClick = null;
+            RightMouseClick = null;
+        }
         public void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
             if (!gameWindow.IsGamePaused)

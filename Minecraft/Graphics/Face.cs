@@ -46,7 +46,7 @@ namespace Minecraft.Graphics
 
             position += new Vector3(0.5f);
 
-            if (block == BlockType.Water)
+            if (block == BlockType.Water || block == BlockType.Lava)
                 position.Y -= 0.2f;
 
             if (face == FaceDirection.Top)
@@ -122,7 +122,74 @@ namespace Minecraft.Graphics
         }
         public static float[] GetHandFaceVertices(FaceDirection face,Vector3 position)
         {
-            return new float[] { };
+            if (face == FaceDirection.Top)
+            {
+                return
+                new float[SingleFaceVertexCount]
+                {
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  0.25f,  0.75f, 1.0f,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  0.5f,   0.75f, 1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  0.5f,   0.0f, 1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  0.5f,   0.0f, 1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  0.25f,  0.0f, 1.0f,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  0.25f,  0.75f, 1.0f
+                };
+            }
+            else if (face == FaceDirection.Bot)
+                return
+                new float[SingleFaceVertexCount]
+                {
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.5f,  0.75f, 1.0f,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.5f,  0.75f, 1.0f,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.75f,  0.0f,  1.0f,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.75f,  0.0f,  1.0f,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.75f,  0.0f,  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.5f,  0.75f, 1.0f
+                };
+            else if (face == FaceDirection.Right)
+                return
+                new float[SingleFaceVertexCount]
+                {
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  1.0f,   0.75f, 1.0f,
+                     0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.75f,  0.75f, 1.0f,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.75f,  0.0f, 1.0f,
+                     0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.75f,  0.0f, 1.0f,
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  1.0f,   0.0f, 1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  1.0f,   0.75f, 1.0f
+                };
+            else if (face == FaceDirection.Left)
+                return
+                new float[SingleFaceVertexCount]
+                {
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.25f,  0.75f,  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.25f,  0.0f,  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.0f,  0.75f,  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.25f,  0.75f,  1.0f
+                };
+            else if (face == FaceDirection.Front)
+                return
+                new float[SingleFaceVertexCount]
+                {
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.5f,    0.75f,  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.5f,    1.0f,   1.0f,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.75f,   1.0f,   1.0f,
+                     0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.75f,   1.0f,   1.0f,
+                     0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.75f,   0.75f,  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.5f,    0.75f,  1.0f
+                };
+            else
+                return
+                new float[SingleFaceVertexCount]
+                {
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.25f,  0.75f,  1.0f,
+                    -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.25f,  1.0f,   1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.5f,   1.0f,   1.0f,
+                     0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.5f,   1.0f,   1.0f,
+                     0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.5f,   0.75f,  1.0f,
+                    -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f, -1.0f,  0.25f,  0.75f,  1.0f
+                };
         }
         public static float[] GetVegetationFaceVertices(BlockType block, Vector3 position, bool needsToShade, int topBlockDifference)
         {

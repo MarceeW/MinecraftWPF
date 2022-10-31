@@ -14,7 +14,7 @@ using System.Windows.Input;
 
 namespace Minecraft.Controller
 {
-    internal class GameController
+    internal class GameController : IDisposable
     {
         public GameSession Session { get; set; }
         public WorldRenderer WorldRendererer { get; private set; }
@@ -26,7 +26,7 @@ namespace Minecraft.Controller
 
         private Thread updateThread;
         private Stopwatch gameStopwatch;
-        public GameController(Renderer renderer,GameWindow gameWindow,GameSession session)
+        public GameController(int renderDistance,Renderer renderer,GameWindow gameWindow,GameSession session)
         {
             Session = session;
             WorldRendererer = new WorldRenderer();
@@ -35,12 +35,10 @@ namespace Minecraft.Controller
 
             WorldSerializer.World = Session.World;
     
-            worldGenerator = new WorldGenerator(Session.World,WorldRendererer.RenderDistance);
+            worldGenerator = new WorldGenerator(Session.World, renderDistance);
             worldGenerator.ChunkAdded += WorldRendererer.AddToQueue;
+            worldGenerator.WorldInitalized += () => session.Player.Position = worldGenerator.GetSpawnPosition(renderDistance);
             WorldRendererer.RenderDistanceChanged += (int rd) => worldGenerator.RenderDistance = rd;
-
-            if (!WorldSerializer.WorldFileExists())
-                worldGenerator.InitWorld();
 
             PlayerController = new PlayerController(Session.Player, Session.World);
             PlayerController.ChangedChunk += worldGenerator.ExpandWorld;
@@ -55,24 +53,9 @@ namespace Minecraft.Controller
             Ioc.Default.GetService<ICamera>()?.Init(Session.Player.Position);
 
             gameWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
-            gameWindow.Loaded += (object sender, RoutedEventArgs e) => renderer.SetupRenderer((int)gameWindow.Width, (int)gameWindow.Height);
+            renderer.SetupRenderer((int)gameWindow.Width, (int)gameWindow.Height);
             gameWindow.PreviewKeyDown += PlayerController.OnKeyDown;
             gameWindow.PreviewKeyUp += PlayerController.OnKeyUp;
-
-            //gameWindow.Loaded += (object sender, RoutedEventArgs e) =>
-            //{
-            //    if (WorldSerializer.WorldFileExists())
-            //    {
-            //        World.Chunks = WorldSerializer.LoadWorld();
-            //
-            //        foreach (var chunk in World.Chunks)
-            //        {
-            //            chunk.Value.Mesh = new ChunkMesh();
-            //            WorldRendererer.AddToQueue(chunk.Key);
-            //        }
-            //    }
-            //};
-            //gameWindow.Closing += (object? sender,CancelEventArgs e) => WorldSerializer.SaveWorld();
 
             updateThread = new Thread(UpdateGameState);
             updateThread.SetApartmentState(ApartmentState.STA);
@@ -80,59 +63,68 @@ namespace Minecraft.Controller
 
             gameWindow.MouseListener.RightMouseClick += () =>
             {
-                var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
-
-                if (hit && !gameWindow.IsGamePaused)
+                if (!gameWindow.IsInMainMenu)
                 {
-                    if(Session.World.GetBlock(blockHit) != BlockType.Grass && Session.World.GetBlock(blockHit) != BlockType.SparseGrass)
+                    var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
+
+                    if (hit && !gameWindow.IsGamePaused)
                     {
-                        switch (hitFace)
+                        if (Session.World.GetBlock(blockHit) != BlockType.Grass && Session.World.GetBlock(blockHit) != BlockType.SparseGrass)
                         {
-                            case FaceDirection.Top:
-                                blockHit.Y++;
-                                break;
-                            case FaceDirection.Bot:
-                                blockHit.Y--;
-                                break;
-                            case FaceDirection.Right:
-                                blockHit.X++;
-                                break;
-                            case FaceDirection.Left:
-                                blockHit.X--;
-                                break;
-                            case FaceDirection.Front:
-                                blockHit.Z++;
-                                break;
-                            case FaceDirection.Back:
-                                blockHit.Z--;
-                                break;
-                            default:
-                                break;
+                            switch (hitFace)
+                            {
+                                case FaceDirection.Top:
+                                    blockHit.Y++;
+                                    break;
+                                case FaceDirection.Bot:
+                                    blockHit.Y--;
+                                    break;
+                                case FaceDirection.Right:
+                                    blockHit.X++;
+                                    break;
+                                case FaceDirection.Left:
+                                    blockHit.X--;
+                                    break;
+                                case FaceDirection.Front:
+                                    blockHit.Z++;
+                                    break;
+                                case FaceDirection.Back:
+                                    blockHit.Z--;
+                                    break;
+                                default:
+                                    break;
+                            }
                         }
+
+                        Session.World.AddBlock(blockHit, Session.Player.Hotbar.GetSelectedBlock());
+
+                        characterHand.OnBlockPlace();
                     }
-
-                    Session.World.AddBlock(blockHit, Session.Player.Hotbar.GetSelectedBlock());
-
-                    characterHand.OnBlockPlace();
-                }
+                }               
             };
 
             gameWindow.MouseListener.LeftMouseClick += () =>
             {
-                var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
-
-                if (hit && !gameWindow.IsInventoryOpened)
+                if (!gameWindow.IsInMainMenu)
                 {
-                    Debug.WriteLine(blockHit);
-                    Session.World.RemoveBlock(blockHit);
+                    var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
+
+                    if (hit && !gameWindow.IsInventoryOpened)
+                    {
+                        Debug.WriteLine(blockHit);
+                        Session.World.RemoveBlock(blockHit);
+                    }
                 }
             };
 
-            gameWindow.Loaded += (object sender, RoutedEventArgs e) =>
-            { 
-                updateThread.Start();
-                IsGameRunning = true;
-            }; 
+            updateThread.Start();
+            IsGameRunning = true;
+        }
+        public void InitUserSettings(UserSettings settings)
+        {
+            PlayerController.MouseSpeed = settings.MouseSpeed;
+            WorldRendererer.RenderDistance = settings.RenderDistance;
+            Ioc.Default.GetService<ICamera>().Fov = settings.Fov;
         }
         private void UpdateGameState()
         {
@@ -184,6 +176,18 @@ namespace Minecraft.Controller
 
                 Thread.Sleep(0);
             }
+        }
+
+        public void Dispose()
+        {
+            IsGameRunning = false;
+            Session.Save();
+            Session = null;
+            WorldRendererer = null;
+            PlayerController = null;
+            gameWindow.MouseListener.Reset();
+
+            GC.Collect();
         }
     }
 }

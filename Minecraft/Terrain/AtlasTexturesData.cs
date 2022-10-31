@@ -15,7 +15,17 @@ namespace Minecraft.Terrain
     }
     internal static class AtlasTexturesData
     {
-        public static string TexturePath { get => texturePath; set { texturePath = value; atlas = new Texture(texturePath, false); TextureSize = atlas.Width / 16;  } }
+        public static string TexturePath
+        {   
+            get => texturePath; 
+
+            set 
+            { 
+                texturePath = value; 
+                atlas = new Texture(texturePath, false); 
+                TextureSize = atlas.Width / 16;
+            } 
+        }
         private static string texturePath = @"..\..\..\Assets\Textures\terrain.png";
         //Top = 1st Bot = 2nd Other = 3rd
         public static readonly Position2D[][] TexturePositions =

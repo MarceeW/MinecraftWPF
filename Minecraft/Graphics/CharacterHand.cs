@@ -8,6 +8,7 @@ using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Windows.Markup;
 
 namespace Minecraft.Graphics
 {
@@ -15,6 +16,8 @@ namespace Minecraft.Graphics
     {
         public Shader Shader { get; } = new Shader(@"..\..\..\Graphics\Shaders\CharacterHand\handVert.glsl", @"..\..\..\Graphics\Shaders\CharacterHand\handFrag.glsl");
 
+        private static string handTexturePath = @"..\..\..\Assets\Textures\hand.png";
+        private Texture handTexture;
         private IHotbar hotbar;
 
         private int VBO, VAO;
@@ -43,6 +46,8 @@ namespace Minecraft.Graphics
 
             Ioc.Default.GetService<IPlayerLogic>().Walking += OnWalking;
 
+            handTexture = new Texture(handTexturePath, false);
+
             UpdateModelMatrix();
             UpdateViewMatrix(Vector3.Zero);
 
@@ -55,14 +60,23 @@ namespace Minecraft.Graphics
 
             if (!isHandEmpty)
             {
-                Shader.Use();
-                GL.DepthFunc(DepthFunction.Always);
-
-                GL.BindVertexArray(VAO);
-                GL.DrawArrays(PrimitiveType.Triangles, 0, 24);
-
-                GL.DepthFunc(DepthFunction.Less);
+                AtlasTexturesData.Atlas.Use();
+                Shader.SetInt("tex", AtlasTexturesData.Atlas.GetTexUnitId());
+                Shader.Use();   
             }
+            else
+            {
+                handTexture.Use();
+                Shader.SetInt("tex", handTexture.GetTexUnitId());
+                Shader.Use();
+            }
+
+            GL.DepthFunc(DepthFunction.Always);
+
+            GL.BindVertexArray(VAO);
+            GL.DrawArrays(PrimitiveType.Triangles, 0, 24);
+
+            GL.DepthFunc(DepthFunction.Less);
         }
         private void UpdateModelMatrix()
         {
@@ -187,6 +201,9 @@ namespace Minecraft.Graphics
             VBO = GL.GenBuffer();
             VAO = GL.GenVertexArray();
 
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            GL.BindVertexArray(VAO);
+
             UpdateVBOData();
 
             GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false, 9 * sizeof(float), 0);
@@ -204,15 +221,14 @@ namespace Minecraft.Graphics
         private void UpdateVBOData()
         {
             var type = hotbar.GetSelectedBlock();
+            List<float> data = new List<float>();
+
+            GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
+            GL.BindVertexArray(VAO);
 
             if (type != BlockType.Air)
             {
                 isHandEmpty = false;
-
-                GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-                GL.BindVertexArray(VAO);
-
-                List<float> data = new List<float>();
 
                 if (BlockData.IsVegetationBlock(type))
                 {
@@ -226,10 +242,17 @@ namespace Minecraft.Graphics
                     data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Top, Vector3.Zero,false, 0));
                 }
 
-                GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * data.Count, data.ToArray(), BufferUsageHint.StaticDraw);
             }
             else
+            {
                 isHandEmpty = true;
+
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Bot,Vector3.Zero));
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Front, Vector3.Zero));
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Left, Vector3.Zero));
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Top, Vector3.Zero));
+            }
+            GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * data.Count, data.ToArray(), BufferUsageHint.StaticDraw);
         }
     }
 }

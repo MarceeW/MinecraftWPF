@@ -10,14 +10,24 @@ namespace Minecraft.Graphics
     internal class Camera : ObservableObject, ICamera
     {
         private float fov;
+        private Vector3 front;
 
         public Vector3 Position { get; private set; }
         public Vector3 Up { get; private set; }
-        public Vector3 Front { get; set; }
+        public Vector3 Front
+        {
+            get => front;
+            set
+            {
+                front = value;
+                IsFrontInit = true;
+            }
+        }
         public Matrix4 View { get; private set; }
-        public float Fov { get => fov; set => SetProperty(ref fov,value); }
+        public float Fov { get => fov; set => SetProperty(ref fov, value); }
         public float Pitch { get; private set; }
         public float Yaw { get; private set; }
+        public bool IsFrontInit { get; set; } = false;
 
         public event ShaderMat4Handler? ViewMatrixChange;
         public event ShaderVec3Handler? FrontChange;
@@ -26,8 +36,9 @@ namespace Minecraft.Graphics
         {
             Position = startPos;
             Up = Vector3.UnitY;
-            Fov = 85.0f;
-            Front = Vector3.UnitX;
+
+            if (!IsFrontInit)
+                Front = Vector3.UnitX;
 
             UpdateViewMatrix();
         }

@@ -7,6 +7,7 @@ namespace Minecraft.Graphics
     {
         float Fov { get; set; }
         Vector3 Front { get; set; }
+        bool IsFrontInit { get; set; }
         float Pitch { get; }
         Vector3 Position { get; }
         Vector3 Up { get; }

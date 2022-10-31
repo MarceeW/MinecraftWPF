@@ -8,14 +8,23 @@ namespace Minecraft.Terrain
     internal class World : IWorld
     {
         public Dictionary<Vector2, IChunk> Chunks { get; set; }
-        public WorldGenerator? WorldGenerator { get; set; }
+        public IWorldGenerator? WorldGenerator { get; set; }
         public Queue<Vector2> ChunksNeedsToBeRegenerated { get; }
+        public int Seed { get; }
 
         private Dictionary<Vector2, List<Block>> blockQueue;
 
-        public World()
+        public World(int seed)
         {
+            Seed = seed;
             Chunks = new Dictionary<Vector2, IChunk>();
+            ChunksNeedsToBeRegenerated = new Queue<Vector2>();
+            blockQueue = new Dictionary<Vector2, List<Block>>();
+        }
+        public World(Dictionary<Vector2, IChunk> chunks,int seed)
+        {
+            Seed = seed;
+            Chunks = chunks;
             ChunksNeedsToBeRegenerated = new Queue<Vector2>();
             blockQueue = new Dictionary<Vector2, List<Block>>();
         }
@@ -121,7 +130,7 @@ namespace Minecraft.Terrain
                         Chunks[whereShouldBlockBe].AddBlock(block.Position + position, block.Type, true);
 
                         //if (blockIndex == entity.Blocks.Length - 1)
-                            //ChunksNeedsToBeRegenerated.Enqueue(whereShouldBlockBe);
+                        //ChunksNeedsToBeRegenerated.Enqueue(whereShouldBlockBe);
                     }
                     else
                     {
@@ -133,7 +142,7 @@ namespace Minecraft.Terrain
                         {
                             blockQueue.Add(whereShouldBlockBe, new List<Block>());
 
-                            if(blockQueue.ContainsKey(whereShouldBlockBe))
+                            if (blockQueue.ContainsKey(whereShouldBlockBe))
                                 blockQueue[whereShouldBlockBe].Add(new Block(blockPos, block.Type));
                         }
                     }

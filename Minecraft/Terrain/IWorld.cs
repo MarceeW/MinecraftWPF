@@ -6,8 +6,9 @@ namespace Minecraft.Terrain
     internal interface IWorld
     {
         Dictionary<Vector2, IChunk> Chunks { get; set; }
-        WorldGenerator? WorldGenerator { get; set; }
         Queue<Vector2> ChunksNeedsToBeRegenerated { get; }
+        int Seed { get; }
+        IWorldGenerator? WorldGenerator { get; set; }
 
         void AddBlock(Vector3 pos, BlockType block);
         void AddChunk(Vector2 pos, IChunk chunk);

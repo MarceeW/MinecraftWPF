@@ -12,21 +12,15 @@ namespace Minecraft.UI
     {
         public int SelectedItemIndex { get; private set; }
         public Action? BlockChangeOnSelect { get; set; }
-        public BlockType[] Items { get; set; }
+        public BlockType[] Items { get; private set; }
         public int MaxItems { get; private set; } = 9;
         public Hotbar()
         {
             Items = new BlockType[MaxItems];
-
-            Items[0] = BlockType.GrassBlock;
-            Items[1] = BlockType.Cobblestone;
-            Items[2] = BlockType.OakPlank;
-            Items[3] = BlockType.Glass;
-            Items[4] = BlockType.GreyConcrete;
-            Items[5] = BlockType.BlackConcrete;
-            Items[6] = BlockType.OakTrunk;
-            Items[7] = BlockType.OakLeaves;
-            Items[8] = BlockType.Bedrock;
+        }
+        public void Reset()
+        {
+            Items = new BlockType[MaxItems];
         }
         public void ChangeBlock(int index, BlockType toChange)
         {
@@ -50,6 +44,25 @@ namespace Minecraft.UI
                 SelectedItemIndex = 0;
 
             BlockChangeOnSelect?.Invoke();
+        }
+        public void Deserialize(string rawData)
+        {
+            var splitted = rawData.Split(';');
+
+            for (int i = 0; i < splitted.Length; i++)
+                Items[i] = (BlockType)int.Parse(splitted[i]);
+        }
+        public override string ToString()
+        {
+            string ret = "";
+            for (int i = 0; i < Items.Length; i++)
+            {
+                ret += (int)Items[i];
+
+                if (i != Items.Length - 1)
+                    ret += ";";
+            }
+            return ret;
         }
     }
 }

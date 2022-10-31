@@ -8,7 +8,6 @@ namespace Minecraft.Game
     internal interface IPlayer
     {
         ICamera Camera { get; }
-        IForce Force { get; }
         IHotbar Hotbar { get; }
         bool IsFlying { get; set; }
         Vector3 Position { get; set; }

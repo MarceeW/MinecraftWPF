@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Windows.Documents;
 
 namespace Minecraft.Terrain
 {
@@ -26,6 +28,7 @@ namespace Minecraft.Terrain
                    type == BlockType.SpruceLeaves ||
                    type == BlockType.Air ||
                    type == BlockType.Scaffolding ||
+                   type == BlockType.Ice ||
                    
                    IsVegetationBlock(type);
         }
@@ -49,6 +52,33 @@ namespace Minecraft.Terrain
                    type == BlockType.AzureBluet ||
                    type == BlockType.AmethystCluster ||
                    type == BlockType.Fire;
+        }
+        public static string GetBlockName(BlockType type)
+        {
+            string name = type.ToString();
+
+            string ret = "";
+
+            List<int> upperIndexes = new List<int>();
+
+            int i = 0;
+            foreach (var character in name)
+            {
+                if(char.IsUpper(character))
+                    upperIndexes.Add(i);
+                i++;
+            }
+            var indexArray = upperIndexes.ToArray();
+
+            for (i=0; i < indexArray.Length - 1; i++)
+                ret += name.Substring(indexArray[i], (indexArray[i + 1]) - indexArray[i]) + " ";
+
+            if (indexArray.Length == 1)
+                ret = name;
+            else
+                ret += name.Substring(indexArray[i]);
+
+            return ret;
         }
     }
 }

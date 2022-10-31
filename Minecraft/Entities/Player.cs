@@ -25,13 +25,11 @@ namespace Minecraft.Game
 
         public IForce Force { get; private set; }
         public IHotbar Hotbar { get; }
-        public Player(Vector3 position)
+        public Player()
         {
             Camera = Ioc.Default.GetService<ICamera>();
             Force = Ioc.Default.GetService<IForce>();
             Hotbar = Ioc.Default.GetService<IHotbar>();
-
-            Position = position;
         }
     }
 }

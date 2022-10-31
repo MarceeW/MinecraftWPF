@@ -70,7 +70,7 @@ namespace Minecraft.Logic
 
             if (deltaPos.Y < 0.0)
             {
-                broadPhaseBottom = (int)Math.Floor(Position.Y + deltaPos.Y - Height);
+                broadPhaseBottom = (int)Math.Floor(Position.Y + deltaPos.Y);
                 broadPhaseTop = (int)Math.Floor(Position.Y + Height);
             }
             else
@@ -91,7 +91,7 @@ namespace Minecraft.Logic
             if (deltaPos.Z < 0.0)
             {
                 broadPhaseBack = (int)Math.Floor(Position.Z + deltaPos.Z - Width);
-                broadPhaseFront = (int)Math.Floor(Position.Z);
+                broadPhaseFront = (int)Math.Ceiling(Position.Z);
             }
             else
             {
