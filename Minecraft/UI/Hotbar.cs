@@ -33,6 +33,11 @@ namespace Minecraft.UI
         {
             return Items[SelectedItemIndex];
         }
+        public void SetSelectedIndex(int index)
+        {
+            SelectedItemIndex = index;
+            BlockChangeOnSelect?.Invoke();
+        }
         public void UpdateSelectedIndex(int delta)
         {
             SelectedItemIndex += delta < 0 ? 1 : -1;

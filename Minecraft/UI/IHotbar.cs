@@ -14,6 +14,7 @@ namespace Minecraft.UI
         void Deserialize(string rawData);
         BlockType GetSelectedBlock();
         string ToString();
+        void SetSelectedIndex(int index);
         void UpdateSelectedIndex(int delta);
     }
 }

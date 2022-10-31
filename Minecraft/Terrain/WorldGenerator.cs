@@ -186,7 +186,7 @@ namespace Minecraft.Terrain
 
                         if (block == BlockType.GrassBlock)
                         {
-                            if (chance <= 0.01)
+                            if (chance <= 0.016)
                             {
                                 chance = random.NextDouble();
 

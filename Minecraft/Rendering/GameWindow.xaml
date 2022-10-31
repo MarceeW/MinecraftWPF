@@ -168,7 +168,7 @@
 
             <StackPanel Grid.Row="1" VerticalAlignment="Center">
                 <TextBlock Text="{Binding ElementName=FovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <Slider x:Name="FovSlider" IsSnapToTickEnabled="True" Value="{Binding Fov, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="60" Maximum="105" Cursor="Hand" Width="400" Foreground="Black">
+                <Slider x:Name="FovSlider" IsSnapToTickEnabled="True" Value="{Binding Fov, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="65" Maximum="99" Cursor="Hand" Width="400" Foreground="Black">
                     <Slider.Effect>
                         <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
                     </Slider.Effect>

@@ -9,7 +9,7 @@ namespace Minecraft.Logic
         public ForceType Type { get; private set; }
         public Direction SlideDirection { get; set; }
 
-        private const float maxFallSpeed = 60.0f;
+        private const float maxFallSpeed = 100.0f;
         private const float riseForce = 10.0f;
 
         private double forceGraphStep;
@@ -45,7 +45,7 @@ namespace Minecraft.Logic
             }
             else
             {
-                deltaY = -Math.Min(Math.Pow(2, currentStep += forceGraphStep), maxFallSpeed);
+                deltaY = -Math.Min(Math.Pow(Math.E, currentStep += forceGraphStep / 2), maxFallSpeed);
             }
             deltaPos.Y += (float)deltaY;
         }

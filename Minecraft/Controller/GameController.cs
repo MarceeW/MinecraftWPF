@@ -50,7 +50,7 @@ namespace Minecraft.Controller
             gameWindow.MouseListener.LeftMouseClick += characterHand.OnHit;
             renderer.Scene = new Scene(WorldRendererer, characterHand);
 
-            Ioc.Default.GetService<ICamera>()?.Init(Session.Player.Position);
+            Session.Player.Camera.Init(Session.Player.Position);
 
             gameWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
             renderer.SetupRenderer((int)gameWindow.Width, (int)gameWindow.Height);

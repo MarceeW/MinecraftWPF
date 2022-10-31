@@ -204,7 +204,7 @@ namespace Minecraft
                     Hotbar.ChangeBlock(Hotbar.SelectedItemIndex, (BlockType)WorldRenderer.CurrentTarget);
 
                     var hotbarImage = (Image)HotbarGrid.FindName($"HotbarItem_{Hotbar.SelectedItemIndex}");
-                    hotbarImage.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect((BlockType)WorldRenderer.CurrentTarget));
+                    hotbarImage.Source = new CroppedBitmap(currentTexture, AtlasTexturesData.GetTextureRect((BlockType)WorldRenderer.CurrentTarget));
                 }
             }
             base.OnMouseDown(e);
@@ -213,50 +213,58 @@ namespace Minecraft
         {
             if(e.Source == OpenTkControl)
             {
-                switch (e.Key)
+                if((int)e.Key >= 35 && (int)e.Key <= 43) //34 = 0
                 {
-                    case Key.E:
-                        {
-                            OpenCloseInventory();
-                        }
-                    break;
-                    case Key.G:
-                        {
-                            ShowWireFrames = !ShowWireFrames;
-                            e.Handled = true;
-                        }
-                        break;
-                    case Key.P:
-                        {
-                            NeedsToResetMouse = !NeedsToResetMouse;
-
-                            if(NeedsToResetMouse)
-                                MouseController.HideMouse();
-                            else
-                            {
-                                ResetMousePosition();
-                            }
-                                MouseController.ShowMouse();
-                        }
-                        break;
-                    case Key.Escape:
-                        {
-                            
-                            if (IsInventoryOpened)
+                    Hotbar.SetSelectedIndex((int)e.Key - 35);
+                    Grid.SetColumn((Image)HotbarGrid.FindName("SelectedFrame"), Hotbar.SelectedItemIndex);
+                }
+                else
+                {
+                    switch (e.Key)
+                    {
+                        case Key.E:
                             {
                                 OpenCloseInventory();
                             }
-                            else if (IsSettingsMenuOpened)
+                            break;
+                        case Key.G:
                             {
-                                OpenCloseSettingsMenu();
+                                ShowWireFrames = !ShowWireFrames;
+                                e.Handled = true;
                             }
-                            else
-                            {  
-                                OpenClosePauseMenu();
+                            break;
+                        case Key.P:
+                            {
+                                NeedsToResetMouse = !NeedsToResetMouse;
+
+                                if (NeedsToResetMouse)
+                                    MouseController.HideMouse();
+                                else
+                                {
+                                    ResetMousePosition();
+                                }
+                                MouseController.ShowMouse();
                             }
-                        }
-                        break;
-                }
+                            break;
+                        case Key.Escape:
+                            {
+
+                                if (IsInventoryOpened)
+                                {
+                                    OpenCloseInventory();
+                                }
+                                else if (IsSettingsMenuOpened)
+                                {
+                                    OpenCloseSettingsMenu();
+                                }
+                                else
+                                {
+                                    OpenClosePauseMenu();
+                                }
+                            }
+                            break;
+                    }
+                } 
             }
 
             base.OnKeyDown(e);

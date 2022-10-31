@@ -135,38 +135,16 @@ namespace Minecraft.Graphics
                     -0.5f + position.X, -0.5f + thickness + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  0.25f,  0.75f, 1.0f
                 };
             }
-            else if (face == FaceDirection.Bot)
-                return
-                new float[SingleFaceVertexCount]
-                {
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.5f,  0.75f, 1.0f,
-                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.5f,  0.75f, 1.0f,
-                    -0.5f + thickness + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.75f,  0.0f,  1.0f,
-                    -0.5f + thickness + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.75f,  0.0f,  1.0f,
-                    -0.5f + thickness + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.75f,  0.0f,  1.0f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  0.5f,  0.75f, 1.0f
-                };
-            else if (face == FaceDirection.Right)
-                return
-                new float[SingleFaceVertexCount]
-                {
-                    -0.5f + thickness + position.X, -0.5f + thickness + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  1.0f,   0.75f, 1.0f,
-                    -0.5f + thickness + position.X, -0.5f + thickness + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.75f,  0.75f, 1.0f,
-                    -0.5f + thickness + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.75f,  0.0f, 1.0f,
-                    -0.5f + thickness + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.75f,  0.0f, 1.0f,
-                    -0.5f + thickness + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  1.0f,   0.0f, 1.0f,
-                    -0.5f + thickness + position.X, -0.5f + thickness + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  1.0f,   0.75f, 1.0f
-                };
             else if (face == FaceDirection.Left)
                 return
                 new float[SingleFaceVertexCount]
                 {
-                    -0.5f + position.X, -0.5f + thickness + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.25f,  0.75f,  1.0f,
-                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.25f,  0.0f,  1.0f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,  1.0f,
-                    -0.5f + position.X, -0.5f + thickness + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.0f,  0.75f,  1.0f,
-                    -0.5f + position.X, -0.5f + thickness + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.25f,  0.75f,  1.0f
+                    -0.5f + position.X, -0.5f + thickness + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,      1.0f, //front top x
+                    -0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,              1.0f,  0.0f,  0.0f,  0.25f,  0.0f,      1.0f, //front bot x
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,              1.0f,  0.0f,  0.0f,  0.25f,   0.75f,      1.0f, //back bot x
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,              1.0f,  0.0f,  0.0f,  0.25f,   0.75f,      1.0f, //back bot x
+                    -0.5f + position.X, -0.5f + thickness + position.Y, -0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.0f,   0.75f,      1.0f, //back top x
+                    -0.5f + position.X, -0.5f + thickness + position.Y,  0.5f + position.Z,  1.0f,  0.0f,  0.0f,  0.0f,  0.0f,      1.0f //front top x
                 };
             else if (face == FaceDirection.Front)
                 return

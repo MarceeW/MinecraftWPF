@@ -58,11 +58,11 @@ namespace Minecraft.Render
             AtlasTexturesData.Atlas.Use();
 
             foreach (var chunk in world.Chunks.Values)
-                if(IsChunkInRange(chunk))
+                if(IsChunkInRange(chunk.Position))
                     chunk.Mesh.RenderSolidMesh(Shader);
 
             foreach (var chunk in world.Chunks.Values)
-                if (IsChunkInRange(chunk))
+                if (IsChunkInRange(chunk.Position))
                     chunk.Mesh.RenderTransparentMesh(Shader);
 
             RenderSelectedBlockFrame();
@@ -72,19 +72,18 @@ namespace Minecraft.Render
         public void CreateMeshesInQueue(float delta)
         {
 
-            if (renderQueue.Count > 0)
+            if (renderQueue.Count > 0 && IsChunkInRange(renderQueue.Peek()))
                 ChunkMesh.CreateMesh(world, renderQueue.Dequeue());
 
             if (world.ChunksNeedsToBeRegenerated.Count > 0)
             {
-                Debug.WriteLine(world.ChunksNeedsToBeRegenerated.Count);
                 ChunkMesh.CreateMesh(world, world.ChunksNeedsToBeRegenerated.Dequeue());
             }
         }
-        private bool IsChunkInRange(in IChunk chunk)
+        private bool IsChunkInRange(in Vector2 chunkPos)
         {
-            float xDistance = Math.Abs(camera.Position.X - chunk.Position.X * Chunk.Size);
-            float zDistance = Math.Abs(camera.Position.Z - chunk.Position.Y * Chunk.Size);
+            float xDistance = Math.Abs(camera.Position.X - chunkPos.X * Chunk.Size);
+            float zDistance = Math.Abs(camera.Position.Z - chunkPos.Y * Chunk.Size);
 
             return xDistance <= renderDistance * Chunk.Size && zDistance <= renderDistance * Chunk.Size;
         }

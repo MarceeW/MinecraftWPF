@@ -7,6 +7,7 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Markup;
 
@@ -112,9 +113,10 @@ namespace Minecraft.Graphics
             }
             else
             {
-                modelMatrix = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(-20));
-                //modelMatrix *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(30));
-                //modelMatrix *= Matrix4.CreateScale(0.6f);
+                modelMatrix = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(-35));
+                modelMatrix *= Matrix4.CreateRotationX(MathHelper.DegreesToRadians(40));
+                modelMatrix *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(-20));
+                modelMatrix *= Matrix4.CreateScale(0.8f);
             }
         }
         private void UpdatePosition(float delta)
@@ -144,25 +146,50 @@ namespace Minecraft.Graphics
             }
             else if (animation == AnimationType.Place || animation == AnimationType.Hit)
             {
-                if (currentAnimationStep >= Math.PI)
+                if(animation == AnimationType.Hit && isHandEmpty)
                 {
-                    ResetAnimation();
-                    ResetModel();
-                    UpdateModelMatrix();
+                    if (currentAnimationStep >= Math.PI)
+                    {
+                        ResetAnimation();
+                        ResetModel();
+                        UpdateModelMatrix();
+                        ResetViewMatrix();
 
-                    animation = AnimationType.None;
+                        animation = AnimationType.None;
+                    }
+                    else
+                    {
+                        ResetModel();
+                        UpdateViewMatrix(new Vector3(-(float)Math.Sin(currentAnimationStep) * 0.7f, -(float)Math.Sin(currentAnimationStep) * 0.3f, (float)Math.Sin(currentAnimationStep) * 0.3f));
+                        modelMatrix *= Matrix4.CreateRotationX(-(float)Math.Sin(currentAnimationStep));
+                        modelMatrix *= Matrix4.CreateRotationY((float)Math.Sin(currentAnimationStep) * 0.5f);
+                        UpdateModelMatrix();
+
+                        float animationSpeed = 3.5f;
+                        currentAnimationStep += Math.PI * delta * animationSpeed;
+                    }
                 }
                 else
                 {
-                    ResetModel();
-                    modelMatrix *= Matrix4.CreateRotationX((float)-Math.Sin(currentAnimationStep));
-                    modelMatrix *= Matrix4.CreateRotationZ((float)Math.Sin(currentAnimationStep) * 0.1f);
-                    UpdateModelMatrix();
+                    if (currentAnimationStep >= Math.PI)
+                    {
+                        ResetAnimation();
+                        ResetModel();
+                        UpdateModelMatrix();
 
-                    int animationSpeed = 5;
-                    currentAnimationStep += Math.PI * delta * animationSpeed;
-                }
+                        animation = AnimationType.None;
+                    }
+                    else
+                    {
+                        ResetModel();
+                        modelMatrix *= Matrix4.CreateRotationX((float)-Math.Sin(currentAnimationStep));
+                        modelMatrix *= Matrix4.CreateRotationZ((float)Math.Sin(currentAnimationStep) * 0.1f);
+                        UpdateModelMatrix();
 
+                        int animationSpeed = 5;
+                        currentAnimationStep += Math.PI * delta * animationSpeed;
+                    }
+                }      
             }
             else if(animation == AnimationType.Walk)
             {
@@ -192,9 +219,11 @@ namespace Minecraft.Graphics
                 ResetModel();
                 UpdateModelMatrix();
             }
-                
-            animation = AnimationType.BlockChange;
-            blockChangeHandled = false;
+            if(!isHandEmpty || hotbar.GetSelectedBlock() != BlockType.Air)
+            {
+                animation = AnimationType.BlockChange;
+                blockChangeHandled = false;
+            }   
         }
         public void OnWalking(float delta)
         {
@@ -228,7 +257,7 @@ namespace Minecraft.Graphics
             GL.VertexAttribPointer(3, 1, VertexAttribPointerType.Float, false, 9 * sizeof(float), 8 * sizeof(float));
             GL.EnableVertexAttribArray(3);
         }
-        private void UpdateVBOData()
+        private void UpdateVBOData(float? fov = null)
         {
             var type = hotbar.GetSelectedBlock();
             List<float> data = new List<float>();
@@ -238,6 +267,12 @@ namespace Minecraft.Graphics
 
             if (type != BlockType.Air)
             {
+                if (isHandEmpty)
+                {
+                    isHandEmpty = false;
+                    ResetModel();
+                    UpdateModelMatrix();
+                }
                 isHandEmpty = false;
 
                 if (BlockData.IsVegetationBlock(type))
@@ -255,11 +290,19 @@ namespace Minecraft.Graphics
             }
             else
             {
+                if (!isHandEmpty)
+                {
+                    isHandEmpty = true;
+                    ResetModel();
+                    UpdateModelMatrix();
+                }
                 isHandEmpty = true;
+                ResetModel();
+                UpdateModelMatrix();
 
-                Vector3 pos = new Vector3(1f,0.5f,0f);
+                Vector3 pos = new Vector3(0.75f, 0.5f, -0.5f);
+
                 float thickness = 0.5f;
-                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Bot,pos, thickness));
                 data.AddRange(Face.GetHandFaceVertices(FaceDirection.Front,pos, thickness));
                 data.AddRange(Face.GetHandFaceVertices(FaceDirection.Left,pos, thickness));
                 data.AddRange(Face.GetHandFaceVertices(FaceDirection.Top,pos, thickness));
