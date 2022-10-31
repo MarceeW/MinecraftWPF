@@ -34,7 +34,7 @@ namespace Minecraft.Graphics
         private AnimationType animation = AnimationType.None;
         private bool blockChangeHandled = true;
 
-        private bool isHandEmpty = false;
+        private bool isHandEmpty;
         public CharacterHand()
         {
             position = new Vector3(0.5f,-1.15f,-1.05f);
@@ -42,6 +42,7 @@ namespace Minecraft.Graphics
             modelMatrix *= Matrix4.CreateScale(0.6f);
 
             hotbar = Ioc.Default.GetService<IHotbar>();
+            isHandEmpty = hotbar.Items[hotbar.SelectedItemIndex] == BlockType.Air;
             hotbar.BlockChangeOnSelect += OnSwitchBlock;
 
             Ioc.Default.GetService<IPlayerLogic>().Walking += OnWalking;
@@ -104,8 +105,17 @@ namespace Minecraft.Graphics
         }
         private void ResetModel()
         {
-            modelMatrix = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(40));
-            modelMatrix *= Matrix4.CreateScale(0.6f);
+            if (!isHandEmpty)
+            {
+                modelMatrix = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(40));
+                modelMatrix *= Matrix4.CreateScale(0.6f);
+            }
+            else
+            {
+                modelMatrix = Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(-20));
+                //modelMatrix *= Matrix4.CreateRotationY(MathHelper.DegreesToRadians(30));
+                //modelMatrix *= Matrix4.CreateScale(0.6f);
+            }
         }
         private void UpdatePosition(float delta)
         {
@@ -247,10 +257,12 @@ namespace Minecraft.Graphics
             {
                 isHandEmpty = true;
 
-                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Bot,Vector3.Zero));
-                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Front, Vector3.Zero));
-                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Left, Vector3.Zero));
-                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Top, Vector3.Zero));
+                Vector3 pos = new Vector3(1f,0.5f,0f);
+                float thickness = 0.5f;
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Bot,pos, thickness));
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Front,pos, thickness));
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Left,pos, thickness));
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Top,pos, thickness));
             }
             GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * data.Count, data.ToArray(), BufferUsageHint.StaticDraw);
         }

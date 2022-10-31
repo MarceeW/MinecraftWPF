@@ -108,6 +108,9 @@ namespace Minecraft
         }
         private void ReadWorlds()
         {
+            if(!Directory.Exists(WorldSerializer.SavesLocation))
+                Directory.CreateDirectory(WorldSerializer.SavesLocation);
+
             var worldPaths = Directory.GetDirectories(WorldSerializer.SavesLocation);
 
             List<WorldData> savesData = new List<WorldData>();
