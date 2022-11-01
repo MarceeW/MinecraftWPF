@@ -80,7 +80,7 @@ namespace Minecraft.Graphics
                                         nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x,z] - y));
                                         chunk.Mesh.nFaceCount++;
                                     }
-                                    else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block==BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
+                                    else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0 || BlockData.IsBolckTransparent(block) && BlockData.IsVegetationBlock(neighborBlock) || BlockData.IsBolckTransparent(block) && block != BlockType.Water && block != BlockType.Lava && BlockData.IsBolckTransparent(neighborBlock) || (block == BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                     {
                                         if (BlockData.IsVegetationBlock(block))
                                         {
@@ -121,7 +121,7 @@ namespace Minecraft.Graphics
                                             nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                             chunk.Mesh.nFaceCount++;
                                         }
-                                        else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0)
+                                        else if(BlockData.IsBolckTransparent(block) && neighborBlock == 0 || BlockData.IsBolckTransparent(block) && BlockData.IsVegetationBlock(neighborBlock) || BlockData.IsBolckTransparent(block) && block != BlockType.Water && block != BlockType.Lava && BlockData.IsBolckTransparent(neighborBlock))
                                         {
                                             if (BlockData.IsVegetationBlock(block))
                                             {
@@ -146,7 +146,7 @@ namespace Minecraft.Graphics
                                     nVertices.AddRange(Face.GetBlockFaceVertices(block, face.Key, blockPos, BlockNeedsShadow(x, y, z, chunk), chunk.TopBlockPositions[x, z] - y));
                                     chunk.Mesh.nFaceCount++;
                                 }
-                                else if (BlockData.IsBolckTransparent(block) && neighborBlock == 0 || (block == BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
+                                else if (BlockData.IsBolckTransparent(block) && neighborBlock == 0 || BlockData.IsBolckTransparent(block) && BlockData.IsVegetationBlock(neighborBlock) || BlockData.IsBolckTransparent(block) && block != BlockType.Water && block != BlockType.Lava && BlockData.IsBolckTransparent(neighborBlock) || (block == BlockType.Water && face.Key == FaceDirection.Top && neighborBlock != BlockType.Water))
                                 {
                                     if (BlockData.IsVegetationBlock(block))
                                     {

@@ -199,7 +199,7 @@ namespace Minecraft
         {
             if (!IsInventoryOpened)
             {
-                if (Hotbar != null && e.MiddleButton == MouseButtonState.Pressed && WorldRenderer.CurrentTarget != null)
+                if (Hotbar != null && e.MiddleButton == MouseButtonState.Pressed && WorldRenderer.CurrentTarget != null && (BlockType)WorldRenderer.CurrentTarget != BlockType.Air)
                 {
                     Hotbar.ChangeBlock(Hotbar.SelectedItemIndex, (BlockType)WorldRenderer.CurrentTarget);
 
@@ -222,6 +222,11 @@ namespace Minecraft
                 {
                     switch (e.Key)
                     {
+                        case Key.F3:
+                            {
+                                fpsCounter.Visibility = fpsCounter.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
+                            }
+                            break;
                         case Key.E:
                             {
                                 OpenCloseInventory();
@@ -548,7 +553,7 @@ namespace Minecraft
 
                 renderer.RenderFrame(delta.Milliseconds / 1000.0f);
 
-                fpsCounter.Content = "FPS:\t" + Math.Round(1.0 / delta.TotalSeconds, 0);
+                fpsCounter.Text = Math.Round(1.0 / delta.TotalSeconds, 0) + " Fps";
             }  
         }
         private void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e)

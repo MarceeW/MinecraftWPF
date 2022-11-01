@@ -72,7 +72,7 @@ namespace Minecraft.Render
         public void CreateMeshesInQueue(float delta)
         {
 
-            if (renderQueue.Count > 0 && IsChunkInRange(renderQueue.Peek()))
+            if (renderQueue.Count > 0)
                 ChunkMesh.CreateMesh(world, renderQueue.Dequeue());
 
             if (world.ChunksNeedsToBeRegenerated.Count > 0)

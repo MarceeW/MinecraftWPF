@@ -8,7 +8,7 @@ namespace Minecraft.Terrain
     {
         public static bool IsBlockSolid(BlockType? type)
         {
-            return type != BlockType.Water && type != BlockType.Air && type != null && !IsVegetationBlock(type);
+            return type != BlockType.Water && type != BlockType.Lava && type != BlockType.Air && type != null && !IsVegetationBlock(type);
         }
         public static bool IsBolckTransparent(BlockType? type)
         {
@@ -29,7 +29,8 @@ namespace Minecraft.Terrain
                    type == BlockType.Air ||
                    type == BlockType.Scaffolding ||
                    type == BlockType.Ice ||
-                   
+                   type == BlockType.Lava ||
+
                    IsVegetationBlock(type);
         }
         public static bool IsVegetationBlock(BlockType? type)

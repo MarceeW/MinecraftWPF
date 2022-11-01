@@ -104,7 +104,7 @@
             </Rectangle.Fill>
         </Rectangle>
 
-        <Label x:Name="fpsCounter" Visibility="Hidden" HorizontalAlignment="Left" Margin="54,47,0,0" VerticalAlignment="Top" Background="#7F000000" Foreground="White" FontSize="14" FontFamily="Century Gothic"/>
+        <TextBlock Visibility="Hidden" x:Name="fpsCounter" Foreground="White" FontSize="16" Style="{StaticResource McText}" Margin="15,10,-15,-10"/>
 
         <Rectangle Visibility="Hidden" x:Name="PauseMenuDarkener" Height="1080" VerticalAlignment="Center" HorizontalAlignment="Left" Width="1920">
             <Rectangle.Fill>

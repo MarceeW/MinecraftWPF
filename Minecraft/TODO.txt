@@ -1,2 +1,1 @@
-﻿playerlogic átszervezése
-ui  dinamikussá tétele
+﻿görgő klikk levegőbe kifagy x
