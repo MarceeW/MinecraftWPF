@@ -6,6 +6,7 @@ using Minecraft.Terrain;
 using Minecraft.UI;
 using OpenTK.Mathematics;
 using System;
+using System.Globalization;
 using System.IO;
 using System.Windows.Media;
 
@@ -34,9 +35,22 @@ namespace Minecraft.Controller
                 World = new World(WorldSerializer.LoadWorld(WorldData.WorldPath),worldData.WorldSeed);
                 var ppraw = File.ReadAllLines(WorldSerializer.SavesLocation + @"\" + WorldData.WorldName + @"\" + "playerData.dat");
                 var pp = ppraw[0].Split(';');
+                var pcf = ppraw[1].Split(';');
+
+                var cultureInfo = CultureInfo.CurrentCulture;
+                var separator = cultureInfo.NumberFormat.NumberDecimalSeparator;
+
+                char other = separator == "," ? '.' : ',';
+
+                if (pp[0].Contains(other))
+                    for (int i = 0; i < 3; i++)
+                    {
+                        pp[i] = pp[i].Replace(other, separator[0]);
+                        pcf[i] = pcf[i].Replace(other, separator[0]);
+                    }
+
                 Player.Position = new Vector3(float.Parse(pp[0]), float.Parse(pp[1]), float.Parse(pp[2]));
                 Player.IsFlying = bool.Parse(pp[3]);
-                var pcf = ppraw[1].Split(';');
                 Player.Camera.Front = new Vector3(float.Parse(pcf[0]), float.Parse(pcf[1]), float.Parse(pcf[2]));
                 Player.Hotbar.Deserialize(ppraw[2]);
             }

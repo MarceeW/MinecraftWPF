@@ -90,7 +90,7 @@ namespace Minecraft.Logic
             float speed = Sprint ? moveSpeed * sprintSpeed : Crouch ? moveSpeed * crouchSpeed : moveSpeed;
 
             if (player.IsFlying)
-                speed *= 5;
+                speed *= 2.5f;
 
             Vector3 deltaPos = new Vector3();
 

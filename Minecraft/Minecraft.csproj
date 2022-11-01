@@ -58,7 +58,6 @@
 
   <ItemGroup>
     <Folder Include="Config\" />
-    <Folder Include="Saves\" />
   </ItemGroup>
 
   <ItemGroup>
