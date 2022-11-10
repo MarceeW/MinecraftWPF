@@ -184,6 +184,8 @@ namespace Minecraft
             var worldData = new WorldData() { LastPlayed = DateTime.Now, WorldName = name, WorldSeed = WorldGenerator.GenerateSeed(seed), WorldPath = worldSaveDir };
 
             IsInMainMenu = false;
+            WorldName.Text = "";
+            WorldSeed.Text = "";
             OpenCloseWorldCreationMenu();
             EnterWorld(new GameSession(worldData, true));
         }

@@ -83,12 +83,6 @@
         <glWpfControl:GLWpfControl 
             x:Name="OpenTkControl" 
             Render="OpenTkControl_OnRender">
-            <glWpfControl:GLWpfControl.OpacityMask>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="Black"/>
-                    <GradientStop Color="White" Offset="1"/>
-                </LinearGradientBrush>
-            </glWpfControl:GLWpfControl.OpacityMask>
         </glWpfControl:GLWpfControl>
 
         <Canvas x:Name="MainMenuCover" Visibility="{Binding ElementName=MainMenu, Path=Visibility}">
