@@ -120,35 +120,35 @@ namespace Minecraft.Rendering
             EnterWorld(new GameSession(worldData, true));
         }
 
-        public void PauseGame()
-        {
-            gw.IsGamePaused = !gw.IsGamePaused;
+        //public void PauseGame()
+        //{
+        //    gw.IsGamePaused = !gw.IsGamePaused;
 
             
-            //gw.Pause?.Invoke(gw.IsGamePaused);
+        //    //gw.Pause?.Invoke(gw.IsGamePaused);
 
-            if (gw.IsGamePaused)
-            {
-                var effect = new BlurEffect();
-                effect.Radius = 15;
+        //    if (gw.IsGamePaused)
+        //    {
+        //        var effect = new BlurEffect();
+        //        effect.Radius = 15;
 
-                gw.OpenTkControl.Effect = effect;
-            }
-            else
-                gw.OpenTkControl.Effect = null;
+        //        gw.OpenTkControl.Effect = effect;
+        //    }
+        //    else
+        //        gw.OpenTkControl.Effect = null;
 
-            gw.PauseMenuDarkener.Visibility = gw.PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-            gw.Crosshair.Visibility = gw.Crosshair.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+        //    gw.PauseMenuDarkener.Visibility = gw.PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+        //    gw.Crosshair.Visibility = gw.Crosshair.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
 
-            gw.NeedsToResetMouse = !gw.NeedsToResetMouse;
+        //    gw.NeedsToResetMouse = !gw.NeedsToResetMouse;
 
-            if (gw.NeedsToResetMouse)
-                MouseController.HideMouse();
-            else
-            {
-                MouseController.ShowMouse();
-            }
-        }
+        //    if (gw.NeedsToResetMouse)
+        //        MouseController.HideMouse();
+        //    else
+        //    {
+        //        MouseController.ShowMouse();
+        //    }
+        //}
 
         public void OpenCloseInventory()
         {
@@ -162,7 +162,7 @@ namespace Minecraft.Rendering
                 gw.InventoryGrid.Visibility = gw.InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
                 gw.InventoryText.Visibility = gw.InventoryText.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
 
-                PauseGame();
+                gw.PauseGame();
             }
         }
 
@@ -262,20 +262,20 @@ namespace Minecraft.Rendering
                 MouseController.MoveMouse(gw.CenterPosition);
             }
         }
-        public void OpenTkControl_OnRender(TimeSpan delta)
-        {
-            if (!gw.IsInMainMenu)
-            {
-                if (gw.ShowWireFrames)
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-                else
-                    GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+        //public void OpenTkControl_OnRender(TimeSpan delta)
+        //{
+        //    if (!gw.IsInMainMenu)
+        //    {
+        //        if (gw.ShowWireFrames)
+        //            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+        //        else
+        //            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
 
-                gw.renderer.RenderFrame(delta.Milliseconds / 1000.0f);
+        //        gw.renderer.RenderFrame(delta.Milliseconds / 1000.0f);
 
-                gw.fpsCounter.Text = Math.Round(1.0 / delta.TotalSeconds, 0) + " Fps";
-            }
-        }
+        //        gw.fpsCounter.Text = Math.Round(1.0 / delta.TotalSeconds, 0) + " Fps";
+        //    }
+        //}
 
         public void OpenClosePauseMenu()
         {
@@ -286,7 +286,7 @@ namespace Minecraft.Rendering
                 gw.PauseMenu.Visibility = gw.PauseMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
                 gw.HotbarGrid.Visibility = gw.HotbarGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
 
-                PauseGame();
+                gw.PauseGame();
             }
         }
         public void OpenCloseSettingsMenu()
