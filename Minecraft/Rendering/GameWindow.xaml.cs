@@ -31,6 +31,7 @@ namespace Minecraft
     partial class GameWindow : Window
     {
         class PickedItem
+
         {
             public ImageSource src;
             public BlockType type;
