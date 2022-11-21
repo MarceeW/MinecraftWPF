@@ -280,7 +280,7 @@ namespace Minecraft
 
             RenderSizeChange?.Invoke();
         }
-        private void PauseGame()
+        internal void PauseGame()
         {
             IsGamePaused = !IsGamePaused;
 
