@@ -12,7 +12,7 @@ using System.Windows.Media;
 
 namespace Minecraft.Controller
 {
-    class GameSession
+    internal class GameSession
     {
         public IPlayer Player { get; private set; }
         public IWorld World { get; private set; }
