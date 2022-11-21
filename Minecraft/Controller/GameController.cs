@@ -26,7 +26,7 @@ namespace Minecraft.Controller
 
         private Thread updateThread;
         private Stopwatch gameStopwatch;
-        public GameController(int renderDistance,Renderer renderer,GameWindow gameWindow,GameSession session)
+        public GameController(int renderDistance, Renderer renderer, GameWindow gameWindow, GameSession session)
         {
             Session = session;
             WorldRendererer = new WorldRenderer();
@@ -34,7 +34,7 @@ namespace Minecraft.Controller
             this.gameWindow = gameWindow;
 
             WorldSerializer.World = Session.World;
-    
+
             worldGenerator = new WorldGenerator(Session.World, renderDistance);
             worldGenerator.ChunkAdded += WorldRendererer.AddToQueue;
             worldGenerator.WorldInitalized += () => session.Player.Position = worldGenerator.GetSpawnPosition(renderDistance);
@@ -100,7 +100,7 @@ namespace Minecraft.Controller
 
                         characterHand.OnBlockPlace();
                     }
-                }               
+                }
             };
 
             gameWindow.MouseListener.LeftMouseClick += () =>
@@ -168,7 +168,7 @@ namespace Minecraft.Controller
 
                 while (accumulator > updateStep)
                 {
-                    gameWindow.ResetMousePosition();
+                    gameWindow.logic.ResetMousePosition();
                     worldGenerator.GenerateChunksToQueue();
                     PlayerController.Update((float)updateStep / 1000.0f);
                     accumulator -= updateStep;
