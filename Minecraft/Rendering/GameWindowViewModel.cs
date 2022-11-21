@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Minecraft.Rendering
 {
-    public class GameWindowViewModel : ObservableRecipient
+    internal class GameWindowViewModel : ObservableRecipient
     {
         IUILogic logic;
         public GameWindowViewModel(IUILogic logic)
