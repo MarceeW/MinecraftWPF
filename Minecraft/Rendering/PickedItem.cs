@@ -8,7 +8,7 @@ using System.Windows.Media;
 
 namespace Minecraft.Rendering
 {
-    public class PickedItem
+    internal class PickedItem
     {
         public ImageSource src;
         public BlockType type;
