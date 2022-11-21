@@ -181,8 +181,11 @@ namespace Minecraft.Controller
         public void Dispose()
         {
             IsGameRunning = false;
-            Session.Save();
-            Session = null;
+            if (Session !=null)
+            {
+                Session.Save();
+                Session = null;
+            }
             WorldRendererer = null;
             PlayerController = null;
             gameWindow.MouseListener.Reset();
