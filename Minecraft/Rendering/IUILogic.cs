@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace Minecraft.Rendering
 {
-    internal interface IULogic
+    public interface IUILogic
     {
+        void ReadWorlds();
     }
 }

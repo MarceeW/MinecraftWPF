@@ -5,9 +5,11 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:vmds="clr-namespace:Minecraft.Rendering"
         mc:Ignorable="d"
         Title="Minecraft" Height="1080"  Width="1920">
 
+    
     <Window.Resources>
         <BitmapImage x:Key="BlockAtlas" UriSource="..\Assets\Textures\terrain.png"/>
         <BitmapImage x:Key="ItemFrame" UriSource="..\Assets\HUD\ItemFrame.png"/>
@@ -18,6 +20,8 @@
         <BitmapImage x:Key="MainMenuBackground" UriSource="..\Assets\HUD\MainMenuWallpaper.png"/>
         <BitmapImage x:Key="MainMenuTitle" UriSource="..\Assets\HUD\MainMenuTitle.png"/>
         <BitmapImage x:Key="OverWorldBackground" UriSource="..\Assets\HUD\Overworld_background.png"/>
+        
+        
 
         <Style x:Key="McText" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="..\Assets\Fonts\MinecraftRegular.otf #Minecraft"/>

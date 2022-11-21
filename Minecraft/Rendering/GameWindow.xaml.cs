@@ -23,6 +23,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Diagnostics;
+using Minecraft.Rendering;
 
 namespace Minecraft
 {
@@ -30,24 +31,11 @@ namespace Minecraft
     public delegate void GameUpdateHandler();
     partial class GameWindow : Window
     {
-        class PickedItem
-
-        {
-            public ImageSource src;
-            public BlockType type;
-
-            public PickedItem(ImageSource src, BlockType type)
-            {
-                this.src = src;
-                this.type = type;
-            }
-        }
-
         public Vector2 CenterPosition;
         public event Action? RenderSizeChange;
         public event Action<bool>? Pause;
         public IHotbar Hotbar { get; private set; }
-        public Inventory Inventory { get; private set; } 
+        public Inventory Inventory { get; private set; }
 
         public bool NeedsToResetMouse = true;
         public bool ShowWireFrames = false;
@@ -65,10 +53,14 @@ namespace Minecraft
         private GameController gameController;
         private UserSettings userSettings;
         private BitmapImage currentTexture;
+
+        GameWindowViewModel vm;
+        UILogic logic;
         public GameWindow()
         {
-            
             InitializeComponent();
+            logic = new UILogic(this);
+            vm = new GameWindowViewModel(logic);
 
             Title = "Minecraft";
             WindowState = System.Windows.WindowState.Maximized;
@@ -90,7 +82,11 @@ namespace Minecraft
             CenterPosition = new Vector2(resolution.Width / 2, resolution.Height / 2);
 
             userSettings = new UserSettings();
-            ReadWorlds();
+
+            //logic = new UILogic(this);
+            //vm = new GameWindowViewModel(logic);
+
+            //logic.ReadWorlds();
 
             float hudScale = 0.6f;
 
@@ -106,28 +102,9 @@ namespace Minecraft
 
             CreateHotbar();
             CreateInventory();
-            SetupHotbar();   
+            SetupHotbar();
         }
-        private void ReadWorlds()
-        {
-            if(!Directory.Exists(WorldSerializer.SavesLocation))
-                Directory.CreateDirectory(WorldSerializer.SavesLocation);
 
-            var worldPaths = Directory.GetDirectories(WorldSerializer.SavesLocation);
-
-            List<WorldData> savesData = new List<WorldData>();
-
-            foreach (var path in worldPaths)
-            {
-                var files = Directory.GetFiles(path);
-                if(files.Length >= 2)
-                {
-                    var worldData = File.ReadAllLines(files.Where(fileName => fileName.Contains("worldInfo")).First());
-                    savesData.Add(new WorldData() { WorldName = worldData[0], WorldSeed = int.Parse(worldData[1]), LastPlayed = DateTime.Parse(worldData[2]), WorldPath = path });
-                }      
-            }
-            WorldSelector.ItemsSource = savesData.OrderByDescending(x => x.LastPlayed).ToList();
-        }
         private void EnterWorld(GameSession session)
         {
             renderer = new Renderer();
@@ -141,7 +118,7 @@ namespace Minecraft
             }
 
             Crosshair.Visibility = Visibility.Visible;
-            gameController = new GameController((int)RenderDistanceSlider.Value,renderer, this, session);
+            gameController = new GameController((int)RenderDistanceSlider.Value, renderer, this, session);
             UpdateHotbarItems();
             SetupBindings();
             OpenTkControl.Focus();
@@ -159,14 +136,14 @@ namespace Minecraft
                         {
                             i.Source = new CroppedBitmap(currentTexture, AtlasTexturesData.GetTextureRect(Hotbar.Items[int.Parse(data[1])]));
                         }
-                        else if(data[0] == "HotbarItem")
+                        else if (data[0] == "HotbarItem")
                             i.Source = null;
                     }
                 }
             }
             HotbarGrid.Visibility = Visibility.Visible;
         }
-        private void CreateWorld(string name,string seed)
+        private void CreateWorld(string name, string seed)
         {
             var worldDirs = from x in Directory.GetDirectories(WorldSerializer.SavesLocation)
                             select x.Split("\\").Last();
@@ -215,9 +192,9 @@ namespace Minecraft
         }
         protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
         {
-            if(e.Source == OpenTkControl)
+            if (e.Source == OpenTkControl)
             {
-                if((int)e.Key >= 35 && (int)e.Key <= 43) //34 = 0
+                if ((int)e.Key >= 35 && (int)e.Key <= 43) //34 = 0
                 {
                     Hotbar.SetSelectedIndex((int)e.Key - 35);
                     Grid.SetColumn((Image)HotbarGrid.FindName("SelectedFrame"), Hotbar.SelectedItemIndex);
@@ -273,14 +250,14 @@ namespace Minecraft
                             }
                             break;
                     }
-                } 
+                }
             }
 
             base.OnKeyDown(e);
         }
         protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
         {
-            if(Hotbar != null)
+            if (Hotbar != null)
             {
                 Hotbar.UpdateSelectedIndex(e.Delta);
 
@@ -337,7 +314,7 @@ namespace Minecraft
         }
         private void OpenCloseInventory()
         {
-            if(!IsPauseMenuOpened && !IsInMainMenu)
+            if (!IsPauseMenuOpened && !IsInMainMenu)
             {
                 pickedItem = null;
                 PickedItemImage.Source = null;
@@ -428,9 +405,9 @@ namespace Minecraft
         }
         private void ReloadTextures()
         {
-            foreach(var img in InventoryGrid.Children)
+            foreach (var img in InventoryGrid.Children)
             {
-                if(img is Image i)
+                if (img is Image i)
                 {
                     var data = i.Name.Split('_');
                     if (data[0] == "InventoryItem")
@@ -520,7 +497,7 @@ namespace Minecraft
         }
         private void SetupBindings()
         {
-            if(FovSlider.DataContext == null)
+            if (FovSlider.DataContext == null)
             {
                 FovSlider.DataContext = Ioc.Default.GetService<ICamera>();
             }
@@ -558,7 +535,7 @@ namespace Minecraft
                 renderer.RenderFrame(delta.Milliseconds / 1000.0f);
 
                 fpsCounter.Text = Math.Round(1.0 / delta.TotalSeconds, 0) + " Fps";
-            }  
+            }
         }
         private void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -572,13 +549,13 @@ namespace Minecraft
         }
         private void InventoryItemMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(e.LeftButton == MouseButtonState.Pressed)
+            if (e.LeftButton == MouseButtonState.Pressed)
             {
                 var item = sender as Image;
                 var itemData = item.Name.Split('_');
 
                 PickedItemImage.Source = item.Source;
-                
+
                 pickedItem = new PickedItem(item.Source.Clone(), Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
             }
             else
@@ -652,23 +629,23 @@ namespace Minecraft
 
         private void Button_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(e.Source == BackToGame)
+            if (e.Source == BackToGame)
             {
                 OpenClosePauseMenu();
             }
-            else if(e.Source == Settings || e.Source == SettingsMenuBack || e.Source == MainMenuSettings)
+            else if (e.Source == Settings || e.Source == SettingsMenuBack || e.Source == MainMenuSettings)
             {
                 OpenCloseSettingsMenu();
             }
-            else if(e.Source == SaveAndExit)
+            else if (e.Source == SaveAndExit)
             {
                 gameController.Dispose();
-                ReadWorlds();
+                //logic.ReadWorlds();
                 OpenClosePauseMenu();
                 OpenCloseMainMenu();
-                MouseController.ShowMouse();   
+                MouseController.ShowMouse();
             }
-            else if(e.Source == LoadTexture)
+            else if (e.Source == LoadTexture)
             {
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "Png images (*.png;)|*.png;";
@@ -681,11 +658,11 @@ namespace Minecraft
                     currentTexture = new BitmapImage(new Uri(openFileDialog.FileName, UriKind.RelativeOrAbsolute));
                     ReloadTextures();
                 }
-                    
+
             }
             else if (e.Source == Create)
             {
-                CreateWorld(WorldName.Text,WorldSeed.Text);
+                CreateWorld(WorldName.Text, WorldSeed.Text);
             }
             else if (e.Source == WorldDetailsCancel || e.Source == CreateNewWorld)
             {
@@ -696,7 +673,7 @@ namespace Minecraft
                 OpenCloseWorldSelectorMenu();
                 WorldSelector.Items.Refresh();
             }
-            else if(e.Source == ExitGame)
+            else if (e.Source == ExitGame)
             {
                 Close();
             }
@@ -706,22 +683,22 @@ namespace Minecraft
             }
             else if (e.Source == DeleteSelectedWorld)
             {
-                if(WorldSelector.SelectedIndex >= 0)
+                if (WorldSelector.SelectedIndex >= 0)
                 {
                     var world = WorldSelector.SelectedItem as WorldData;
 
-                    if(world != null)
+                    if (world != null)
                     {
-                        Directory.Delete(world.WorldPath,true);
+                        Directory.Delete(world.WorldPath, true);
                         (WorldSelector.ItemsSource as List<WorldData>)?.Remove(world);
                         WorldSelector.Items.Refresh();
-                    }                
+                    }
                 }
             }
         }
         private void OpenClosePauseMenu()
         {
-            if(!IsInMainMenu)
+            if (!IsInMainMenu)
             {
                 IsPauseMenuOpened = !IsPauseMenuOpened;
 
@@ -773,7 +750,7 @@ namespace Minecraft
         }
         private void WorldSelector_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(WorldSelector.SelectedIndex >= 0)
+            if (WorldSelector.SelectedIndex >= 0)
                 EnterWorld(new GameSession(WorldSelector.SelectedItem as WorldData, false));
         }
     }
