@@ -67,6 +67,7 @@ namespace Minecraft
         private BitmapImage currentTexture;
         public GameWindow()
         {
+            
             InitializeComponent();
 
             Title = "Minecraft";
