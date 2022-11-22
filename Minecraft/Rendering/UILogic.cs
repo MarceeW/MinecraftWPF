@@ -48,8 +48,8 @@ namespace Minecraft.Rendering
                 if (files.Length >= 2)
                 {
                     var worldData = File.ReadAllLines(files.Where(fileName => fileName.Contains("worldInfo")).First());
-                    if (DateTime.Parse(worldData[2]) is DateTime)
-                        savesData.Add(new WorldData() { WorldName = worldData[0], WorldSeed = int.Parse(worldData[1]), LastPlayed = DateTime.Parse(worldData[2]), WorldPath = path });
+                    if (DateTime.TryParse(worldData[2], out DateTime date))
+                        savesData.Add(new WorldData() { WorldName = worldData[0], WorldSeed = int.Parse(worldData[1]), LastPlayed = date, WorldPath = path });
                     else
                         savesData.Add(new WorldData() { WorldName = worldData[0], WorldSeed = int.Parse(worldData[1]), LastPlayed = DateTime.Now, WorldPath = path });
                     
