@@ -20,8 +20,6 @@
         <BitmapImage x:Key="MainMenuBackground" UriSource="..\Assets\HUD\MainMenuWallpaper.png"/>
         <BitmapImage x:Key="MainMenuTitle" UriSource="..\Assets\HUD\MainMenuTitle.png"/>
         <BitmapImage x:Key="OverWorldBackground" UriSource="..\Assets\HUD\Overworld_background.png"/>
-        
-        
 
         <Style x:Key="McText" TargetType="TextBlock">
             <Setter Property="FontFamily" Value="..\Assets\Fonts\MinecraftRegular.otf #Minecraft"/>
@@ -37,7 +35,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
-        
+
         <Style x:Key="ItemToolTip" TargetType="ToolTip">
             <Setter Property="FontFamily" Value="..\Assets\Fonts\MinecraftRegular.otf #Minecraft"/>
             <Setter Property="Effect">
@@ -219,14 +217,15 @@
 
             <Image x:Name="MainMenuTitle" Width="1000" Source="{StaticResource MainMenuTitle}" Grid.Row="0"/>
 
-            <Image x:Name="Play" Width="400" Height="60" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="1" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
-            <TextBlock Text="Singleplayer" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="1" Style="{StaticResource McText}"/>
+            <Image x:Name="Play" Width="400" Height="60" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}" Grid.Row="1"/>
+            
+            <TextBlock IsHitTestVisible="False" Text="Singleplayer" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="1" Style="{StaticResource McText}"/>
 
             <Image x:Name="MainMenuSettings" Width="400" Height="60" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="2" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
-            <TextBlock Text="Settings..." VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
+            <TextBlock IsHitTestVisible="False" Text="Settings..." VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
 
             <Image x:Name="ExitGame" Width="400" Height="60" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="3" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" MouseDown="Button_MouseDown" Cursor="Hand" Style="{StaticResource ButtonStyle}"/>
-            <TextBlock Text="Quit Game" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="3" Style="{StaticResource McText}"/>
+            <TextBlock IsHitTestVisible="False" Text="Quit Game" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="3" Style="{StaticResource McText}"/>
 
         </Grid>
         <Grid x:Name="WorldSelectorMenu" Visibility="Hidden">
