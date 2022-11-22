@@ -27,7 +27,7 @@ namespace Minecraft.Rendering
 {
     internal class UILogic : IUILogic
     {
-        GameWindow gw;
+        internal GameWindow gw;
         public UILogic(GameWindow gw)
         {
             this.gw = gw;
@@ -123,37 +123,6 @@ namespace Minecraft.Rendering
             OpenCloseWorldCreationMenu();
             EnterWorld(new GameSession(worldData, true));
         }
-
-        //public void PauseGame()
-        //{
-        //    gw.IsGamePaused = !gw.IsGamePaused;
-
-            
-        //    //gw.Pause?.Invoke(gw.IsGamePaused);
-
-        //    if (gw.IsGamePaused)
-        //    {
-        //        var effect = new BlurEffect();
-        //        effect.Radius = 15;
-
-        //        gw.OpenTkControl.Effect = effect;
-        //    }
-        //    else
-        //        gw.OpenTkControl.Effect = null;
-
-        //    gw.PauseMenuDarkener.Visibility = gw.PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //    gw.Crosshair.Visibility = gw.Crosshair.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-
-        //    gw.NeedsToResetMouse = !gw.NeedsToResetMouse;
-
-        //    if (gw.NeedsToResetMouse)
-        //        MouseController.HideMouse();
-        //    else
-        //    {
-        //        MouseController.ShowMouse();
-        //    }
-        //}
-
         public void OpenCloseInventory()
         {
             if (!gw.IsPauseMenuOpened && !gw.IsInMainMenu)
@@ -266,21 +235,7 @@ namespace Minecraft.Rendering
                 MouseController.MoveMouse(gw.CenterPosition);
             }
         }
-        //public void OpenTkControl_OnRender(TimeSpan delta)
-        //{
-        //    if (!gw.IsInMainMenu)
-        //    {
-        //        if (gw.ShowWireFrames)
-        //            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
-        //        else
-        //            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
-
-        //        gw.renderer.RenderFrame(delta.Milliseconds / 1000.0f);
-
-        //        gw.fpsCounter.Text = Math.Round(1.0 / delta.TotalSeconds, 0) + " Fps";
-        //    }
-        //}
-
+        
         public void OpenClosePauseMenu()
         {
             if (!gw.IsInMainMenu)
