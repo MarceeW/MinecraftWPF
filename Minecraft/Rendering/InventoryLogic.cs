@@ -1,4 +1,5 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Controller;
 using Minecraft.Terrain;
 using Minecraft.UI;
 using System;
@@ -18,12 +19,18 @@ namespace Minecraft.Rendering
     {
         public Inventory Inventory { get; private set; }
         public IHotbar Hotbar { get; private set; }
+
+        internal UILogic logic;
         internal GameWindow gw;
+        internal PickedItem? pickedItem;
+
+
         public InventoryLogic(GameWindow gw)
         {
             Inventory = new Inventory();
             Hotbar = Ioc.Default.GetService<IHotbar>();
             this.gw = gw;
+            logic = new UILogic(gw);
         }
 
       
@@ -135,44 +142,87 @@ namespace Minecraft.Rendering
 
         public void HotbarMouseDown(object sender, MouseButtonEventArgs e)
         {
-            throw new NotImplementedException();
+            if (Hotbar != null)
+            {
+                var grid = sender as Grid;
+
+                var pos = e.GetPosition(grid);
+
+                pos.X /= grid.Width / Hotbar.MaxItems;
+
+                var clickedImage = (Image)gw.HotbarGrid.FindName($"HotbarItem_{(int)pos.X}");
+
+                if (pickedItem != null)
+                {
+                    BlockType toChange = pickedItem.type;
+
+                    if (e.LeftButton == MouseButtonState.Pressed)
+                    {
+                        pickedItem.src = clickedImage.Source?.Clone();
+                        pickedItem.type = Hotbar.Items[(int)pos.X];
+
+                        clickedImage.Source = gw.PickedItemImage.Source;
+
+                        gw.PickedItemImage.Source = pickedItem.src;
+                    }
+                    else
+                    {
+                        clickedImage.Source = null;
+                        toChange = BlockType.Air;
+                    }
+
+                    Hotbar.ChangeBlock((int)pos.X, toChange);
+                }
+                else if (pickedItem == null)
+                {
+                    pickedItem = new PickedItem((CroppedBitmap)clickedImage.Source, Hotbar.Items[(int)pos.X]);
+
+                    clickedImage.Source = null;
+                    gw.PickedItemImage.Source = pickedItem.src;
+                    Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
+
+                    gw.PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - gw.PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
+                }
+                else if (e.RightButton == MouseButtonState.Pressed)
+                {
+                    clickedImage.Source = null;
+                    Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
+                }
+            }
         }
 
         public void InventoryItemMouseDown(object sender, MouseButtonEventArgs e)
         {
-            throw new NotImplementedException();
-        }
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                var item = sender as Image;
+                var itemData = item.Name.Split('_');
 
-        public void OnKeyDown(KeyEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
+                gw.PickedItemImage.Source = item.Source;
 
-        public void OnMouseDown(MouseButtonEventArgs e)
-        {
-            throw new NotImplementedException();
+                pickedItem = new PickedItem(item.Source.Clone(), Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
+            }
+            else
+            {
+                gw.PickedItemImage.Source = null;
+                pickedItem = null;
+            }
         }
 
         public void OnMouseEnterBlockImage(object sender, MouseEventArgs e)
         {
-            throw new NotImplementedException();
+            (sender as Image).Width *= 1.2;
+            gw.Cursor = Cursors.Hand;
         }
 
         public void OnMouseLeaveBlockImage(object sender, MouseEventArgs e)
         {
-            throw new NotImplementedException();
+            (sender as Image).Width /= 1.2;
+            gw.Cursor = Cursors.Arrow;
         }
 
-        public void OnMouseMove(MouseEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void OnMouseWheel(MouseWheelEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
+       
+        
        
     }
 }

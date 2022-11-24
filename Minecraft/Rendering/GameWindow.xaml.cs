@@ -51,7 +51,7 @@ namespace Minecraft
 
         internal Renderer renderer;
 
-        internal PickedItem? pickedItem;
+        internal PickedItem? pickedItem;        //kell
         internal GameController gameController;
         internal UserSettings userSettings;
         internal BitmapImage currentTexture;
@@ -113,7 +113,7 @@ namespace Minecraft
                 PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
             }
             base.OnMouseMove(e);
-        }   //kell
+        }   
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
         {
             if (!IsInventoryOpened)
@@ -127,7 +127,7 @@ namespace Minecraft
                 }
             }
             base.OnMouseDown(e);
-        }   //kell
+        }   
         protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
         {
             if (e.Source == OpenTkControl)
@@ -192,7 +192,7 @@ namespace Minecraft
             }
 
             base.OnKeyDown(e);
-        }   //kell
+        }   
         protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
         {
             if (Hotbar != null)
@@ -203,7 +203,7 @@ namespace Minecraft
             }
 
             base.OnMouseWheel(e);
-        }   //kell
+        }   
         protected override void OnLocationChanged(EventArgs e)
         {
             CenterPosition = new Vector2((float)(Left + Width / 2), (float)(Top + Height / 2));
