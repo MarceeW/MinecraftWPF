@@ -109,7 +109,7 @@ namespace Minecraft
                 PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
             }
             base.OnMouseMove(e);
-        }
+        }   //kell
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
         {
             if (!IsInventoryOpened)
@@ -123,7 +123,7 @@ namespace Minecraft
                 }
             }
             base.OnMouseDown(e);
-        }
+        }   //kell
         protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
         {
             if (e.Source == OpenTkControl)
@@ -188,7 +188,7 @@ namespace Minecraft
             }
 
             base.OnKeyDown(e);
-        }
+        }   //kell
         protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
         {
             if (Hotbar != null)
@@ -199,7 +199,7 @@ namespace Minecraft
             }
 
             base.OnMouseWheel(e);
-        }
+        }   //kell
         protected override void OnLocationChanged(EventArgs e)
         {
             CenterPosition = new Vector2((float)(Left + Width / 2), (float)(Top + Height / 2));
@@ -321,8 +321,8 @@ namespace Minecraft
                     }
                 }
             }
-        }
-       
+        }   //kell
+
         private void SetupHotbar()
         {
             if (Hotbar != null)
@@ -349,8 +349,8 @@ namespace Minecraft
                     HotbarGrid.RegisterName(item.Name, item);
                 }
             }
-        }
-        
+        }       //kell
+
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
             if (!IsInMainMenu)
@@ -369,12 +369,12 @@ namespace Minecraft
         {
             (sender as Image).Width *= 1.2;
             Cursor = Cursors.Hand;
-        }
+        }   //kell
         private void OnMouseLeaveBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Image).Width /= 1.2;
             Cursor = Cursors.Arrow;
-        }
+        }   //kell
         private void InventoryItemMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -391,7 +391,7 @@ namespace Minecraft
                 PickedItemImage.Source = null;
                 pickedItem = null;
             }
-        }
+        }   //kell
         private void HotbarMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (Hotbar != null)
@@ -441,7 +441,7 @@ namespace Minecraft
                     Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
                 }
             }
-        }
+        } //kell
 
         private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
