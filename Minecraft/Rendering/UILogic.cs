@@ -79,16 +79,16 @@ namespace Minecraft.Rendering
 
         public void UpdateHotbarItems()
         {
-            if (gw.Hotbar != null)
+            if (gw.invlogic.Hotbar != null)
             {
                 foreach (var img in gw.HotbarGrid.Children)
                 {
                     if (img is Image i)
                     {
                         var data = i.Name.Split('_');
-                        if (data[0] == "HotbarItem" && gw.Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
+                        if (data[0] == "HotbarItem" && gw.invlogic.Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
                         {
-                            i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(gw.Hotbar.Items[int.Parse(data[1])]));
+                            i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(gw.invlogic.Hotbar.Items[int.Parse(data[1])]));
                         }
                         else if (data[0] == "HotbarItem")
                             i.Source = null;
@@ -148,7 +148,7 @@ namespace Minecraft.Rendering
                     var data = i.Name.Split('_');
                     if (data[0] == "InventoryItem")
                     {
-                        i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(gw.Inventory.Blocks[int.Parse(data[2]), int.Parse(data[1])]));
+                        i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(gw.invlogic.Inventory.Blocks[int.Parse(data[2]), int.Parse(data[1])]));
                     }
                 }
             }
@@ -157,9 +157,9 @@ namespace Minecraft.Rendering
                 if (img is Image i)
                 {
                     var data = i.Name.Split('_');
-                    if (data[0] == "HotbarItem" && gw.Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
+                    if (data[0] == "HotbarItem" && gw.invlogic.Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
                     {
-                        i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(gw.Hotbar.Items[int.Parse(data[1])]));
+                        i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(gw.invlogic.Hotbar.Items[int.Parse(data[1])]));
                     }
                 }
             }
@@ -171,14 +171,14 @@ namespace Minecraft.Rendering
             row.Height = new GridLength(1, GridUnitType.Star);
             gw.HotbarGrid.RowDefinitions.Add(row);
 
-            for (int i = 0; i < gw.Hotbar.MaxItems; i++)
+            for (int i = 0; i < gw.invlogic.Hotbar.MaxItems; i++)
             {
                 ColumnDefinition def = new ColumnDefinition();
                 def.Width = new GridLength(1, GridUnitType.Star);
                 gw.HotbarGrid.ColumnDefinitions.Add(def);
             }
 
-            for (int i = 0; i < gw.Hotbar.MaxItems; i++)
+            for (int i = 0; i < gw.invlogic.Hotbar.MaxItems; i++)
             {
                 Image frame = new Image();
                 frame.Source = (BitmapSource)gw.Resources["ItemFrame"];
