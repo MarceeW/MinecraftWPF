@@ -35,8 +35,9 @@ namespace Minecraft
         public Vector2 CenterPosition;
         public event Action? RenderSizeChange;
         public event Action<bool>? Pause;
-        public IHotbar Hotbar { get; private set; }
-        public Inventory Inventory { get; private set; }
+        public IHotbar Hotbar { get; private set; } //kell
+        public Inventory Inventory { get; private set; }    //kell
+
 
         public bool NeedsToResetMouse = true;
         public bool ShowWireFrames = false;
@@ -57,10 +58,13 @@ namespace Minecraft
 
         GameWindowViewModel vm;
         internal UILogic logic;
+        internal InventoryLogic invlogic;
+        
         public GameWindow()
         {
             InitializeComponent();
             logic = new UILogic(this);
+            invlogic = new InventoryLogic(this);
             vm = new GameWindowViewModel(logic);
 
             Title = "Minecraft";
@@ -87,8 +91,8 @@ namespace Minecraft
             float hudScale = 0.6f;
 
             MouseListener = new MouseListener(this);
-            Inventory = new Inventory();
-            Hotbar = Ioc.Default.GetService<IHotbar>();
+            Inventory = new Inventory();                //go
+            Hotbar = Ioc.Default.GetService<IHotbar>(); //go
 
             HotbarGrid.Width *= hudScale;
             HotbarGrid.Height *= hudScale;
