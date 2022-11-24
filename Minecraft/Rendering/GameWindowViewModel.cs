@@ -14,6 +14,7 @@ namespace Minecraft.Rendering
     internal class GameWindowViewModel : ObservableRecipient
     {
         IUILogic logic;
+
         public GameWindowViewModel(IUILogic logic)
         {
             this.logic = logic;
