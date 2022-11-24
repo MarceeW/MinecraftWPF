@@ -101,69 +101,7 @@ namespace Minecraft
             SetupHotbar();
         }
 
-        //private void EnterWorld(GameSession session)
-        //{
-        //    renderer = new Renderer();
-        //    MouseController.HideMouse();
-
-        //    if (IsInMainMenu)
-        //    {
-        //        IsInMainMenu = false;
-        //        OpenCloseWorldSelectorMenu();
-        //        OverWorldCover.Visibility = Visibility.Hidden;
-        //    }
-
-        //    Crosshair.Visibility = Visibility.Visible;
-        //    gameController = new GameController((int)RenderDistanceSlider.Value, renderer, this, session);
-        //    UpdateHotbarItems();
-        //    SetupBindings();
-        //    OpenTkControl.Focus();
-        //}
-        //private void UpdateHotbarItems()
-        //{
-        //    if (Hotbar != null)
-        //    {
-        //        foreach (var img in HotbarGrid.Children)
-        //        {
-        //            if (img is Image i)
-        //            {
-        //                var data = i.Name.Split('_');
-        //                if (data[0] == "HotbarItem" && Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
-        //                {
-        //                    i.Source = new CroppedBitmap(currentTexture, AtlasTexturesData.GetTextureRect(Hotbar.Items[int.Parse(data[1])]));
-        //                }
-        //                else if (data[0] == "HotbarItem")
-        //                    i.Source = null;
-        //            }
-        //        }
-        //    }
-        //    HotbarGrid.Visibility = Visibility.Visible;
-        //}
-        //private void CreateWorld(string name, string seed)
-        //{
-        //    var worldDirs = from x in Directory.GetDirectories(WorldSerializer.SavesLocation)
-        //                    select x.Split("\\").Last();
-        //    if (name == "")
-        //        name = "New World";
-
-        //    string baseName = name;
-        //    int i = 1;
-        //    while (worldDirs.Contains(name))
-        //    {
-        //        name = $"{baseName} ({i})";
-        //        i++;
-        //    }
-
-        //    string worldSaveDir = WorldSerializer.SavesLocation + @"\" + name;
-        //    Directory.CreateDirectory(worldSaveDir);
-        //    var worldData = new WorldData() { LastPlayed = DateTime.Now, WorldName = name, WorldSeed = WorldGenerator.GenerateSeed(seed), WorldPath = worldSaveDir };
-
-        //    IsInMainMenu = false;
-        //    WorldName.Text = "";
-        //    WorldSeed.Text = "";
-        //    OpenCloseWorldCreationMenu();
-        //    logic.EnterWorld(new GameSession(worldData, true));
-        //}
+      
         protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
         {
             if (pickedItem != null)
@@ -308,21 +246,6 @@ namespace Minecraft
                 MouseController.ShowMouse();
             }
         }
-        //private void OpenCloseInventory()
-        //{
-        //    if (!IsPauseMenuOpened && !IsInMainMenu)
-        //    {
-        //        pickedItem = null;
-        //        PickedItemImage.Source = null;
-
-        //        IsInventoryOpened = !IsInventoryOpened;
-
-        //        InventoryGrid.Visibility = InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //        InventoryText.Visibility = InventoryText.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-
-        //        PauseGame();
-        //    }
-        //}
         private void CreateInventory()
         {
             double inventoryFrameSize = InventoryGrid.Width / Inventory.Columns;
@@ -399,71 +322,7 @@ namespace Minecraft
                 }
             }
         }
-        //private void ReloadTextures()
-        //{
-        //    foreach (var img in InventoryGrid.Children)
-        //    {
-        //        if (img is Image i)
-        //        {
-        //            var data = i.Name.Split('_');
-        //            if (data[0] == "InventoryItem")
-        //            {
-        //                i.Source = new CroppedBitmap(currentTexture, AtlasTexturesData.GetTextureRect(Inventory.Blocks[int.Parse(data[2]), int.Parse(data[1])]));
-        //            }
-        //        }
-        //    }
-        //    foreach (var img in HotbarGrid.Children)
-        //    {
-        //        if (img is Image i)
-        //        {
-        //            var data = i.Name.Split('_');
-        //            if (data[0] == "HotbarItem" && Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
-        //            {
-        //                i.Source = new CroppedBitmap(currentTexture, AtlasTexturesData.GetTextureRect(Hotbar.Items[int.Parse(data[1])]));
-        //            }
-        //        }
-        //    }
-        //}
-        //private void CreateHotbar()
-        //{
-        //    RowDefinition row = new RowDefinition();
-        //    row.Height = new GridLength(1, GridUnitType.Star);
-        //    HotbarGrid.RowDefinitions.Add(row);
-
-        //    for (int i = 0; i < Hotbar.MaxItems; i++)
-        //    {
-        //        ColumnDefinition def = new ColumnDefinition();
-        //        def.Width = new GridLength(1, GridUnitType.Star);
-        //        HotbarGrid.ColumnDefinitions.Add(def);
-        //    }
-
-        //    for (int i = 0; i < Hotbar.MaxItems; i++)
-        //    {
-        //        Image frame = new Image();
-        //        frame.Source = (BitmapSource)Resources["ItemFrame"];
-        //        frame.Name = "ItemFrame" + i;
-
-        //        RenderOptions.SetBitmapScalingMode(frame, BitmapScalingMode.NearestNeighbor);
-
-        //        Grid.SetRow(frame, 0);
-        //        Grid.SetColumn(frame, i);
-
-        //        HotbarGrid.Children.Add(frame);
-        //        HotbarGrid.RegisterName(frame.Name, frame);
-        //    }
-
-        //    Image selectedFrame = new Image();
-        //    selectedFrame.Source = (BitmapSource)Resources["SelectedItemFrame"];
-        //    selectedFrame.Name = "SelectedFrame";
-
-        //    RenderOptions.SetBitmapScalingMode(selectedFrame, BitmapScalingMode.NearestNeighbor);
-
-        //    Grid.SetRow(selectedFrame, 0);
-        //    Grid.SetColumn(selectedFrame, 0);
-
-        //    HotbarGrid.Children.Add(selectedFrame);
-        //    HotbarGrid.RegisterName(selectedFrame.Name, selectedFrame);
-        //}
+       
         private void SetupHotbar()
         {
             if (Hotbar != null)
@@ -491,34 +350,7 @@ namespace Minecraft
                 }
             }
         }
-        //private void SetupBindings()
-        //{
-        //    if (FovSlider.DataContext == null)
-        //    {
-        //        FovSlider.DataContext = Ioc.Default.GetService<ICamera>();
-        //    }
-        //    if (gameController != null)
-        //    {
-        //        RenderDistanceSlider.DataContext = gameController.WorldRendererer;
-        //        SensitivitySlider.DataContext = gameController.PlayerController;
-
-        //        gameController.InitUserSettings(new UserSettings((float)FovSlider.Value, (int)RenderDistanceSlider.Value, (float)SensitivitySlider.Value));
-        //    }
-        //}
-        //private void LoadSettingsIntoControls()
-        //{
-        //    FovSlider.Value = userSettings.Fov;
-        //    RenderDistanceSlider.Value = userSettings.RenderDistance;
-        //    SensitivitySlider.Value = userSettings.MouseSpeed;
-        //}
-
-        //public void ResetMousePosition()
-        //{
-        //    if (NeedsToResetMouse)
-        //    {
-        //        MouseController.MoveMouse(CenterPosition);
-        //    }
-        //}
+        
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
             if (!IsInMainMenu)
@@ -692,58 +524,7 @@ namespace Minecraft
                 }
             }
         }
-        //private void OpenClosePauseMenu()
-        //{
-        //    if (!IsInMainMenu)
-        //    {
-        //        IsPauseMenuOpened = !IsPauseMenuOpened;
-
-        //        PauseMenu.Visibility = PauseMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //        HotbarGrid.Visibility = HotbarGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-
-        //        PauseGame();
-        //    }
-        //}
-        //private void OpenCloseSettingsMenu()
-        //{
-        //    IsSettingsMenuOpened = !IsSettingsMenuOpened;
-
-        //    if (!IsInMainMenu)
-        //        PauseMenu.Visibility = PauseMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //    else
-        //    {
-        //        MainMenu.Visibility = MainMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //        OverWorldCover.Visibility = OverWorldCover.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //    }
-
-        //    SettingsMenu.Visibility = SettingsMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //}
-        //private void OpenCloseMainMenu()
-        //{
-        //    IsInMainMenu = !IsInMainMenu;
-        //    HotbarGrid.Visibility = Visibility.Hidden;
-        //    MainMenu.Visibility = MainMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //    Crosshair.Visibility = Crosshair.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //}
-        //private void OpenCloseWorldSelectorMenu()
-        //{
-        //    if (IsInMainMenu)
-        //    {
-        //        OverWorldCover.Visibility = OverWorldCover.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //        MainMenu.Visibility = MainMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //    }
-
-        //    WorldSelectorMenu.Visibility = WorldSelectorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //}
-        //private void OpenCloseWorldCreationMenu()
-        //{
-        //    if (IsInMainMenu)
-        //        WorldSelectorMenu.Visibility = WorldSelectorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //    else
-        //        OverWorldCover.Visibility = OverWorldCover.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-
-        //    WorldCreatorMenu.Visibility = WorldCreatorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-        //}
+        
         private void WorldSelector_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (WorldSelector.SelectedIndex >= 0)

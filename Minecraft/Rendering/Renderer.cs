@@ -37,9 +37,7 @@ namespace Minecraft.Render
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             OnRendering?.Invoke(delta);
-            //LineRenderer.WireWrame(camera.Position - new Vector3(0.5f), new Vector3(0.0f));
-            //LineRenderer.Axes(camera.Position - new Vector3(0.5f));
-            Scene?.Render(delta);
+             Scene?.Render(delta);
         }
     }
 }
