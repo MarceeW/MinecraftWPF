@@ -35,9 +35,7 @@ namespace Minecraft
         public Vector2 CenterPosition;
         public event Action? RenderSizeChange;
         public event Action<bool>? Pause;
-        public IHotbar Hotbar { get; private set; } //kell
-        public Inventory Inventory { get; private set; }    //kell
-
+        
 
         public bool NeedsToResetMouse = true;
         public bool ShowWireFrames = false;
@@ -64,7 +62,7 @@ namespace Minecraft
         {
             InitializeComponent();
             logic = new UILogic(this);
-            invlogic = new InventoryLogic(this);
+            invlogic = new InventoryLogic(this, logic);
             vm = new GameWindowViewModel(logic);
 
             Title = "Minecraft";
@@ -91,9 +89,7 @@ namespace Minecraft
             float hudScale = 0.6f;
 
             MouseListener = new MouseListener(this);
-            Inventory = new Inventory();                //go
-            Hotbar = Ioc.Default.GetService<IHotbar>(); //go
-
+            
             HotbarGrid.Width *= hudScale;
             HotbarGrid.Height *= hudScale;
 
@@ -118,11 +114,11 @@ namespace Minecraft
         {
             if (!IsInventoryOpened)
             {
-                if (Hotbar != null && e.MiddleButton == MouseButtonState.Pressed && WorldRenderer.CurrentTarget != null && (BlockType)WorldRenderer.CurrentTarget != BlockType.Air)
+                if (invlogic.Hotbar != null && e.MiddleButton == MouseButtonState.Pressed && WorldRenderer.CurrentTarget != null && (BlockType)WorldRenderer.CurrentTarget != BlockType.Air)
                 {
-                    Hotbar.ChangeBlock(Hotbar.SelectedItemIndex, (BlockType)WorldRenderer.CurrentTarget);
+                    invlogic.Hotbar.ChangeBlock(invlogic.Hotbar.SelectedItemIndex, (BlockType)WorldRenderer.CurrentTarget);
 
-                    var hotbarImage = (Image)HotbarGrid.FindName($"HotbarItem_{Hotbar.SelectedItemIndex}");
+                    var hotbarImage = (Image)HotbarGrid.FindName($"HotbarItem_{invlogic.Hotbar.SelectedItemIndex}");
                     hotbarImage.Source = new CroppedBitmap(currentTexture, AtlasTexturesData.GetTextureRect((BlockType)WorldRenderer.CurrentTarget));
                 }
             }
@@ -134,8 +130,8 @@ namespace Minecraft
             {
                 if ((int)e.Key >= 35 && (int)e.Key <= 43) //34 = 0
                 {
-                    Hotbar.SetSelectedIndex((int)e.Key - 35);
-                    Grid.SetColumn((Image)HotbarGrid.FindName("SelectedFrame"), Hotbar.SelectedItemIndex);
+                    invlogic.Hotbar.SetSelectedIndex((int)e.Key - 35);
+                    Grid.SetColumn((Image)HotbarGrid.FindName("SelectedFrame"), invlogic.Hotbar.SelectedItemIndex);
                 }
                 else
                 {
@@ -195,13 +191,12 @@ namespace Minecraft
         }   
         protected override void OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e)
         {
-            if (Hotbar != null)
+            if (invlogic.Hotbar != null)
             {
-                Hotbar.UpdateSelectedIndex(e.Delta);
+                invlogic.Hotbar.UpdateSelectedIndex(e.Delta);
 
-                Grid.SetColumn((Image)HotbarGrid.FindName("SelectedFrame"), Hotbar.SelectedItemIndex);
+                Grid.SetColumn((Image)HotbarGrid.FindName("SelectedFrame"), invlogic.Hotbar.SelectedItemIndex);
             }
-
             base.OnMouseWheel(e);
         }   
         protected override void OnLocationChanged(EventArgs e)
@@ -252,17 +247,17 @@ namespace Minecraft
         }
         private void CreateInventory()
         {
-            double inventoryFrameSize = InventoryGrid.Width / Inventory.Columns;
-            InventoryGrid.Height = inventoryFrameSize * Inventory.Rows;
+            double inventoryFrameSize = InventoryGrid.Width / invlogic.Inventory.Columns;
+            InventoryGrid.Height = inventoryFrameSize * invlogic.Inventory.Rows;
 
-            for (int i = 0; i < Inventory.Rows; i++)
+            for (int i = 0; i < invlogic.Inventory.Rows; i++)
             {
                 RowDefinition rowDef = new RowDefinition();
                 rowDef.Height = new GridLength(1, GridUnitType.Star);
 
                 InventoryGrid.RowDefinitions.Add(rowDef);
             }
-            for (int i = 0; i < Inventory.Columns; i++)
+            for (int i = 0; i < invlogic.Inventory.Columns; i++)
             {
                 ColumnDefinition colDef = new ColumnDefinition();
                 colDef.Width = new GridLength(1, GridUnitType.Star);
@@ -270,9 +265,9 @@ namespace Minecraft
                 InventoryGrid.ColumnDefinitions.Add(colDef);
             }
 
-            for (int x = 0; x < Inventory.Columns; x++)
+            for (int x = 0; x < invlogic.Inventory.Columns; x++)
             {
-                for (int y = 0; y < Inventory.Rows; y++)
+                for (int y = 0; y < invlogic.Inventory.Rows; y++)
                 {
                     Image frame = new Image();
                     frame.Source = (BitmapSource)Resources["InventoryFrame"];
@@ -288,13 +283,13 @@ namespace Minecraft
                 }
             }
 
-            if (Inventory != null)
+            if (invlogic.Inventory != null)
             {
-                for (int x = 0; x < Inventory.Columns; x++)
+                for (int x = 0; x < invlogic.Inventory.Columns; x++)
                 {
-                    for (int y = 0; y < Inventory.Rows; y++)
+                    for (int y = 0; y < invlogic.Inventory.Rows; y++)
                     {
-                        if (Inventory.Blocks[y, x] == BlockType.Air)
+                        if (invlogic.Inventory.Blocks[y, x] == BlockType.Air)
                             continue;
 
                         Image item = new Image();
@@ -309,11 +304,11 @@ namespace Minecraft
                         tooltip.Height = 30;
                         tooltip.FontSize = 16;
                         tooltip.Style = (Style)Resources["ItemToolTip"];
-                        tooltip.Content = BlockData.GetBlockName(Inventory.Blocks[y, x]);
+                        tooltip.Content = BlockData.GetBlockName(invlogic.Inventory.Blocks[y, x]);
                         tooltip.Visibility = Visibility.Visible;
 
                         item.ToolTip = tooltip;
-                        item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Inventory.Blocks[y, x]));
+                        item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(invlogic.Inventory.Blocks[y, x]));
 
                         RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
 
@@ -325,13 +320,13 @@ namespace Minecraft
                     }
                 }
             }
-        }   //kell
+        }   
 
         private void SetupHotbar()
         {
-            if (Hotbar != null)
+            if (invlogic.Hotbar != null)
             {
-                for (int i = 0; i < Hotbar.MaxItems; i++)
+                for (int i = 0; i < invlogic.Hotbar.MaxItems; i++)
                 {
 
                     Image item = new Image();
@@ -341,8 +336,8 @@ namespace Minecraft
                     item.MouseEnter += OnMouseEnterBlockImage;
                     item.MouseLeave += OnMouseLeaveBlockImage;
 
-                    if (Hotbar.Items[i] != BlockType.Air)
-                        item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(Hotbar.Items[i]));
+                    if (invlogic.Hotbar.Items[i] != BlockType.Air)
+                        item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(invlogic.Hotbar.Items[i]));
 
                     RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
 
@@ -353,7 +348,7 @@ namespace Minecraft
                     HotbarGrid.RegisterName(item.Name, item);
                 }
             }
-        }       //kell
+        }      
 
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
@@ -373,12 +368,12 @@ namespace Minecraft
         {
             (sender as Image).Width *= 1.2;
             Cursor = Cursors.Hand;
-        }   //kell
+        }  
         private void OnMouseLeaveBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
         {
             (sender as Image).Width /= 1.2;
             Cursor = Cursors.Arrow;
-        }   //kell
+        }   
         private void InventoryItemMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -388,23 +383,23 @@ namespace Minecraft
 
                 PickedItemImage.Source = item.Source;
 
-                pickedItem = new PickedItem(item.Source.Clone(), Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
+                pickedItem = new PickedItem(item.Source.Clone(), invlogic.Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
             }
             else
             {
                 PickedItemImage.Source = null;
                 pickedItem = null;
             }
-        }   //kell
+        }  
         private void HotbarMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (Hotbar != null)
+            if (invlogic.Hotbar != null)
             {
                 var grid = sender as Grid;
 
                 var pos = e.GetPosition(grid);
 
-                pos.X /= grid.Width / Hotbar.MaxItems;
+                pos.X /= grid.Width / invlogic.Hotbar.MaxItems;
 
                 var clickedImage = (Image)HotbarGrid.FindName($"HotbarItem_{(int)pos.X}");
 
@@ -415,7 +410,7 @@ namespace Minecraft
                     if (e.LeftButton == MouseButtonState.Pressed)
                     {
                         pickedItem.src = clickedImage.Source?.Clone();
-                        pickedItem.type = Hotbar.Items[(int)pos.X];
+                        pickedItem.type = invlogic.Hotbar.Items[(int)pos.X];
 
                         clickedImage.Source = PickedItemImage.Source;
 
@@ -427,25 +422,25 @@ namespace Minecraft
                         toChange = BlockType.Air;
                     }
 
-                    Hotbar.ChangeBlock((int)pos.X, toChange);
+                    invlogic.Hotbar.ChangeBlock((int)pos.X, toChange);
                 }
                 else if (pickedItem == null)
                 {
-                    pickedItem = new PickedItem((CroppedBitmap)clickedImage.Source, Hotbar.Items[(int)pos.X]);
+                    pickedItem = new PickedItem((CroppedBitmap)clickedImage.Source, invlogic.Hotbar.Items[(int)pos.X]);
 
                     clickedImage.Source = null;
                     PickedItemImage.Source = pickedItem.src;
-                    Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
+                    invlogic.Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
 
                     PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
                 }
                 else if (e.RightButton == MouseButtonState.Pressed)
                 {
                     clickedImage.Source = null;
-                    Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
+                    invlogic.Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
                 }
             }
-        } //kell
+        } 
 
         private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {

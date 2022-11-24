@@ -25,12 +25,12 @@ namespace Minecraft.Rendering
         internal PickedItem? pickedItem;
 
 
-        public InventoryLogic(GameWindow gw)
+        public InventoryLogic(GameWindow gw, UILogic ui)
         {
             Inventory = new Inventory();
             Hotbar = Ioc.Default.GetService<IHotbar>();
             this.gw = gw;
-            logic = new UILogic(gw);
+            logic = ui;
         }
 
       
