@@ -52,9 +52,7 @@ namespace Minecraft.Controller
             public void Validate(Key key)
             {
                 if (key == KeyToListen)
-                {
                     valid = true;
-                }
             }
         }
 

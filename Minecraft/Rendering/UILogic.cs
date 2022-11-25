@@ -87,9 +87,7 @@ namespace Minecraft.Rendering
                     {
                         var data = i.Name.Split('_');
                         if (data[0] == "HotbarItem" && gw.invlogic.Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
-                        {
                             i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(gw.invlogic.Hotbar.Items[int.Parse(data[1])]));
-                        }
                         else if (data[0] == "HotbarItem")
                             i.Source = null;
                     }
@@ -147,9 +145,7 @@ namespace Minecraft.Rendering
                 {
                     var data = i.Name.Split('_');
                     if (data[0] == "InventoryItem")
-                    {
                         i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(gw.invlogic.Inventory.Blocks[int.Parse(data[2]), int.Parse(data[1])]));
-                    }
                 }
             }
             foreach (var img in gw.HotbarGrid.Children)
@@ -158,9 +154,7 @@ namespace Minecraft.Rendering
                 {
                     var data = i.Name.Split('_');
                     if (data[0] == "HotbarItem" && gw.invlogic.Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
-                    {
                         i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(gw.invlogic.Hotbar.Items[int.Parse(data[1])]));
-                    }
                 }
             }
         }
@@ -209,9 +203,7 @@ namespace Minecraft.Rendering
         public void SetupBindings()
         {
             if (gw.FovSlider.DataContext == null)
-            {
                 gw.FovSlider.DataContext = Ioc.Default.GetService<ICamera>();
-            }
             if (gw.gameController != null)
             {
                 gw.RenderDistanceSlider.DataContext = gw.gameController.WorldRendererer;
@@ -231,9 +223,7 @@ namespace Minecraft.Rendering
         public void ResetMousePosition()
         {
             if (gw.NeedsToResetMouse)
-            {
-                MouseController.MoveMouse(gw.CenterPosition);
-            }
+                MouseController.MoveMouse(gw.CenterPosition);   
         }
         
         public void OpenClosePauseMenu()

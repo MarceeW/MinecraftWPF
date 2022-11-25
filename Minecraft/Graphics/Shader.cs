@@ -48,10 +48,8 @@ namespace Minecraft.Graphics
                 Console.WriteLine(infoLog);
             }
             else
-            {
                 shaders.Add(shader);
-            }
-
+            
             GL.AttachShader(handle, shader);
             GL.LinkProgram(handle);
 

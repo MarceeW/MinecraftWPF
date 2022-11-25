@@ -19,8 +19,7 @@ namespace Minecraft.Graphics.Model
         }
         public void Draw(Shader shader)
         {
-            foreach(Mesh mesh in meshes)
-                mesh.Draw(shader);
+            meshes.ForEach(x => x.Draw(shader));
         }
         List<Mesh> meshes;
         Dictionary<string, Texture> loadedTextures;
@@ -90,9 +89,7 @@ namespace Minecraft.Graphics.Model
                 string path = Path.Join(directory, t.FilePath);
 
                 if (loadedTextures.ContainsKey(path))
-                {
                     materialTextures.Add(loadedTextures[path]);
-                }
                 else
                 {
                     Graphics.Texture tex = new Graphics.Texture(path, false,needToFlipTextures);

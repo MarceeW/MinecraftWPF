@@ -47,9 +47,7 @@ namespace Minecraft.Terrain
             var chunk = GetChunk(pos, out Vector2 chunkPos);
 
             if (chunk != null)
-            {
                 return chunk.GetBlock(pos);
-            }
 
             return null;
         }

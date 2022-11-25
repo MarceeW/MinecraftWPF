@@ -276,9 +276,7 @@ namespace Minecraft.Graphics
                 isHandEmpty = false;
 
                 if (BlockData.IsVegetationBlock(type))
-                {
                     data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Left, new Vector3(0, .5f, 0),false,0));
-                }
                 else
                 {
                     data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Bot, Vector3.Zero,false,0));

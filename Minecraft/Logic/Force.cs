@@ -39,14 +39,10 @@ namespace Minecraft.Logic
             {
                 deltaY = Math.Sin(currentStep += forceGraphStep) * riseForce;
                 if (currentStep >= Math.PI)
-                {
                     SetForceType(ForceType.Fall);
-                }
             }
             else
-            {
                 deltaY = -Math.Min(Math.Pow(Math.E, currentStep += forceGraphStep / 2), maxFallSpeed);
-            }
             deltaPos.Y += (float)deltaY;
         }
     }

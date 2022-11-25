@@ -229,9 +229,7 @@ namespace Minecraft.Terrain
                         else if (block == BlockType.Sand)
                         {
                             if (chance <= 0.005)
-                            {
                                 chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.DeadBush, false);
-                            }
                         }
 
                         depth++;
@@ -242,18 +240,14 @@ namespace Minecraft.Terrain
         public static int GenerateSeed(string seed)
         {
             if (seed == "")
-            {
                 return random.Next();
-            }
             else if (int.TryParse(seed, out int s))
                 return s;
 
             int finalSeed = 0;
 
             for (int i = 0; i < seed.Length; i++)
-            {
                 finalSeed += (i + 1) * seed[i]; 
-            }
 
             return finalSeed;
         }
@@ -273,9 +267,7 @@ namespace Minecraft.Terrain
                         topBlock = world.GetBlock(new Vector3(x, topBlockY--, z));
 
                     if (topBlock == BlockType.GrassBlock || topBlock == BlockType.Sand && world.GetBlock(new Vector3(x, topBlockY + 1, z)) != BlockType.Water)
-                    {
                         return new Vector3(x, topBlockY + 2, z);
-                    }
                     else if (BlockData.IsVegetationBlock(topBlock) || topBlock == BlockType.Water)
                         return new Vector3(x, topBlockY, z);
                 }

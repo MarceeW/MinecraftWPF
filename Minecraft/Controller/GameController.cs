@@ -145,9 +145,7 @@ namespace Minecraft.Controller
                 gameStopwatch.Restart();
 
                 if (dt > 500)
-                {
                     dt = updatePerSec;
-                }
 
                 accumulator += dt;
 

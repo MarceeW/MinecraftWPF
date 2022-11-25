@@ -71,14 +71,11 @@ namespace Minecraft.Render
         }
         public void CreateMeshesInQueue(float delta)
         {
-
             if (renderQueue.Count > 0)
                 ChunkMesh.CreateMesh(world, renderQueue.Dequeue());
 
             if (world.ChunksNeedsToBeRegenerated.Count > 0)
-            {
                 ChunkMesh.CreateMesh(world, world.ChunksNeedsToBeRegenerated.Dequeue());
-            }
         }
         private bool IsChunkInRange(in Vector2 chunkPos)
         {
@@ -94,9 +91,7 @@ namespace Minecraft.Render
             CurrentTarget = world.GetBlock(blockHitPos);
 
             if (hit)
-            {
                 LineRenderer.WireWrame(blockHitPos, new Vector3(0.0f));
-            }
         }
     }
 }

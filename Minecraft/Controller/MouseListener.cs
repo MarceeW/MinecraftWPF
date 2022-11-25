@@ -25,13 +25,9 @@ namespace Minecraft.Controller
             if (!gameWindow.IsGamePaused)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
-                {
                     LeftMouseClick?.Invoke();
-                }
                 else if (e.RightButton == MouseButtonState.Pressed)
-                {
                     RightMouseClick?.Invoke();
-                }
             }
         }
         public void OnMouseUp(object sender, MouseButtonEventArgs e)
