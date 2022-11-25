@@ -49,7 +49,7 @@ namespace Minecraft
 
         internal Renderer renderer;
 
-        internal PickedItem? pickedItem;        //kell
+        internal PickedItem? pickedItem;       
         internal GameController gameController;
         internal UserSettings userSettings;
         internal BitmapImage currentTexture;
@@ -62,7 +62,7 @@ namespace Minecraft
         {
             InitializeComponent();
             logic = new UILogic(this);
-            invlogic = new InventoryLogic(this, logic);
+            invlogic = new InventoryLogic(this);
             vm = new GameWindowViewModel(logic);
 
             Title = "Minecraft";
@@ -105,9 +105,7 @@ namespace Minecraft
         protected override void OnMouseMove(System.Windows.Input.MouseEventArgs e)
         {
             if (pickedItem != null)
-            {
                 PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
-            }
             base.OnMouseMove(e);
         }   
         protected override void OnMouseDown(System.Windows.Input.MouseButtonEventArgs e)
@@ -241,9 +239,8 @@ namespace Minecraft
             if (NeedsToResetMouse)
                 MouseController.HideMouse();
             else
-            {
                 MouseController.ShowMouse();
-            }
+            
         }
         private void CreateInventory()
         {

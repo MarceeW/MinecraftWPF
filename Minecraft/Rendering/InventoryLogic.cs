@@ -25,12 +25,12 @@ namespace Minecraft.Rendering
         internal PickedItem? pickedItem;
 
 
-        public InventoryLogic(GameWindow gw, UILogic ui)
+        public InventoryLogic(GameWindow gw)
         {
             Inventory = new Inventory();
             Hotbar = Ioc.Default.GetService<IHotbar>();
             this.gw = gw;
-            logic = ui;
+            logic = gw.logic;
         }
 
       
@@ -118,7 +118,6 @@ namespace Minecraft.Rendering
             {
                 for (int i = 0; i < Hotbar.MaxItems; i++)
                 {
-
                     Image item = new Image();
                     item.Name = "HotbarItem_" + i;
                     item.Width = 36;
