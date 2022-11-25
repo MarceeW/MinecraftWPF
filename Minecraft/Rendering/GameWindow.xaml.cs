@@ -56,7 +56,7 @@ namespace Minecraft
 
         GameWindowViewModel vm;
         internal UILogic logic;
-        internal InventoryLogic invlogic;
+        //internal InventoryLogic invlogic;
         
         public GameWindow()
         {

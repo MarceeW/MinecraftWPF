@@ -11,11 +11,8 @@ namespace Minecraft.Rendering
     {
         void ReadWorlds();
         void EnterWorld(GameSession session);
-        void UpdateHotbarItems();
         void CreateWorld(string name, string seed);
         void OpenCloseInventory();
-        void ReloadTextures();
-        void CreateHotbar();
         void SetupBindings();
         void LoadSettingsIntoControls();
         void ResetMousePosition();
