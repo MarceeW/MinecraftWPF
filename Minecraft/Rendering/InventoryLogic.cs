@@ -20,7 +20,7 @@ namespace Minecraft.Rendering
         public Inventory Inventory { get; private set; }
         public IHotbar Hotbar { get; private set; }
 
-        internal UILogic logic;
+        
         internal GameWindow gw;
         internal PickedItem? pickedItem;
 
@@ -30,7 +30,6 @@ namespace Minecraft.Rendering
             Inventory = new Inventory();
             Hotbar = Ioc.Default.GetService<IHotbar>();
             this.gw = gw;
-            logic = gw.logic;
         }
 
       
@@ -220,8 +219,86 @@ namespace Minecraft.Rendering
             gw.Cursor = Cursors.Arrow;
         }
 
-       
-        
-       
+        public void CreateHotbar()
+        {
+            RowDefinition row = new RowDefinition();
+            row.Height = new GridLength(1, GridUnitType.Star);
+            gw.HotbarGrid.RowDefinitions.Add(row);
+
+            for (int i = 0; i < Hotbar.MaxItems; i++)
+            {
+                ColumnDefinition def = new ColumnDefinition();
+                def.Width = new GridLength(1, GridUnitType.Star);
+                gw.HotbarGrid.ColumnDefinitions.Add(def);
+            }
+
+            for (int i = 0; i < Hotbar.MaxItems; i++)
+            {
+                Image frame = new Image();
+                frame.Source = (BitmapSource)gw.Resources["ItemFrame"];
+                frame.Name = "ItemFrame" + i;
+
+                RenderOptions.SetBitmapScalingMode(frame, BitmapScalingMode.NearestNeighbor);
+
+                Grid.SetRow(frame, 0);
+                Grid.SetColumn(frame, i);
+
+                gw.HotbarGrid.Children.Add(frame);
+                gw.HotbarGrid.RegisterName(frame.Name, frame);
+            }
+
+            Image selectedFrame = new Image();
+            selectedFrame.Source = (BitmapSource)gw.Resources["SelectedItemFrame"];
+            selectedFrame.Name = "SelectedFrame";
+
+            RenderOptions.SetBitmapScalingMode(selectedFrame, BitmapScalingMode.NearestNeighbor);
+
+            Grid.SetRow(selectedFrame, 0);
+            Grid.SetColumn(selectedFrame, 0);
+
+            gw.HotbarGrid.Children.Add(selectedFrame);
+            gw.HotbarGrid.RegisterName(selectedFrame.Name, selectedFrame);
+        }
+
+        public void ReloadTextures()
+        {
+            foreach (var img in gw.InventoryGrid.Children)
+            {
+                if (img is Image i)
+                {
+                    var data = i.Name.Split('_');
+                    if (data[0] == "InventoryItem")
+                        i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(Inventory.Blocks[int.Parse(data[2]), int.Parse(data[1])]));
+                }
+            }
+            foreach (var img in gw.HotbarGrid.Children)
+            {
+                if (img is Image i)
+                {
+                    var data = i.Name.Split('_');
+                    if (data[0] == "HotbarItem" && Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
+                        i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(Hotbar.Items[int.Parse(data[1])]));
+                }
+            }
+        }
+
+        public void UpdateHotbarItems()
+        {
+            if (Hotbar != null)
+            {
+                foreach (var img in gw.HotbarGrid.Children)
+                {
+                    if (img is Image i)
+                    {
+                        var data = i.Name.Split('_');
+                        if (data[0] == "HotbarItem" && Hotbar.Items[int.Parse(data[1])] != BlockType.Air)
+                            i.Source = new CroppedBitmap(gw.currentTexture, AtlasTexturesData.GetTextureRect(Hotbar.Items[int.Parse(data[1])]));
+                        else if (data[0] == "HotbarItem")
+                            i.Source = null;
+                    }
+                }
+            }
+            gw.HotbarGrid.Visibility = Visibility.Visible;
+        }
     }
 }

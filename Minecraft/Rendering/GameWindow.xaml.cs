@@ -56,7 +56,7 @@ namespace Minecraft
 
         GameWindowViewModel vm;
         internal UILogic logic;
-        //internal InventoryLogic invlogic;
+        internal InventoryLogic invlogic;
         
         public GameWindow()
         {
@@ -96,7 +96,7 @@ namespace Minecraft
             logic.LoadSettingsIntoControls();
             logic.SetupBindings();
 
-            logic.CreateHotbar();
+            invlogic.CreateHotbar();
             CreateInventory();
             SetupHotbar();
         }
@@ -480,7 +480,7 @@ namespace Minecraft
                 {
                     AtlasTexturesData.TexturePath = openFileDialog.FileName;
                     currentTexture = new BitmapImage(new Uri(openFileDialog.FileName, UriKind.RelativeOrAbsolute));
-                    logic.ReloadTextures();
+                    invlogic.ReloadTextures();
                 }
 
             }
