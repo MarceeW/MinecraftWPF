@@ -157,10 +157,9 @@ namespace Minecraft
 
                                 if (NeedsToResetMouse)
                                     MouseController.HideMouse();
-                                else
-                                {
+                                else                                
                                     logic.ResetMousePosition();
-                                }
+
                                 MouseController.ShowMouse();
                             }
                             break;
