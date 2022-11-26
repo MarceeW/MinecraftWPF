@@ -22,7 +22,7 @@ namespace Minecraft.Controller
             MouseSpeed = mouseSpeed;
         }
 
-        public void Save(float fov,int renderDistance,float mouseSpeed)
+        public static void Save(float fov,int renderDistance,float mouseSpeed)
         {
             StreamWriter sw = new StreamWriter(UserSettingsFilePath);
             sw.WriteLine(fov);

@@ -13,10 +13,10 @@ using System.Windows.Media;
 
 namespace Minecraft.Controller
 {
-    internal class GameSession
+    public class GameSession
     {
-        public IPlayer Player { get; private set; }
-        public IWorld World { get; private set; }
+        internal IPlayer Player { get; private set; }
+        internal IWorld World { get; private set; }
         public WorldData WorldData { get; private set; }
         public bool IsNew { get; }
 

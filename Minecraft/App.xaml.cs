@@ -1,20 +1,13 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using Minecraft.Controller;
-using Minecraft.Game;
 using Minecraft.Graphics;
 using Minecraft.Logic;
-using Minecraft.Render;
-using Minecraft.Terrain;
 using Minecraft.UI;
-using OpenTK.Mathematics;
+using Minecraft.UI.Logic;
 using System.Windows;
 
 namespace Minecraft
 {
-    /// <summary>
-    /// Interaction logic for App.xaml
-    /// </summary>
     public partial class App : Application
     {
         public App()
@@ -25,6 +18,8 @@ namespace Minecraft
                 .AddSingleton<IPlayerLogic, PlayerLogic>()
                 .AddSingleton<IHotbar, Hotbar>()
                 .AddSingleton<IForce, Force>()
+                .AddSingleton<IUILogic, UILogic>()
+                .AddSingleton<IInventoryLogic, InventoryLogic>()
                 .BuildServiceProvider()
                 );
         }

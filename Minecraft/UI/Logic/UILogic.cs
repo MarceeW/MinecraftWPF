@@ -9,17 +9,113 @@ using System.Windows;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Graphics;
 using Minecraft.Misc;
+using System.Windows.Input;
+using System.Windows.Controls;
+using System.Windows.Media.Effects;
 
 namespace Minecraft.UI.Logic
 {
-    internal class UILogic : IUILogic
+    public class UILogic : IUILogic
     {
-        internal GameWindow gw;
-        public UILogic(GameWindow gw)
+        public event Action<bool>? Pause;
+        public GameWindow GameWindow
         {
-            this.gw = gw;
+            get
+            {
+                return gameWindow;
+            }
+            set
+            {
+                gameWindow = value;
+                gameWindow.PreviewKeyDown += OnKeyDown;
+                LoadSettingsIntoControls();
+                SetupBindings();
+            }
         }
+        public bool NeedsToResetMouse = true;
 
+        public bool IsInventoryOpened { get; set; } = false;
+        public static bool IsInMainMenu { get; set; } = true;
+        public bool IsGamePaused { get; set; } = false;
+        public bool IsSettingsMenuOpened { get; set; } = false;
+        public bool IsPauseMenuOpened { get; set; } = false;
+
+        private GameWindow? gameWindow;
+        private UserSettings userSettings = new UserSettings();
+        GameController gameController;
+        public void OnKeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.Key)
+            {
+                case Key.F3:
+                    {
+                        gameWindow.fpsCounter.Visibility = gameWindow.fpsCounter.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
+                    }
+                    break;
+                case Key.G:
+                    {
+                        gameWindow.ShowWireFrames = !gameWindow.ShowWireFrames;
+                        e.Handled = true;
+                    }
+                    break;
+                case Key.P:
+                    {
+                        NeedsToResetMouse = !NeedsToResetMouse;
+
+                        if (NeedsToResetMouse)
+                            MouseController.HideMouse();
+                        else
+                            ResetMousePosition();
+
+                        MouseController.ShowMouse();
+                    }
+                    break;
+                case Key.Escape:
+                    {
+
+                        if (IsInventoryOpened)
+                        {
+                            Ioc.Default.GetService<IInventoryLogic>().OpenCloseInventory();
+                        }
+                        else if (IsSettingsMenuOpened)
+                        {
+                            OpenCloseSettingsMenu();
+                        }
+                        else
+                        {
+                            OpenClosePauseMenu();
+                        }
+                    }
+                    break;
+            }
+        }
+        public void PauseGame()
+        {
+            IsGamePaused = !IsGamePaused;
+
+            Pause?.Invoke(IsGamePaused);
+
+            if (IsGamePaused)
+            {
+                var effect = new BlurEffect();
+                effect.Radius = 15;
+
+                gameWindow.OpenTkControl.Effect = effect;
+            }
+            else
+                gameWindow.OpenTkControl.Effect = null;
+
+            gameWindow.PauseMenuDarkener.Visibility = gameWindow.PauseMenuDarkener.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            gameWindow.Crosshair.Visibility = gameWindow.Crosshair.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+
+            NeedsToResetMouse = !NeedsToResetMouse;
+
+            if (NeedsToResetMouse)
+                MouseController.HideMouse();
+            else
+                MouseController.ShowMouse();
+
+        }
         public void ReadWorlds()
         {
             if (!Directory.Exists(WorldSerializer.SavesLocation))
@@ -42,28 +138,35 @@ namespace Minecraft.UI.Logic
 
                 }
             }
-            gw.WorldSelector.ItemsSource = savesData.OrderByDescending(x => x.LastPlayed).ToList();
+            GameWindow.WorldSelector.ItemsSource = savesData.OrderByDescending(x => x.LastPlayed).ToList();
         }
-
-        public void EnterWorld(GameSession session)
+        public void EnterWorld(GameSession? gameSession = null)
         {
-            gw.renderer = new Renderer();
+            GameSession session = null;
+            if (GameWindow.WorldSelector.SelectedIndex >= 0)
+            {
+                session = new GameSession(gameWindow.WorldSelector.SelectedItem as WorldData, false);
+            }
+            if (gameSession != null)
+                session = gameSession;
+
+            GameWindow.renderer = new Renderer();
             MouseController.HideMouse();
 
-            if (gw.IsInMainMenu)
+            if (IsInMainMenu)
             {
-                gw.IsInMainMenu = false;
+                IsInMainMenu = false;
                 OpenCloseWorldSelectorMenu();
-                gw.OverWorldCover.Visibility = Visibility.Hidden;
+                GameWindow.OverWorldCover.Visibility = Visibility.Hidden;
             }
 
-            gw.Crosshair.Visibility = Visibility.Visible;
-            gw.gameController = new GameController((int)gw.RenderDistanceSlider.Value, gw.renderer, gw, session);
-            gw.invlogic.UpdateHotbarItems();
-            SetupBindings();
-            gw.OpenTkControl.Focus();
-        }
+            GameWindow.Crosshair.Visibility = Visibility.Visible;
+            gameController = new GameController((int)GameWindow.RenderDistanceSlider.Value, GameWindow.renderer, GameWindow, this, session);
 
+            Ioc.Default.GetService<IInventoryLogic>().UpdateHotbarItems();
+            SetupBindings();
+            GameWindow.OpenTkControl.Focus();
+        }
         public void CreateWorld(string name, string seed)
         {
             var worldDirs = from x in Directory.GetDirectories(WorldSerializer.SavesLocation)
@@ -83,107 +186,96 @@ namespace Minecraft.UI.Logic
             Directory.CreateDirectory(worldSaveDir);
             var worldData = new WorldData() { LastPlayed = DateTime.Now, WorldName = name, WorldSeed = WorldGenerator.GenerateSeed(seed), WorldPath = worldSaveDir };
 
-            gw.IsInMainMenu = false;
-            gw.WorldName.Text = "";
-            gw.WorldSeed.Text = "";
+            IsInMainMenu = false;
+            GameWindow.WorldName.Text = "";
+            GameWindow.WorldSeed.Text = "";
             OpenCloseWorldCreationMenu();
+
             EnterWorld(new GameSession(worldData, true));
         }
-        public void OpenCloseInventory()
-        {
-            if (!gw.IsPauseMenuOpened && !gw.IsInMainMenu)
-            {
-                gw.pickedItem = null;
-                gw.PickedItemImage.Source = null;
-
-                gw.IsInventoryOpened = !gw.IsInventoryOpened;
-
-                gw.InventoryGrid.Visibility = gw.InventoryGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-                gw.InventoryText.Visibility = gw.InventoryText.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-
-                gw.PauseGame();
-            }
-        }
-
-
-
         public void SetupBindings()
         {
-            if (gw.FovSlider.DataContext == null)
-                gw.FovSlider.DataContext = Ioc.Default.GetService<ICamera>();
-            if (gw.gameController != null)
-            {
-                gw.RenderDistanceSlider.DataContext = gw.gameController.WorldRendererer;
-                gw.SensitivitySlider.DataContext = gw.gameController.PlayerController;
+            GameWindow.FovSlider.DataContext = Ioc.Default.GetService<ICamera>();
 
-                gw.gameController.InitUserSettings(new UserSettings((float)gw.FovSlider.Value, (int)gw.RenderDistanceSlider.Value, (float)gw.SensitivitySlider.Value));
+            if (gameController != null)
+            {
+                GameWindow.RenderDistanceSlider.DataContext = gameController.WorldRendererer;
+                GameWindow.SensitivitySlider.DataContext = gameController.PlayerController;
+                gameController.InitUserSettings(new UserSettings((float)GameWindow.FovSlider.Value, (int)GameWindow.RenderDistanceSlider.Value, (float)GameWindow.SensitivitySlider.Value));
             }
         }
-
+        public void OnSaveAndExit()
+        {
+            gameController.Dispose();
+            ReadWorlds();
+            OpenClosePauseMenu();
+            OpenCloseMainMenu();
+            MouseController.ShowMouse();
+        }
         public void LoadSettingsIntoControls()
         {
-            gw.FovSlider.Value = gw.userSettings.Fov;
-            gw.RenderDistanceSlider.Value = gw.userSettings.RenderDistance;
-            gw.SensitivitySlider.Value = gw.userSettings.MouseSpeed;
+            GameWindow.FovSlider.Value = userSettings.Fov;
+            GameWindow.RenderDistanceSlider.Value = userSettings.RenderDistance;
+            GameWindow.SensitivitySlider.Value = userSettings.MouseSpeed;
         }
 
         public void ResetMousePosition()
         {
-            if (gw.NeedsToResetMouse)
-                MouseController.MoveMouse(gw.CenterPosition);
+            if (NeedsToResetMouse)
+                MouseController.MoveMouse(GameWindow.CenterPosition);
         }
 
         public void OpenClosePauseMenu()
         {
-            if (!gw.IsInMainMenu)
+            if (!IsInMainMenu)
             {
-                gw.IsPauseMenuOpened = !gw.IsPauseMenuOpened;
+                IsPauseMenuOpened = !IsPauseMenuOpened;
 
-                gw.PauseMenu.Visibility = gw.PauseMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-                gw.HotbarGrid.Visibility = gw.HotbarGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                GameWindow.PauseMenu.Visibility = GameWindow.PauseMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                GameWindow.HotbarGrid.Visibility = GameWindow.HotbarGrid.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
 
-                gw.PauseGame();
+                PauseGame();
             }
         }
         public void OpenCloseSettingsMenu()
         {
-            gw.IsSettingsMenuOpened = !gw.IsSettingsMenuOpened;
+            IsSettingsMenuOpened = !IsSettingsMenuOpened;
 
-            if (!gw.IsInMainMenu)
-                gw.PauseMenu.Visibility = gw.PauseMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            if (!IsInMainMenu)
+                GameWindow.PauseMenu.Visibility = GameWindow.PauseMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
             else
             {
-                gw.MainMenu.Visibility = gw.MainMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-                gw.OverWorldCover.Visibility = gw.OverWorldCover.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                GameWindow.MainMenu.Visibility = GameWindow.MainMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                GameWindow.OverWorldCover.Visibility = GameWindow.OverWorldCover.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
             }
 
-            gw.SettingsMenu.Visibility = gw.SettingsMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            GameWindow.SettingsMenu.Visibility = GameWindow.SettingsMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
         public void OpenCloseMainMenu()
         {
-            gw.IsInMainMenu = !gw.IsInMainMenu;
-            gw.HotbarGrid.Visibility = Visibility.Hidden;
-            gw.MainMenu.Visibility = gw.MainMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-            gw.Crosshair.Visibility = gw.Crosshair.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            IsInMainMenu = !IsInMainMenu;
+            GameWindow.HotbarGrid.Visibility = Visibility.Hidden;
+            GameWindow.MainMenu.Visibility = GameWindow.MainMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            GameWindow.Crosshair.Visibility = GameWindow.Crosshair.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
         public void OpenCloseWorldSelectorMenu()
         {
-            if (gw.IsInMainMenu)
+            if (IsInMainMenu)
             {
-                gw.OverWorldCover.Visibility = gw.OverWorldCover.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
-                gw.MainMenu.Visibility = gw.MainMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                GameWindow.OverWorldCover.Visibility = GameWindow.OverWorldCover.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                GameWindow.MainMenu.Visibility = GameWindow.MainMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
             }
 
-            gw.WorldSelectorMenu.Visibility = gw.WorldSelectorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            GameWindow.WorldSelectorMenu.Visibility = GameWindow.WorldSelectorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
         public void OpenCloseWorldCreationMenu()
         {
-            if (gw.IsInMainMenu)
-                gw.WorldSelectorMenu.Visibility = gw.WorldSelectorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            if (IsInMainMenu)
+                GameWindow.WorldSelectorMenu.Visibility = GameWindow.WorldSelectorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
             else
-                gw.OverWorldCover.Visibility = gw.OverWorldCover.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+                GameWindow.OverWorldCover.Visibility = GameWindow.OverWorldCover.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
 
-            gw.WorldCreatorMenu.Visibility = gw.WorldCreatorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
+            GameWindow.WorldCreatorMenu.Visibility = GameWindow.WorldCreatorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
     }
 }

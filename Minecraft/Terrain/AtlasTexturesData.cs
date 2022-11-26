@@ -1,5 +1,7 @@
 ﻿using Minecraft.Graphics;
+using System;
 using System.Windows;
+using System.Windows.Media.Imaging;
 
 namespace Minecraft.Terrain
 {
@@ -24,9 +26,12 @@ namespace Minecraft.Terrain
                 texturePath = value; 
                 atlas = new Texture(texturePath, false); 
                 TextureSize = atlas.Width / 16;
+
+                CurrentTexture = new BitmapImage(new Uri(texturePath, UriKind.RelativeOrAbsolute));
             } 
         }
         private static string texturePath = @"..\..\..\Assets\Textures\terrain.png";
+        public static BitmapImage CurrentTexture { get; private set; } = new BitmapImage(new Uri(texturePath, UriKind.RelativeOrAbsolute));
         //Top = 1st Bot = 2nd Other = 3rd
         public static readonly Position2D[][] TexturePositions =
         {

@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
-namespace Minecraft.Rendering
+namespace Minecraft.UI
 {
     internal class PickedItem
     {

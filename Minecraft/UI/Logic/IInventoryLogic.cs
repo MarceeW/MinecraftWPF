@@ -1,19 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Windows.Input;
 
 namespace Minecraft.UI.Logic
 {
-    internal interface IInventoryLogic
+    public interface IInventoryLogic
     {
-        void CreateInventory();
-        void SetupHotbar();
-        void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e);
-        void OnMouseLeaveBlockImage(object sender, System.Windows.Input.MouseEventArgs e);
+        GameWindow GameWindow { get; set; }
+        IHotbar Hotbar { get; }
+        Inventory Inventory { get; }
+        bool IsOpened { get; }
+
         void CreateHotbar();
+        void CreateInventory();
+        void OnHotbarMouseDown(object sender, MouseButtonEventArgs e);
+        void OnInventoryItemMouseDown(object sender, MouseButtonEventArgs e);
+        void OnKeyDown(object sender, KeyEventArgs e);
+        void OnMouseDown(object sender, MouseButtonEventArgs e);
+        void OnMouseEnterBlockImage(object sender, MouseEventArgs e);
+        void OnMouseLeaveBlockImage(object sender, MouseEventArgs e);
+        void OnMouseMove(object sender, MouseEventArgs e);
+        void OnMouseWheel(object sender, MouseWheelEventArgs e);
+        void OpenCloseInventory();
         void ReloadTextures();
+        void SetupHotbar();
         void UpdateHotbarItems();
     }
 }

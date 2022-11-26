@@ -1,25 +1,32 @@
 ﻿using Minecraft.Controller;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Minecraft.UI.Logic
 {
-    internal interface IUILogic
+    public interface IUILogic
     {
-        void ReadWorlds();
-        void EnterWorld(GameSession session);
+        GameWindow GameWindow { get; set; }
+        bool IsGamePaused { get; set; }
+        bool IsInventoryOpened { get; set; }
+        bool IsPauseMenuOpened { get; set; }
+        bool IsSettingsMenuOpened { get; set; }
+
+        event Action<bool>? Pause;
+
+        void OnSaveAndExit();
         void CreateWorld(string name, string seed);
-        void OpenCloseInventory();
-        void SetupBindings();
+        void EnterWorld(GameSession? gameSession = null);
         void LoadSettingsIntoControls();
-        void ResetMousePosition();
+        void OnKeyDown(object sender, KeyEventArgs e);
+        void OpenCloseMainMenu();
         void OpenClosePauseMenu();
         void OpenCloseSettingsMenu();
-        void OpenCloseMainMenu();
-        public void OpenCloseWorldSelectorMenu();
-        public void OpenCloseWorldCreationMenu();
+        void OpenCloseWorldCreationMenu();
+        void OpenCloseWorldSelectorMenu();
+        void PauseGame();
+        void ReadWorlds();
+        void ResetMousePosition();
+        void SetupBindings();
     }
 }

@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.UI.Logic;
+using System;
 using System.Diagnostics;
 using System.Windows.Input;
 
@@ -8,11 +10,8 @@ namespace Minecraft.Controller
     {
         public event Action? LeftMouseClick;
         public event Action? RightMouseClick;
-        private GameWindow gameWindow;
         public MouseListener(GameWindow gameWindow)
         {
-            this.gameWindow = gameWindow;
-
             gameWindow.MouseDown += OnMouseDown;
         }
         public void Reset()
@@ -22,7 +21,7 @@ namespace Minecraft.Controller
         }
         public void OnMouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (!gameWindow.IsGamePaused)
+            if (!Ioc.Default.GetService<IUILogic>().IsGamePaused)
             {
                 if (e.LeftButton == MouseButtonState.Pressed)
                     LeftMouseClick?.Invoke();

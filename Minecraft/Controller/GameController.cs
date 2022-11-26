@@ -2,8 +2,10 @@
 using Minecraft.Game;
 using Minecraft.Graphics;
 using Minecraft.Render;
+using Minecraft.Rendering;
 using Minecraft.Terrain;
 using Minecraft.UI;
+using Minecraft.UI.Logic;
 using OpenTK.Mathematics;
 using System;
 using System.ComponentModel;
@@ -22,16 +24,18 @@ namespace Minecraft.Controller
         public PlayerController PlayerController { get; private set; }
 
         private IWorldGenerator worldGenerator;
+        private IUILogic uiLogic;
         private GameWindow gameWindow;
 
         private Thread updateThread;
         private Stopwatch gameStopwatch;
-        public GameController(int renderDistance, Renderer renderer, GameWindow gameWindow, GameSession session)
+        public GameController(int renderDistance, Renderer renderer, GameWindow gameWindow, IUILogic uiLogic, GameSession session)
         {
             Session = session;
             WorldRendererer = new WorldRenderer();
             WorldRendererer.SetWorld(Session.World);
             this.gameWindow = gameWindow;
+            this.uiLogic = uiLogic;
 
             WorldSerializer.World = Session.World;
 
@@ -52,6 +56,8 @@ namespace Minecraft.Controller
 
             Session.Player.Camera.Init(Session.Player.Position);
 
+            
+
             gameWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
             renderer.SetupRenderer((int)gameWindow.Width, (int)gameWindow.Height);
             gameWindow.PreviewKeyDown += PlayerController.OnKeyDown;
@@ -63,11 +69,11 @@ namespace Minecraft.Controller
 
             gameWindow.MouseListener.RightMouseClick += () =>
             {
-                if (!gameWindow.IsInMainMenu)
+                if (!UILogic.IsInMainMenu)
                 {
                     var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
 
-                    if (hit && !gameWindow.IsGamePaused)
+                    if (hit && !uiLogic.IsGamePaused)
                     {
                         if (Session.World.GetBlock(blockHit) != BlockType.Grass && Session.World.GetBlock(blockHit) != BlockType.SparseGrass)
                         {
@@ -105,11 +111,11 @@ namespace Minecraft.Controller
 
             gameWindow.MouseListener.LeftMouseClick += () =>
             {
-                if (!gameWindow.IsInMainMenu)
+                if (!UILogic.IsInMainMenu)
                 {
                     var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
 
-                    if (hit && !gameWindow.IsInventoryOpened)
+                    if (hit && !uiLogic.IsInventoryOpened)
                     {
                         Debug.WriteLine(blockHit);
                         Session.World.RemoveBlock(blockHit);
@@ -166,7 +172,7 @@ namespace Minecraft.Controller
 
                 while (accumulator > updateStep)
                 {
-                    gameWindow.logic.ResetMousePosition();
+                    uiLogic.ResetMousePosition();
                     worldGenerator.GenerateChunksToQueue();
                     PlayerController.Update((float)updateStep / 1000.0f);
                     accumulator -= updateStep;
@@ -179,11 +185,11 @@ namespace Minecraft.Controller
         public void Dispose()
         {
             IsGameRunning = false;
-            if (Session !=null)
-            {
+            //if (Session != null)
+            //{
                 Session.Save();
                 Session = null;
-            }
+            //}
             WorldRendererer = null;
             PlayerController = null;
             gameWindow.MouseListener.Reset();

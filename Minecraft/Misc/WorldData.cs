@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Minecraft.Misc
 {
-    internal class WorldData : ObservableObject
+    public class WorldData : ObservableObject
     {
         public string WorldName { get; set; }
         public int WorldSeed { get; set; }
