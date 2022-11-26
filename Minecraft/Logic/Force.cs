@@ -9,14 +9,14 @@ namespace Minecraft.Logic
         public ForceType Type { get; private set; }
         public Direction SlideDirection { get; set; }
 
-        private const float maxFallSpeed = 100.0f;
-        private const float riseForce = 10.0f;
+        private const float maxFallSpeed = 30.0f;
+        private const float riseForce = 10.0f; //10 = 1 block
 
         private double forceGraphStep;
         private double currentStep;
         public Force()
         {
-            const int steps = 25;
+            int steps = 20;
             forceGraphStep = Math.PI / steps;
             currentStep = 0;
         }
@@ -42,7 +42,8 @@ namespace Minecraft.Logic
                     SetForceType(ForceType.Fall);
             }
             else
-                deltaY = -Math.Min(Math.Pow(Math.E, currentStep += forceGraphStep / 2), maxFallSpeed);
+                deltaY = -Math.Min(Math.Pow(Math.E, currentStep += forceGraphStep * 0.5), maxFallSpeed);
+
             deltaPos.Y += (float)deltaY;
         }
     }

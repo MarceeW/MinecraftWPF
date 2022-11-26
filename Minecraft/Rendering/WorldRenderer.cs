@@ -86,7 +86,7 @@ namespace Minecraft.Render
         }
         private void RenderSelectedBlockFrame()
         {
-            var blockHitPos = Ray.Cast(world, out bool hit, out FaceDirection hitFace);
+            var blockHitPos = Ray.Cast(world, out bool hit, out FaceDirection hitFace, out double rayDistance);
 
             CurrentTarget = world.GetBlock(blockHitPos);
 

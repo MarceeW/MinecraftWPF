@@ -1,6 +1,7 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Game;
 using Minecraft.Graphics;
+using Minecraft.Misc;
 using Minecraft.Render;
 using Minecraft.Rendering;
 using Minecraft.Terrain;
@@ -71,9 +72,9 @@ namespace Minecraft.Controller
             {
                 if (!UILogic.IsInMainMenu)
                 {
-                    var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
+                    var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace, out double rayDistance);
 
-                    if (hit && !uiLogic.IsGamePaused)
+                    if (rayDistance > 2.3 && hit && !uiLogic.IsGamePaused)
                     {
                         if (Session.World.GetBlock(blockHit) != BlockType.Grass && Session.World.GetBlock(blockHit) != BlockType.SparseGrass)
                         {
@@ -113,7 +114,7 @@ namespace Minecraft.Controller
             {
                 if (!UILogic.IsInMainMenu)
                 {
-                    var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace);
+                    var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace, out double rayDistance);
 
                     if (hit && !uiLogic.IsInventoryOpened)
                     {
@@ -185,11 +186,8 @@ namespace Minecraft.Controller
         public void Dispose()
         {
             IsGameRunning = false;
-            //if (Session != null)
-            //{
-                Session.Save();
-                Session = null;
-            //}
+            Session.Save();
+            Session = null;
             WorldRendererer = null;
             PlayerController = null;
             gameWindow.MouseListener.Reset();

@@ -1,6 +1,6 @@
 ﻿using System.IO;
 
-namespace Minecraft.Controller
+namespace Minecraft.Misc
 {
     class UserSettings
     {

@@ -19,7 +19,7 @@ using System.Windows.Input;
 
 namespace Minecraft.Rendering.ViewModel
 {
-    internal class GameWindowViewModel : ObservableRecipient
+    internal class GameWindowViewModel
     {
         public ICommand BackToGame { get; private set; }
         public ICommand Settings { get; private set; }
@@ -35,15 +35,6 @@ namespace Minecraft.Rendering.ViewModel
         public ICommand EnterSelectedWorld { get; private set; }
         public ICommand DeleteSelectedWorld { get; private set; }
         public ICommand ExitGame { get; private set; }
-
-        public static bool IsInDesignMode
-        {
-            get
-            {
-                var prop = DesignerProperties.IsInDesignModeProperty;
-                return (bool)DependencyPropertyDescriptor.FromProperty(prop, typeof(FrameworkElement)).Metadata.DefaultValue;
-            }
-        }
 
         private IUILogic uiLogic;
         private IInventoryLogic inventoryLogic;

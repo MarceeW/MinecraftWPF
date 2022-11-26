@@ -11,7 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Windows.Media;
 
-namespace Minecraft.Controller
+namespace Minecraft.Misc
 {
     public class GameSession
     {

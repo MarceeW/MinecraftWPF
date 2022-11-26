@@ -9,7 +9,7 @@ namespace Minecraft.Game
     internal static class Ray
     {
         public static int MaxDistance { get; } = 6;
-        public static Vector3 Cast(IWorld world, out bool hit,out FaceDirection hitFace)
+        public static Vector3 Cast(IWorld world, out bool hit,out FaceDirection hitFace, out double rayDistance)
         {
             var camera = Ioc.Default.GetService<ICamera>();
 
@@ -69,7 +69,7 @@ namespace Minecraft.Game
             if (camera.Front.Z == 0)
                 zRayDist = double.PositiveInfinity;
 
-            double rayDistance = 0;
+            rayDistance = 0;
             hit = false;
             hitFace = FaceDirection.Bot;
 
