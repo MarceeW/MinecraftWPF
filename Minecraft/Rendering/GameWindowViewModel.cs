@@ -1,6 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Minecraft.Terrain;
-using Minecraft.UI;
+using Minecraft.UI.Logic;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

@@ -6,7 +6,6 @@ using System;
 using OpenTK.Windowing.Common;
 using System.Windows;
 using System.Windows.Forms;
-using Minecraft.UI;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -25,6 +24,8 @@ using System.Linq;
 using System.Diagnostics;
 using Minecraft.Rendering;
 using System.Runtime.CompilerServices;
+using Minecraft.Misc;
+using Minecraft.UI.Logic;
 
 namespace Minecraft
 {
@@ -61,11 +62,11 @@ namespace Minecraft
         public GameWindow()
         {
             InitializeComponent();
+
             logic = new UILogic(this);
             invlogic = new InventoryLogic(this);
             vm = new GameWindowViewModel(logic);
 
-            Title = "Minecraft";
             WindowState = System.Windows.WindowState.Maximized;
             WindowStyle = WindowStyle.None;
 
@@ -516,7 +517,6 @@ namespace Minecraft
             if (WorldSelector.SelectedIndex >= 0)
                 logic.EnterWorld(new GameSession(WorldSelector.SelectedItem as WorldData, false));
         }
-
        
     }
 }

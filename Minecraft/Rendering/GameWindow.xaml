@@ -234,13 +234,13 @@
                 <RowDefinition Height="4*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <ListBox x:Name="WorldSelector" Width="620" Grid.Row="1" BorderBrush="{x:Null}" Foreground="{x:Null}" MouseDoubleClick="WorldSelector_MouseDoubleClick" BorderThickness="0,0,0,0" Cursor="Arrow" Background="{x:Null}">
+            <ListBox x:Name="WorldSelector" Width="620" Grid.Row="1" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalContentAlignment="Stretch" MouseDoubleClick="WorldSelector_MouseDoubleClick" BorderThickness="0,0,0,0" Cursor="Arrow" Background="{x:Null}">
                 <ListBox.Effect>
                     <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".5" Direction="-135"/>
                 </ListBox.Effect>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,5" VerticalAlignment="Top" Width="585" Background="#3F000000">
+                        <Grid Margin="0,5" VerticalAlignment="Top" Background="#3F000000">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="2*"/>
