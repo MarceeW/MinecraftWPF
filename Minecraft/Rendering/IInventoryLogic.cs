@@ -12,8 +12,6 @@ namespace Minecraft.Rendering
         void SetupHotbar();
         void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e);
         void OnMouseLeaveBlockImage(object sender, System.Windows.Input.MouseEventArgs e);
-        void InventoryItemMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e);
-       // void HotbarMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e);
         void CreateHotbar();
         void ReloadTextures();
         void UpdateHotbarItems();

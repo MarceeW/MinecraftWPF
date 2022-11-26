@@ -87,7 +87,7 @@ namespace Minecraft.Rendering
 
                         item.MouseEnter += OnMouseEnterBlockImage;
                         item.MouseLeave += OnMouseLeaveBlockImage;
-                        item.MouseDown += InventoryItemMouseDown;
+                        item.MouseDown += gw.InventoryItemMouseDown;
 
                         var tooltip = new ToolTip();
                         tooltip.Height = 30;
@@ -138,74 +138,24 @@ namespace Minecraft.Rendering
             }
         }
 
-        //public void HotbarMouseDown(object sender, MouseButtonEventArgs e)
+       
+        //public void InventoryItemMouseDown(object sender, MouseButtonEventArgs e)
         //{
-        //    if (Hotbar != null)
+        //    if (e.LeftButton == MouseButtonState.Pressed)
         //    {
-        //        var grid = sender as Grid;
+        //        var item = sender as Image;
+        //        var itemData = item.Name.Split('_');
 
-        //        var pos = e.GetPosition(grid);
+        //        gw.PickedItemImage.Source = item.Source;
 
-        //        pos.X /= grid.Width / Hotbar.MaxItems;
-
-        //        var clickedImage = (Image)gw.HotbarGrid.FindName($"HotbarItem_{(int)pos.X}");
-
-        //        if (pickedItem != null)
-        //        {
-        //            BlockType toChange = pickedItem.type;
-
-        //            if (e.LeftButton == MouseButtonState.Pressed)
-        //            {
-        //                pickedItem.src = clickedImage.Source?.Clone();
-        //                pickedItem.type = Hotbar.Items[(int)pos.X];
-
-        //                clickedImage.Source = gw.PickedItemImage.Source;
-
-        //                gw.PickedItemImage.Source = pickedItem.src;
-        //            }
-        //            else
-        //            {
-        //                clickedImage.Source = null;
-        //                toChange = BlockType.Air;
-        //            }
-
-        //            Hotbar.ChangeBlock((int)pos.X, toChange);
-        //        }
-        //        else if (pickedItem == null)
-        //        {
-        //            pickedItem = new PickedItem((CroppedBitmap)clickedImage.Source, Hotbar.Items[(int)pos.X]);
-
-        //            clickedImage.Source = null;
-        //            gw.PickedItemImage.Source = pickedItem.src;
-        //            Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
-
-        //            gw.PickedItemCanvas.Margin = new Thickness(e.GetPosition(null).X - gw.PickedItemImage.Width - 10, e.GetPosition(null).Y, 0, 0);
-        //        }
-        //        else if (e.RightButton == MouseButtonState.Pressed)
-        //        {
-        //            clickedImage.Source = null;
-        //            Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
-        //        }
+        //        pickedItem = new PickedItem(item.Source.Clone(), Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
+        //    }
+        //    else
+        //    {
+        //        gw.PickedItemImage.Source = null;
+        //        pickedItem = null;
         //    }
         //}
-
-        public void InventoryItemMouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                var item = sender as Image;
-                var itemData = item.Name.Split('_');
-
-                gw.PickedItemImage.Source = item.Source;
-
-                pickedItem = new PickedItem(item.Source.Clone(), Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
-            }
-            else
-            {
-                gw.PickedItemImage.Source = null;
-                pickedItem = null;
-            }
-        }
 
         public void OnMouseEnterBlockImage(object sender, MouseEventArgs e)
         {

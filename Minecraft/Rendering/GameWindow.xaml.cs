@@ -360,33 +360,24 @@ namespace Minecraft
                 fpsCounter.Text = Math.Round(1.0 / delta.TotalSeconds, 0) + " Fps";
             }
         }
-        //private void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
-        //{
-        //    (sender as Image).Width *= 1.2;
-        //    Cursor = Cursors.Hand;
-        //}  
-        //private void OnMouseLeaveBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
-        //{
-        //    (sender as Image).Width /= 1.2;
-        //    Cursor = Cursors.Arrow;
-        //}   
-        //private void InventoryItemMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        //{
-        //    if (e.LeftButton == MouseButtonState.Pressed)
-        //    {
-        //        var item = sender as Image;
-        //        var itemData = item.Name.Split('_');
 
-        //        PickedItemImage.Source = item.Source;
+        public void InventoryItemMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                var item = sender as Image;
+                var itemData = item.Name.Split('_');
 
-        //        pickedItem = new PickedItem(item.Source.Clone(), invlogic.Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
-        //    }
-        //    else
-        //    {
-        //        PickedItemImage.Source = null;
-        //        pickedItem = null;
-        //    }
-        //}  
+                PickedItemImage.Source = item.Source;
+
+                pickedItem = new PickedItem(item.Source.Clone(), invlogic.Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
+            }
+            else
+            {
+                PickedItemImage.Source = null;
+                pickedItem = null;
+            }
+        }
         private void HotbarMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (invlogic.Hotbar != null)
