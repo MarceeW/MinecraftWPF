@@ -11,6 +11,7 @@
 
     
     <Window.Resources>
+
         <BitmapImage x:Key="BlockAtlas" UriSource="..\Assets\Textures\terrain.png"/>
         <BitmapImage x:Key="ItemFrame" UriSource="..\Assets\HUD\ItemFrame.png"/>
         <BitmapImage x:Key="SelectedItemFrame" UriSource="..\Assets\HUD\SelectedItemFrame.png"/>

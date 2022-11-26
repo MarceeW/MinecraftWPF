@@ -56,7 +56,7 @@ namespace Minecraft
 
         GameWindowViewModel vm;
         internal UILogic logic;
-        internal InventoryLogic invlogic;
+        public InventoryLogic invlogic;
         
         public GameWindow()
         {
@@ -97,8 +97,8 @@ namespace Minecraft
             logic.SetupBindings();
 
             invlogic.CreateHotbar();
-            CreateInventory();
-            SetupHotbar();
+            invlogic.CreateInventory();
+            invlogic.SetupHotbar();
         }
 
       
@@ -241,110 +241,110 @@ namespace Minecraft
                 MouseController.ShowMouse();
             
         }
-        private void CreateInventory()
-        {
-            double inventoryFrameSize = InventoryGrid.Width / invlogic.Inventory.Columns;
-            InventoryGrid.Height = inventoryFrameSize * invlogic.Inventory.Rows;
+        //private void CreateInventory()
+        //{
+        //    double inventoryFrameSize = InventoryGrid.Width / invlogic.Inventory.Columns;
+        //    InventoryGrid.Height = inventoryFrameSize * invlogic.Inventory.Rows;
 
-            for (int i = 0; i < invlogic.Inventory.Rows; i++)
-            {
-                RowDefinition rowDef = new RowDefinition();
-                rowDef.Height = new GridLength(1, GridUnitType.Star);
+        //    for (int i = 0; i < invlogic.Inventory.Rows; i++)
+        //    {
+        //        RowDefinition rowDef = new RowDefinition();
+        //        rowDef.Height = new GridLength(1, GridUnitType.Star);
 
-                InventoryGrid.RowDefinitions.Add(rowDef);
-            }
-            for (int i = 0; i < invlogic.Inventory.Columns; i++)
-            {
-                ColumnDefinition colDef = new ColumnDefinition();
-                colDef.Width = new GridLength(1, GridUnitType.Star);
+        //        InventoryGrid.RowDefinitions.Add(rowDef);
+        //    }
+        //    for (int i = 0; i < invlogic.Inventory.Columns; i++)
+        //    {
+        //        ColumnDefinition colDef = new ColumnDefinition();
+        //        colDef.Width = new GridLength(1, GridUnitType.Star);
 
-                InventoryGrid.ColumnDefinitions.Add(colDef);
-            }
+        //        InventoryGrid.ColumnDefinitions.Add(colDef);
+        //    }
 
-            for (int x = 0; x < invlogic.Inventory.Columns; x++)
-            {
-                for (int y = 0; y < invlogic.Inventory.Rows; y++)
-                {
-                    Image frame = new Image();
-                    frame.Source = (BitmapSource)Resources["InventoryFrame"];
-                    frame.Name = $"InventoryItemFrame_{x}_{y}";
+        //    for (int x = 0; x < invlogic.Inventory.Columns; x++)
+        //    {
+        //        for (int y = 0; y < invlogic.Inventory.Rows; y++)
+        //        {
+        //            Image frame = new Image();
+        //            frame.Source = (BitmapSource)Resources["InventoryFrame"];
+        //            frame.Name = $"InventoryItemFrame_{x}_{y}";
 
-                    RenderOptions.SetBitmapScalingMode(frame, BitmapScalingMode.NearestNeighbor);
+        //            RenderOptions.SetBitmapScalingMode(frame, BitmapScalingMode.NearestNeighbor);
 
-                    Grid.SetRow(frame, y);
-                    Grid.SetColumn(frame, x);
+        //            Grid.SetRow(frame, y);
+        //            Grid.SetColumn(frame, x);
 
-                    InventoryGrid.Children.Add(frame);
-                    InventoryGrid.RegisterName(frame.Name, frame);
-                }
-            }
+        //            InventoryGrid.Children.Add(frame);
+        //            InventoryGrid.RegisterName(frame.Name, frame);
+        //        }
+        //    }
 
-            if (invlogic.Inventory != null)
-            {
-                for (int x = 0; x < invlogic.Inventory.Columns; x++)
-                {
-                    for (int y = 0; y < invlogic.Inventory.Rows; y++)
-                    {
-                        if (invlogic.Inventory.Blocks[y, x] == BlockType.Air)
-                            continue;
+        //    if (invlogic.Inventory != null)
+        //    {
+        //        for (int x = 0; x < invlogic.Inventory.Columns; x++)
+        //        {
+        //            for (int y = 0; y < invlogic.Inventory.Rows; y++)
+        //            {
+        //                if (invlogic.Inventory.Blocks[y, x] == BlockType.Air)
+        //                    continue;
 
-                        Image item = new Image();
-                        item.Name = $"InventoryItem_{x}_{y}";
-                        item.Width = 48;
+        //                Image item = new Image();
+        //                item.Name = $"InventoryItem_{x}_{y}";
+        //                item.Width = 48;
 
-                        item.MouseEnter += OnMouseEnterBlockImage;
-                        item.MouseLeave += OnMouseLeaveBlockImage;
-                        item.MouseDown += InventoryItemMouseDown;
+        //                item.MouseEnter += OnMouseEnterBlockImage;
+        //                item.MouseLeave += OnMouseLeaveBlockImage;
+        //                item.MouseDown += InventoryItemMouseDown;
 
-                        var tooltip = new ToolTip();
-                        tooltip.Height = 30;
-                        tooltip.FontSize = 16;
-                        tooltip.Style = (Style)Resources["ItemToolTip"];
-                        tooltip.Content = BlockData.GetBlockName(invlogic.Inventory.Blocks[y, x]);
-                        tooltip.Visibility = Visibility.Visible;
+        //                var tooltip = new ToolTip();
+        //                tooltip.Height = 30;
+        //                tooltip.FontSize = 16;
+        //                tooltip.Style = (Style)Resources["ItemToolTip"];
+        //                tooltip.Content = BlockData.GetBlockName(invlogic.Inventory.Blocks[y, x]);
+        //                tooltip.Visibility = Visibility.Visible;
 
-                        item.ToolTip = tooltip;
-                        item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(invlogic.Inventory.Blocks[y, x]));
+        //                item.ToolTip = tooltip;
+        //                item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(invlogic.Inventory.Blocks[y, x]));
 
-                        RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
+        //                RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
 
-                        Grid.SetRow(item, y);
-                        Grid.SetColumn(item, x);
+        //                Grid.SetRow(item, y);
+        //                Grid.SetColumn(item, x);
 
-                        InventoryGrid.Children.Add(item);
-                        InventoryGrid.RegisterName(item.Name, item);
-                    }
-                }
-            }
-        }   
+        //                InventoryGrid.Children.Add(item);
+        //                InventoryGrid.RegisterName(item.Name, item);
+        //            }
+        //        }
+        //    }
+        //}   
 
-        private void SetupHotbar()
-        {
-            if (invlogic.Hotbar != null)
-            {
-                for (int i = 0; i < invlogic.Hotbar.MaxItems; i++)
-                {
+        //private void SetupHotbar()
+        //{
+        //    if (invlogic.Hotbar != null)
+        //    {
+        //        for (int i = 0; i < invlogic.Hotbar.MaxItems; i++)
+        //        {
 
-                    Image item = new Image();
-                    item.Name = "HotbarItem_" + i;
-                    item.Width = 36;
+        //            Image item = new Image();
+        //            item.Name = "HotbarItem_" + i;
+        //            item.Width = 36;
 
-                    item.MouseEnter += OnMouseEnterBlockImage;
-                    item.MouseLeave += OnMouseLeaveBlockImage;
+        //            item.MouseEnter += OnMouseEnterBlockImage;
+        //            item.MouseLeave += OnMouseLeaveBlockImage;
 
-                    if (invlogic.Hotbar.Items[i] != BlockType.Air)
-                        item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(invlogic.Hotbar.Items[i]));
+        //            if (invlogic.Hotbar.Items[i] != BlockType.Air)
+        //                item.Source = new CroppedBitmap((BitmapSource)Resources["BlockAtlas"], AtlasTexturesData.GetTextureRect(invlogic.Hotbar.Items[i]));
 
-                    RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
+        //            RenderOptions.SetBitmapScalingMode(item, BitmapScalingMode.NearestNeighbor);
 
-                    Grid.SetRow(item, 0);
-                    Grid.SetColumn(item, i);
+        //            Grid.SetRow(item, 0);
+        //            Grid.SetColumn(item, i);
 
-                    HotbarGrid.Children.Add(item);
-                    HotbarGrid.RegisterName(item.Name, item);
-                }
-            }
-        }      
+        //            HotbarGrid.Children.Add(item);
+        //            HotbarGrid.RegisterName(item.Name, item);
+        //        }
+        //    }
+        //}      
 
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
@@ -360,33 +360,33 @@ namespace Minecraft
                 fpsCounter.Text = Math.Round(1.0 / delta.TotalSeconds, 0) + " Fps";
             }
         }
-        private void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            (sender as Image).Width *= 1.2;
-            Cursor = Cursors.Hand;
-        }  
-        private void OnMouseLeaveBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-            (sender as Image).Width /= 1.2;
-            Cursor = Cursors.Arrow;
-        }   
-        private void InventoryItemMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                var item = sender as Image;
-                var itemData = item.Name.Split('_');
+        //private void OnMouseEnterBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
+        //{
+        //    (sender as Image).Width *= 1.2;
+        //    Cursor = Cursors.Hand;
+        //}  
+        //private void OnMouseLeaveBlockImage(object sender, System.Windows.Input.MouseEventArgs e)
+        //{
+        //    (sender as Image).Width /= 1.2;
+        //    Cursor = Cursors.Arrow;
+        //}   
+        //private void InventoryItemMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        //{
+        //    if (e.LeftButton == MouseButtonState.Pressed)
+        //    {
+        //        var item = sender as Image;
+        //        var itemData = item.Name.Split('_');
 
-                PickedItemImage.Source = item.Source;
+        //        PickedItemImage.Source = item.Source;
 
-                pickedItem = new PickedItem(item.Source.Clone(), invlogic.Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
-            }
-            else
-            {
-                PickedItemImage.Source = null;
-                pickedItem = null;
-            }
-        }  
+        //        pickedItem = new PickedItem(item.Source.Clone(), invlogic.Inventory.Blocks[int.Parse(itemData[2]), int.Parse(itemData[1])]);
+        //    }
+        //    else
+        //    {
+        //        PickedItemImage.Source = null;
+        //        pickedItem = null;
+        //    }
+        //}  
         private void HotbarMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             if (invlogic.Hotbar != null)
@@ -436,7 +436,7 @@ namespace Minecraft
                     invlogic.Hotbar.ChangeBlock((int)pos.X, BlockType.Air);
                 }
             }
-        } 
+        }
 
         private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -525,5 +525,7 @@ namespace Minecraft
             if (WorldSelector.SelectedIndex >= 0)
                 logic.EnterWorld(new GameSession(WorldSelector.SelectedItem as WorldData, false));
         }
+
+       
     }
 }
