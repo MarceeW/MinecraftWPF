@@ -8,7 +8,7 @@
         xmlns:vmds="clr-namespace:Minecraft.Rendering.ViewModel"
         mc:Ignorable="d"
         Icon="..\Assets\Icon\oecraft.ico"
-        Title="Minecraft" Height="1080"  Width="1920">
+        Title="OECraft" Height="1080"  Width="1920">
   
     <Window.Resources>
 
