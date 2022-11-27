@@ -10,7 +10,6 @@ using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Graphics;
 using Minecraft.Misc;
 using System.Windows.Input;
-using System.Windows.Controls;
 using System.Windows.Media.Effects;
 
 namespace Minecraft.UI.Logic
@@ -33,9 +32,9 @@ namespace Minecraft.UI.Logic
             }
         }
         public bool NeedsToResetMouse = true;
-
-        public bool IsInventoryOpened { get; set; } = false;
         public static bool IsInMainMenu { get; set; } = true;
+        public static bool IsHudVisible { get; private set; } = true;
+        public bool IsInventoryOpened { get; set; } = false;
         public bool IsGamePaused { get; set; } = false;
         public bool IsSettingsMenuOpened { get; set; } = false;
         public bool IsPauseMenuOpened { get; set; } = false;
@@ -50,6 +49,13 @@ namespace Minecraft.UI.Logic
                 case Key.F3:
                     {
                         gameWindow.fpsCounter.Visibility = gameWindow.fpsCounter.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
+                    }
+                    break;
+                case Key.F1:
+                    {
+                        IsHudVisible = !IsHudVisible;
+                        gameWindow.HotbarGrid.Visibility = gameWindow.HotbarGrid.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
+                        gameWindow.Crosshair.Visibility = gameWindow.Crosshair.Visibility == Visibility.Hidden ? Visibility.Visible : Visibility.Hidden;
                     }
                     break;
                 case Key.G:
@@ -143,10 +149,12 @@ namespace Minecraft.UI.Logic
         public void EnterWorld(GameSession? gameSession = null)
         {
             GameSession session = null;
+
             if (GameWindow.WorldSelector.SelectedIndex >= 0)
             {
                 session = new GameSession(gameWindow.WorldSelector.SelectedItem as WorldData, false);
             }
+
             if (gameSession != null)
                 session = gameSession;
 

@@ -63,7 +63,7 @@ namespace Minecraft.Controller
 
         private IPlayer player;
         private IPlayerLogic playerLogic;
-        public float MouseSpeed { get => mouseSpeed; set => SetProperty(ref mouseSpeed, value); }
+        public float MouseSpeed { get => mouseSpeed; set => SetProperty(ref mouseSpeed, (float)Math.Round(value,2)); }
         private DoubleKeyPressChecker jumpListener;
         private float mouseSpeed;
 

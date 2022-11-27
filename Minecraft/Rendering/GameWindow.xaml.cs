@@ -30,6 +30,7 @@ namespace Minecraft
         public MouseListener MouseListener { get; private set; }
 
         internal Renderer renderer;
+        private double mainMenuTitleAnim = 0;
         public GameWindow()
         {
             InitializeComponent();
@@ -96,6 +97,10 @@ namespace Minecraft
 
                 fpsCounter.Text = Math.Round(1.0 / delta.TotalSeconds, 0) + " Fps";
             }
+            else
+            {
+                MainMenuTitleText.Width += Math.Sin(mainMenuTitleAnim += 0.04);
+            }
         }
         private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)
         {
@@ -109,7 +114,8 @@ namespace Minecraft
         }  
         private void WorldSelector_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            Ioc.Default.GetService<IUILogic>().EnterWorld();
+            if(e.ChangedButton == System.Windows.Input.MouseButton.Left && e.ClickCount == 2)
+                Ioc.Default.GetService<IUILogic>().EnterWorld();
         }
     }
 }

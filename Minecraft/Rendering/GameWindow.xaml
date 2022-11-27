@@ -7,6 +7,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:vmds="clr-namespace:Minecraft.Rendering.ViewModel"
         mc:Ignorable="d"
+        Icon="..\Assets\Icon\oecraft.ico"
         Title="Minecraft" Height="1080"  Width="1920">
   
     <Window.Resources>
@@ -19,6 +20,7 @@
         <BitmapImage x:Key="MenuButtonSelectedFrame" UriSource="..\Assets\HUD\MenuButton_selected.png"/>
         <BitmapImage x:Key="MainMenuBackground" UriSource="..\Assets\HUD\MainMenuWallpaper.png"/>
         <BitmapImage x:Key="MainMenuTitle" UriSource="..\Assets\HUD\MainMenuTitle.png"/>
+        <BitmapImage x:Key="MainMenuTitleText" UriSource="..\Assets\HUD\MainMenuTitleText.png"/>
         <BitmapImage x:Key="OverWorldBackground" UriSource="..\Assets\HUD\Overworld_background.png"/>
 
         <Style x:Key="McText" TargetType="TextBlock">
@@ -194,7 +196,7 @@
 
             <StackPanel Grid.Row="3" VerticalAlignment="Center">
                 <TextBlock IsHitTestVisible="False" Text="{Binding ElementName=SensitivitySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <Slider x:Name="SensitivitySlider" IsSnapToTickEnabled="True" Value="{Binding MouseSpeed, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0.05" Maximum="1" Cursor="Hand" Width="400" Foreground="Black" TickFrequency="0.025">
+                <Slider x:Name="SensitivitySlider" IsSnapToTickEnabled="True" Value="{Binding MouseSpeed, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0.05" Maximum="1" Cursor="Hand" Width="400" Foreground="Black" TickFrequency="0.01">
                     <Slider.Effect>
                         <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
                     </Slider.Effect>
@@ -208,14 +210,14 @@
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Command="{Binding LoadTexture}" Grid.Column="1" Width="180" Height="50" BorderThickness="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" IsTabStop="False">
+                <Button Command="{Binding LoadTexture}" Grid.Column="1" Width="200" Height="50" BorderThickness="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" IsTabStop="False">
                     <Grid>
                         <Image x:Name="LoadTexture" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Cursor="Hand" />
-                        <TextBlock IsHitTestVisible="False" Text="Load texture" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
+                        <TextBlock IsHitTestVisible="False" Text="Load texture pack" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="18" Style="{StaticResource McText}"/>
                     </Grid>
                 </Button>
 
-                <Button Command="{Binding SettingsMenuBack}" Grid.Column="0" Width="180" Height="50" BorderThickness="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" IsTabStop="False">
+                <Button Command="{Binding SettingsMenuBack}" Grid.Column="0" Width="150" Height="50" BorderThickness="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" IsTabStop="False">
                     <Grid>
                         <Image x:Name="SettingsMenuBack" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Cursor="Hand" />
                         <TextBlock IsHitTestVisible="False" Text="Back" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
@@ -227,36 +229,39 @@
 
         <Grid x:Name="MainMenu" Visibility="Visible">
             <Grid.RowDefinitions>
-                <RowDefinition Height="8*"/>
+                <RowDefinition Height="9*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="3*"/>
+                <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
 
-            <Image x:Name="MainMenuTitle" Width="1000" Source="{StaticResource MainMenuTitle}" Grid.Row="0"/>
+            <Image x:Name="MainMenuTitle" Width="800" Source="{StaticResource MainMenuTitle}" Grid.Row="0"/>
+            <Image x:Name="MainMenuTitleText" VerticalAlignment="Bottom" Margin="0,150" Width="500" Source="{StaticResource MainMenuTitleText}" Grid.Row="0"/>
 
             <Button Command="{Binding Play}" Grid.Row="1" Width="400" Height="60" BorderThickness="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" IsTabStop="False">
                 <Grid>
-                    <Image x:Name="Play" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Cursor="Hand"  Grid.Row="1"/>
-                    <TextBlock IsHitTestVisible="False" Text="Singleplayer" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="1" Style="{StaticResource McText}"/>
+                    <Image x:Name="Play" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Cursor="Hand"/>
+                    <TextBlock IsHitTestVisible="False" Text="Singleplayer" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
                 </Grid>
             </Button>
 
             <Button Command="{Binding MainMenuSettings}" Grid.Row="2" Width="400" Height="60" BorderThickness="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" IsTabStop="False">
                 <Grid>
-                    <Image x:Name="MainMenuSettings" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="2" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Cursor="Hand" />
-                    <TextBlock IsHitTestVisible="False" Text="Settings..." VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
+                    <Image x:Name="MainMenuSettings" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Cursor="Hand" />
+                    <TextBlock IsHitTestVisible="False" Text="Settings..." VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
                 </Grid>
             </Button>
 
             <Button Command="{Binding ExitGame}" Grid.Row="3" Width="400" Height="60" BorderThickness="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" IsTabStop="False">
                 <Grid>
-                    <Image x:Name="ExitGame" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" Grid.Row="3" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Cursor="Hand" />
-                    <TextBlock IsHitTestVisible="False" Text="Quit Game" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="3" Style="{StaticResource McText}"/>
+                    <Image x:Name="ExitGame" Stretch="Fill" Source="{StaticResource MenuButtonFrame}" RenderOptions.BitmapScalingMode="NearestNeighbor" MouseEnter="Button_MouseEnter" MouseLeave="Button_MouseLeave" Cursor="Hand" />
+                    <TextBlock IsHitTestVisible="False" Text="Quit Game" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
                 </Grid>
             </Button>
-
+            
+            <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="30,10" Grid.Row="4" IsHitTestVisible="False" Text="Alpha 1.0" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
+            <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30,10" Grid.Row="4" IsHitTestVisible="False" Text="Copyright OEProgrammers, Do not distribute!" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
         </Grid>
         <Grid x:Name="WorldSelectorMenu" Visibility="Hidden">
             <Grid.RowDefinitions>
@@ -264,13 +269,13 @@
                 <RowDefinition Height="4*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <ListBox x:Name="WorldSelector" Width="620" Grid.Row="1" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalContentAlignment="Stretch" MouseDoubleClick="WorldSelector_MouseDoubleClick" BorderThickness="0,0,0,0" Cursor="Arrow" Background="{x:Null}">
+            <ListBox x:Name="WorldSelector" Width="620" Grid.Row="1" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalContentAlignment="Stretch" BorderThickness="0,0,0,0" Cursor="Arrow" Background="{x:Null}">
                 <ListBox.Effect>
                     <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".5" Direction="-135"/>
                 </ListBox.Effect>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,5" VerticalAlignment="Top" Background="#3F000000">
+                        <Grid Margin="0,5" VerticalAlignment="Top" Background="#3F000000" MouseDown="WorldSelector_MouseDoubleClick">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="2*"/>

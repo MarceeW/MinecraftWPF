@@ -8,15 +8,11 @@ using System.Windows;
 
 namespace Minecraft.Render
 {
-    class Renderer : IDisposable
+    class Renderer
     {
         public event Action<float>? OnRendering;
 
         public IScene? Scene { get; set; }
-        public void Dispose()
-        {
-            Scene?.Dispose();
-        }
         public void SetupRenderer(int width,int height)
         {
             GL.Enable(EnableCap.Multisample);
@@ -37,7 +33,7 @@ namespace Minecraft.Render
         {
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             OnRendering?.Invoke(delta);
-             Scene?.Render(delta);
+            Scene?.Render(delta);
         }
     }
 }

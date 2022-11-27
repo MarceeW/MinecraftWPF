@@ -6,10 +6,11 @@ using System;
 using System.Diagnostics;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using System.ComponentModel;
+using Minecraft.UI.Logic;
 
 namespace Minecraft.Render
 {
-    class Scene : IDisposable, IScene
+    class Scene : IScene
     {
         private const float near = 0.1f;
         private const float far = 1000.0f;
@@ -63,12 +64,9 @@ namespace Minecraft.Render
             skybox.Reposition(camera.Position);
             skybox.Render();
             worldRenderer.RenderWorld();
-            characterHand.Render(delta);
-        }
 
-        public void Dispose()
-        {
-
+            if(UILogic.IsHudVisible)
+                characterHand.Render(delta);
         }
     }
 }

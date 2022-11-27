@@ -294,9 +294,6 @@ namespace Minecraft.Graphics
                     ResetModel();
                     UpdateModelMatrix();
                 }
-                isHandEmpty = true;
-                ResetModel();
-                UpdateModelMatrix();
 
                 Vector3 pos = new Vector3(0.75f, 0.5f, -0.5f);
 
