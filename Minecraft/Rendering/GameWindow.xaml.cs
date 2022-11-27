@@ -22,10 +22,7 @@ namespace Minecraft
     {
         public Vector2 CenterPosition;
         public event Action? RenderSizeChange;
-
         public bool ShowWireFrames = false;
-
-        public InventoryLogic inventoryLogic;
 
         public MouseListener MouseListener { get; private set; }
 

@@ -55,8 +55,8 @@ namespace Minecraft.Rendering.ViewModel
             BackToGame = new RelayCommand(() => uiLogic.OpenClosePauseMenu());
 
             Settings = new RelayCommand(() => uiLogic.OpenCloseSettingsMenu());
-            SettingsMenuBack = new RelayCommand(() => uiLogic.OpenCloseSettingsMenu());
-            MainMenuSettings = new RelayCommand(() => uiLogic.OpenCloseSettingsMenu());
+            SettingsMenuBack = Settings;
+            MainMenuSettings = Settings;
 
             ExitGame = new RelayCommand(() => gameWindow.Close());
 
@@ -96,8 +96,7 @@ namespace Minecraft.Rendering.ViewModel
                 gameWindow.WorldSelector.Items.Refresh();
             });
 
-            MainMenuSettings = new RelayCommand(() => uiLogic.OpenCloseSettingsMenu());
-
+            
             EnterSelectedWorld = new RelayCommand(() =>
             {
                 uiLogic.EnterWorld();
