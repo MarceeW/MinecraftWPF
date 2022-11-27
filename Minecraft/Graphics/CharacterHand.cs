@@ -50,10 +50,11 @@ namespace Minecraft.Graphics
 
             handTexture = new Texture(handTexturePath, false);
 
-            UpdateModelMatrix();
             UpdateViewMatrix(Vector3.Zero);
 
             SetupVBO();
+            ResetModel();
+            UpdateModelMatrix();
         }
 
         public void Render(float delta)
