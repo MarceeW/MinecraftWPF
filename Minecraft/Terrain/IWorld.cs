@@ -1,4 +1,5 @@
-﻿using OpenTK.Mathematics;
+﻿using Minecraft.Misc;
+using OpenTK.Mathematics;
 using System.Collections.Generic;
 
 namespace Minecraft.Terrain
@@ -7,7 +8,7 @@ namespace Minecraft.Terrain
     {
         Dictionary<Vector2, IChunk> Chunks { get; set; }
         Queue<Vector2> ChunksNeedsToBeRegenerated { get; }
-        int Seed { get; }
+        WorldData WorldData{ get; }
         IWorldGenerator? WorldGenerator { get; set; }
 
         void AddBlock(Vector3 pos, BlockType block);

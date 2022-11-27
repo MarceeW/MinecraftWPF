@@ -12,7 +12,7 @@
   
     <Window.Resources>
 
-        <BitmapImage x:Key="BlockAtlas" UriSource="..\Assets\Textures\terrain.png"/>
+        <BitmapImage x:Key="BlockAtlas" UriSource="..\Assets\TexturePacks\terrain.png"/>
         <BitmapImage x:Key="ItemFrame" UriSource="..\Assets\HUD\ItemFrame.png"/>
         <BitmapImage x:Key="SelectedItemFrame" UriSource="..\Assets\HUD\SelectedItemFrame.png"/>
         <BitmapImage x:Key="InventoryFrame" UriSource="..\Assets\HUD\InventoryFrame.png"/>
@@ -77,6 +77,177 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style x:Key="CheckRadioFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Rectangle Margin="14,0,0,0" SnapsToDevicePixels="true" Stroke="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" StrokeThickness="1" StrokeDashArray="1 2"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <LinearGradientBrush x:Key="CustomSliderForegroundBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#008d45" Offset="0.2" />
+            <GradientStop Color="#008d45" Offset="0.5" />
+            <GradientStop Color="#008d45" Offset="0.8" />
+        </LinearGradientBrush>
+
+        <Style x:Key="SliderCheckBox" TargetType="{x:Type CheckBox}">
+            <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type CheckBox}">
+                        <ControlTemplate.Resources>
+                            <Storyboard x:Key="StoryboardIsChecked">
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="CheckFlag">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="14"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                            <Storyboard x:Key="StoryboardIsCheckedOff">
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[3].(TranslateTransform.X)" Storyboard.TargetName="CheckFlag">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="14"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </ControlTemplate.Resources>
+                        <BulletDecorator Background="Transparent" SnapsToDevicePixels="true">
+                            <BulletDecorator.Bullet>
+                                <Border x:Name="ForegroundPanel" BorderThickness="1" Width="35" Height="20" CornerRadius="10">
+                                    <Canvas>
+                                        <Border Background="White" x:Name="CheckFlag" CornerRadius="10" VerticalAlignment="Center" BorderThickness="1" Width="19" Height="18" RenderTransformOrigin="0.5,0.5">
+                                            <Border.RenderTransform>
+                                                <TransformGroup>
+                                                    <ScaleTransform/>
+                                                    <SkewTransform/>
+                                                    <RotateTransform/>
+                                                    <TranslateTransform/>
+                                                </TransformGroup>
+                                            </Border.RenderTransform>
+                                            <Border.Effect>
+                                                <DropShadowEffect ShadowDepth="1" Direction="180" />
+                                            </Border.Effect>
+                                        </Border>
+                                    </Canvas>
+                                </Border>
+                            </BulletDecorator.Bullet>
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" Margin="{TemplateBinding Padding}" RecognizesAccessKey="True" SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" VerticalAlignment="Center"/>
+                        </BulletDecorator>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="HasContent" Value="true">
+                                <Setter Property="FocusVisualStyle" Value="{StaticResource CheckRadioFocusVisual}"/>
+                                <Setter Property="Padding" Value="4,0,0,0"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}"/>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="ForegroundPanel" Property="Background" Value="#008d45" />
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard x:Name="BeginStoryboardCheckedTrue" Storyboard="{StaticResource StoryboardIsChecked}" />
+                                    <RemoveStoryboard BeginStoryboardName="BeginStoryboardCheckedFalse" />
+                                </Trigger.EnterActions>
+                            </Trigger>
+                            <Trigger Property="IsChecked" Value="False">
+                                <Setter TargetName="ForegroundPanel" Property="Background" Value="Gray" />
+                                <Trigger.EnterActions>
+                                    <BeginStoryboard x:Name="BeginStoryboardCheckedFalse" Storyboard="{StaticResource StoryboardIsCheckedOff}" />
+                                    <RemoveStoryboard BeginStoryboardName="BeginStoryboardCheckedTrue" />
+                                </Trigger.EnterActions>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <SolidColorBrush x:Key="CustomSliderBackgroundSolidColorBrush" Color="#1E211B" />
+
+        <LinearGradientBrush x:Key="CustomSliderThumBrush" StartPoint="0,0" EndPoint="0,1">
+            <GradientStop Color="#3B3C39" Offset="0.2" />
+            <GradientStop Color="#454543" Offset="0.5" />
+            <GradientStop Color="#3B3C39" Offset="0.8" />
+        </LinearGradientBrush>
+
+        <Style x:Key="CustomSliderThumbStyle" TargetType="{x:Type Thumb}">
+            <Setter Property="Focusable" Value="false"/>
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="Height" Value="20"/>
+            <Setter Property="Width" Value="30"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Thumb}">
+                        <Canvas SnapsToDevicePixels="true">
+                            <Grid Height="20" Width="40">
+                                <Rectangle x:Name="Background"
+                            Fill="{StaticResource CustomSliderThumBrush}" Stroke="Black"
+                            RadiusX="3" RadiusY="3"/>
+                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Value, RelativeSource={RelativeSource AncestorType={x:Type Slider}}, StringFormat={}{0:N1}}" Foreground="White" FontSize="12" Style="{StaticResource McText}"/>
+                            </Grid>
+                        </Canvas>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="true">
+                                <Setter Property="Fill" TargetName="Background" Value="Gray"/>
+                            </Trigger>
+                            <Trigger Property="IsDragging" Value="true">
+                                <Setter Property="Fill" TargetName="Background" Value="{StaticResource CustomSliderThumBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter Property="Fill" TargetName="Background"  Value="Gray"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <ControlTemplate x:Key="CustomSliderControlTemplate" TargetType="{x:Type Slider}">
+            <Border Background="Transparent" SnapsToDevicePixels="True">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="{TemplateBinding MinHeight}" />
+                    </Grid.RowDefinitions>
+
+                    <DockPanel LastChildFill="True">
+                        <Border x:Name="PART_SelectionRange" Height="10" ClipToBounds="True" Visibility="Visible">
+                            <Rectangle Margin="0 0 -10 0" RadiusX="5" RadiusY="5" Fill="{StaticResource CustomSliderForegroundBrush}" />
+                        </Border>
+                        <Border ClipToBounds="True" Height="10" Visibility="Visible">
+                            <Rectangle Margin="0 0 0 0" RadiusX="5" RadiusY="5" Fill="{StaticResource CustomSliderBackgroundSolidColorBrush}" />
+                        </Border>
+                    </DockPanel>
+
+                    <Track x:Name="PART_Track">
+                        <Track.Thumb>
+                            <Thumb Style="{StaticResource CustomSliderThumbStyle}" VerticalAlignment="Center"
+                            Width="{TemplateBinding MinWidth}" Height="{TemplateBinding MinHeight}" OverridesDefaultStyle="True" Focusable="False" />
+                        </Track.Thumb>
+                    </Track>
+                </Grid>
+            </Border>
+        </ControlTemplate>
+
+        <Style x:Key="CustomSliderStyle" TargetType="{x:Type Slider}">
+            <Setter Property="Template" Value="{StaticResource CustomSliderControlTemplate}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="MinWidth" Value="40" />
+            <Setter Property="MinHeight" Value="20" />
+            <Setter Property="Height" Value="20" />
+            <Setter Property="MaxHeight" Value="20" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="AutoToolTipPlacement" Value="None" />
+            <Setter Property="IsMoveToPointEnabled" Value="True" />
+            <Setter Property="SelectionStart" Value="0" />
+            <Setter Property="SelectionEnd" Value="{Binding Path=Value, RelativeSource={RelativeSource Self}}" />
+            <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
+        </Style>
+
     </Window.Resources>
     
     <Grid x:Name="RenderCanvas">
@@ -163,48 +334,53 @@
 
         </Grid>
 
-        <Grid x:Name="SettingsMenu" Visibility="Hidden" Width="400" Height="600">
+        <Grid x:Name="SettingsMenu" Visibility="Hidden" Width="450" Height="800">
             <Grid.RowDefinitions>
                 <RowDefinition Height="3*"/>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
-                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="1.5*"/>
+                <RowDefinition Height="2*"/>
             </Grid.RowDefinitions>
 
             <TextBlock IsHitTestVisible="False" Text="Settings" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="48" Grid.Row="0" Style="{StaticResource McText}"/>
 
-            <StackPanel Grid.Row="1" VerticalAlignment="Center">
-                <TextBlock IsHitTestVisible="False" Text="{Binding ElementName=FovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <Slider x:Name="FovSlider" IsSnapToTickEnabled="True" Value="{Binding Fov, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="65" Maximum="99" Cursor="Hand" Width="400" Foreground="Black">
-                    <Slider.Effect>
-                        <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
-                    </Slider.Effect>
-                </Slider>
-                <TextBlock IsHitTestVisible="False" Text="Fov" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
+            <StackPanel Grid.Row="1" Orientation="Vertical">
+                <TextBlock IsHitTestVisible="False" Text="Borderless Window" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="0" Style="{StaticResource McText}"/>
+                <CheckBox Margin="10" x:Name="BorderlessOption" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{DynamicResource SliderCheckBox}" Click="BorderlessOption_Click"/>
             </StackPanel>
 
             <StackPanel Grid.Row="2" VerticalAlignment="Center">
-                <TextBlock IsHitTestVisible="False" Text="{Binding ElementName=RenderDistanceSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <Slider x:Name="RenderDistanceSlider" IsSnapToTickEnabled="True" Value="{Binding RenderDistance, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="2" Maximum="32" Cursor="Hand" Width="400" Foreground="Black">
+                <TextBlock IsHitTestVisible="False" Text="Fov" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
+                <!--<TextBlock IsHitTestVisible="False" Text="{Binding ElementName=FovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>-->
+                <Slider Style="{StaticResource CustomSliderStyle}" Margin="5" x:Name="FovSlider" IsSnapToTickEnabled="True" Value="{Binding Fov, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="65" Maximum="99" Cursor="Hand" Width="400" Foreground="Black">
                     <Slider.Effect>
                         <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
                     </Slider.Effect>
                 </Slider>
-                <TextBlock IsHitTestVisible="False" Text="Render Distance (Chunks)" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
             </StackPanel>
 
             <StackPanel Grid.Row="3" VerticalAlignment="Center">
-                <TextBlock IsHitTestVisible="False" Text="{Binding ElementName=SensitivitySlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <Slider x:Name="SensitivitySlider" IsSnapToTickEnabled="True" Value="{Binding MouseSpeed, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0.05" Maximum="1" Cursor="Hand" Width="400" Foreground="Black" TickFrequency="0.01">
+                <TextBlock IsHitTestVisible="False" Text="Render Distance (Chunks)" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
+                <!--<TextBlock IsHitTestVisible="False" Text="{Binding ElementName=RenderDistanceSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>-->
+                <Slider Style="{StaticResource CustomSliderStyle}" Margin="5" x:Name="RenderDistanceSlider" IsSnapToTickEnabled="True" Value="{Binding RenderDistance, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="2" Maximum="32" Cursor="Hand" Width="400" Foreground="Black">
                     <Slider.Effect>
                         <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
                     </Slider.Effect>
                 </Slider>
-                <TextBlock IsHitTestVisible="False" Text="Sensitivity" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
             </StackPanel>
 
-            <Grid Grid.Row="4">
+            <StackPanel Grid.Row="4" VerticalAlignment="Center">
+                <TextBlock IsHitTestVisible="False" Text="Sensitivity" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
+                <Slider Style="{StaticResource CustomSliderStyle}" Margin="5" x:Name="SensitivitySlider" IsSnapToTickEnabled="True" Value="{Binding MouseSpeed, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="0.05" Maximum="1" Cursor="Hand" Width="400" Foreground="Black" TickFrequency="0.01">
+                    <Slider.Effect>
+                        <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
+                    </Slider.Effect>
+                </Slider>
+            </StackPanel>
+
+            <Grid Grid.Row="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
@@ -269,7 +445,7 @@
                 <RowDefinition Height="4*"/>
                 <RowDefinition Height="1*"/>
             </Grid.RowDefinitions>
-            <ListBox x:Name="WorldSelector" Width="620" Grid.Row="1" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalContentAlignment="Stretch" BorderThickness="0,0,0,0" Cursor="Arrow" Background="{x:Null}">
+            <ListBox x:Name="WorldSelector" Width="500" Grid.Row="1" BorderBrush="{x:Null}" Foreground="{x:Null}" HorizontalContentAlignment="Stretch" BorderThickness="0,0,0,0" Cursor="Arrow" Background="{x:Null}">
                 <ListBox.Effect>
                     <DropShadowEffect BlurRadius="5" ShadowDepth="2" Opacity=".5" Direction="-135"/>
                 </ListBox.Effect>
@@ -338,7 +514,8 @@
         </Grid>
         <Grid x:Name="WorldCreatorMenu" Visibility="Hidden" Height="800" Width="650">
             <Grid.RowDefinitions>
-                <RowDefinition Height="2*"/>
+                <RowDefinition Height="3*"/>
+                <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
@@ -356,7 +533,13 @@
                 <TextBox Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" x:Name="WorldSeed" Height="50" FontSize="28" Style="{StaticResource McTextBox}" SelectionTextBrush="Black" SelectionBrush="White" BorderBrush="{x:Null}" Background="#59000000"/>
             </StackPanel>
 
-            <Grid Grid.Row="3">
+            <StackPanel HorizontalAlignment="Center" Grid.Row="3" Orientation="Horizontal">
+                <TextBlock IsHitTestVisible="False" Text="Default" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="0" Style="{StaticResource McText}"/>
+                <CheckBox Margin="10" x:Name="NormalFlatOption" VerticalAlignment="Center" HorizontalAlignment="Center" Style="{DynamicResource SliderCheckBox}"/>
+                <TextBlock IsHitTestVisible="False" Text="Flat" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="0" Style="{StaticResource McText}"/>
+            </StackPanel>
+
+            <Grid Grid.Row="4">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>

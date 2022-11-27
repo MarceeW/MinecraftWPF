@@ -30,8 +30,6 @@ namespace Minecraft.Terrain
             var world = formatter.Deserialize(stream) as Dictionary<Vector2, IChunk>;
 
             return world;
-
-            return null;
         }
     }
 }

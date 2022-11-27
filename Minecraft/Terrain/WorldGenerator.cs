@@ -32,7 +32,7 @@ namespace Minecraft.Terrain
             this.world.WorldGenerator = this;
 
             noise = new FastNoise();
-            noise.SetSeed(world.Seed);
+            noise.SetSeed(world.WorldData.WorldSeed);
             noise.SetNoiseType(FastNoise.NoiseType.SimplexFractal);
             noise.SetInterp(FastNoise.Interp.Linear);
             noise.SetFractalOctaves(4);
@@ -74,35 +74,50 @@ namespace Minecraft.Terrain
         }
         public int GetHeightAtPosition(Vector2 pos)
         {
+            if (world.WorldData.IsFlat)
+                return 3;
+
             return (int)Math.Round((noise.GetValue(pos.X, pos.Y) + noise.GetSimplexFractal(pos.X, pos.Y)) / (1.0f / noiseDepth)) + worldDepth;
         }
         public BlockType GetBlockAtHeight(int y, int depth = 0)
         {
-            if (y == 0)
-                return BlockType.Bedrock;
-            else if (depth > 5)
+            if (world.WorldData.IsFlat)
             {
-                if (random.NextDouble() > 0.98)
-                    return BlockType.CopperOre;
-                else if (depth > 10 && random.NextDouble() > 0.98)
-                    return BlockType.IronOre;
-                else if (depth > 15 && random.NextDouble() > 0.98)
-                    return BlockType.GoldOre;
-                else if (depth > 25)
+                if(y == 0)
+                    return BlockType.Bedrock;
+                else if(y == 1 || y == 2)
+                    return BlockType.Dirt;
+                
+                return BlockType.GrassBlock;
+            }
+            else
+            {
+                if (y == 0)
+                    return BlockType.Bedrock;
+                else if (depth > 5)
                 {
                     if (random.NextDouble() > 0.98)
-                        return BlockType.DiamondOre;
-                    else if (random.NextDouble() > 0.99)
-                        return BlockType.EmeraldOre;
+                        return BlockType.CopperOre;
+                    else if (depth > 10 && random.NextDouble() > 0.98)
+                        return BlockType.IronOre;
+                    else if (depth > 15 && random.NextDouble() > 0.98)
+                        return BlockType.GoldOre;
+                    else if (depth > 25)
+                    {
+                        if (random.NextDouble() > 0.98)
+                            return BlockType.DiamondOre;
+                        else if (random.NextDouble() > 0.99)
+                            return BlockType.EmeraldOre;
+                    }
+                    return BlockType.Stone;
                 }
-                return BlockType.Stone;
+                else if (y < worldDepth - 8)
+                    return BlockType.Sand;
+                else if (depth >= 1)
+                    return BlockType.Dirt;
+                else
+                    return BlockType.GrassBlock;
             }
-            else if (y < worldDepth - 8)
-                return BlockType.Sand;
-            else if (depth >= 1)
-                return BlockType.Dirt;
-            else
-                return BlockType.GrassBlock;
         }
         public void ExpandWorld(Direction dir, Vector2 position)
         {
@@ -162,74 +177,84 @@ namespace Minecraft.Terrain
 
                     int depth = 0;
 
-                    if (y < worldDepth - 5)
+                    if (!world.WorldData.IsFlat)
                     {
-                        if (y < 0)
-                            y *= -1;
-                        else if (y == 0)
-                            y++;
-
-                        for (int waterY = y + 1; waterY < worldDepth - 10; waterY++)
-                            chunk.AddBlock(new Vector3(x, waterY, z), BlockType.Water, true);
-                    }
-
-                    for (; y >= 0; y--)
-                    {
-                        var block = GetBlockAtHeight(y, depth);
-                        chunk.AddBlock(new Vector3(x, y, z), block, true);
-
-                        var chance = random.NextDouble();
-
-                        if (block == BlockType.GrassBlock)
+                        if (y < worldDepth - 5)
                         {
-                            if (chance <= 0.016)
-                            {
-                                chance = random.NextDouble();
+                            if (y < 0)
+                                y *= -1;
+                            else if (y == 0)
+                                y++;
 
-                                chunk.AddBlock(new Vector3(x, y, z), BlockType.Dirt, true);
-
-                                if (chance <= 0.1)
-                                    world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.BirchTree, chunk);
-                                else
-                                    world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.OakTree, chunk);
-                            }
-                            else if (chance > 0.1 && chance <= 0.3)
-                            {
-                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Grass, false);
-                            }
-                            else if (chance > 0.3 && chance <= 0.35)
-                            {
-                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.SparseGrass, false);
-                            }
-                            else if (chance > 0.35 && chance <= 0.36)
-                            {
-                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Poppy, false);
-                            }
-                            else if (chance > 0.36 && chance <= 0.365)
-                            {
-                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Allium, false);
-                            }
-                            else if (chance > 0.365 && chance <= 0.366)
-                            {
-                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.BlueOrchid, false);
-                            }
-                            else if (chance > 0.366 && chance <= 0.3665)
-                            {
-                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.AzureBluet, false);
-                            }
-                            else if (chance > 0.3665 && chance <= 0.37)
-                            {
-                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.RedMushroom, false);
-                            }
-                        }
-                        else if (block == BlockType.Sand)
-                        {
-                            if (chance <= 0.005)
-                                chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.DeadBush, false);
+                            for (int waterY = y + 1; waterY < worldDepth - 10; waterY++)
+                                chunk.AddBlock(new Vector3(x, waterY, z), BlockType.Water, true);
                         }
 
-                        depth++;
+                        for (; y >= 0; y--)
+                        {
+                            var block = GetBlockAtHeight(y, depth);
+                            chunk.AddBlock(new Vector3(x, y, z), block, true);
+
+                            var chance = random.NextDouble();
+
+                            if (block == BlockType.GrassBlock)
+                            {
+                                if (chance <= 0.016)
+                                {
+                                    chance = random.NextDouble();
+
+                                    chunk.AddBlock(new Vector3(x, y, z), BlockType.Dirt, true);
+
+                                    if (chance <= 0.1)
+                                        world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.BirchTree, chunk);
+                                    else
+                                        world.AddEntity(new Vector3(x + offset.X, y + 1, z + offset.Y), EntityType.OakTree, chunk);
+                                }
+                                else if (chance > 0.1 && chance <= 0.3)
+                                {
+                                    chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Grass, false);
+                                }
+                                else if (chance > 0.3 && chance <= 0.35)
+                                {
+                                    chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.SparseGrass, false);
+                                }
+                                else if (chance > 0.35 && chance <= 0.36)
+                                {
+                                    chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Poppy, false);
+                                }
+                                else if (chance > 0.36 && chance <= 0.365)
+                                {
+                                    chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.Allium, false);
+                                }
+                                else if (chance > 0.365 && chance <= 0.366)
+                                {
+                                    chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.BlueOrchid, false);
+                                }
+                                else if (chance > 0.366 && chance <= 0.3665)
+                                {
+                                    chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.AzureBluet, false);
+                                }
+                                else if (chance > 0.3665 && chance <= 0.37)
+                                {
+                                    chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.RedMushroom, false);
+                                }
+                            }
+                            else if (block == BlockType.Sand)
+                            {
+                                if (chance <= 0.005)
+                                    chunk.AddBlock(new Vector3(x, y + 1, z), BlockType.DeadBush, false);
+                            }
+                            depth++;
+                        }
                     }
+                    else
+                    {
+                        for (; y >= 0 ; y--)
+                        {
+                            chunk.AddBlock(new Vector3(x, y, z), GetBlockAtHeight(y), true);
+                            depth++;
+                        }
+                    }            
                 }
             }
         }
@@ -249,7 +274,7 @@ namespace Minecraft.Terrain
         }
         public Vector3 GetSpawnPosition(int range)
         {
-            while (true)
+            while (!world.WorldData.IsFlat)
             {
                 int x = random.Next(range);
                 int z = random.Next(range);
@@ -268,6 +293,7 @@ namespace Minecraft.Terrain
                         return new Vector3(x, topBlockY, z);
                 }
             }
+            return new Vector3(0, 4, 0);
         }
     }
 }

@@ -9,5 +9,6 @@ namespace Minecraft.Misc
         public int WorldSeed { get; set; }
         public string WorldPath { get; set; }
         public DateTime LastPlayed { get; set; }
+        public bool IsFlat { get; set; }
     }
 }

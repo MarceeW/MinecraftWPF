@@ -24,12 +24,12 @@ namespace Minecraft.Misc
 
             if (isNewWorld)
             {
-                World = new World(WorldData.WorldSeed);
+                World = new World(WorldData);
                 Ioc.Default.GetService<IHotbar>().Reset();
             }
             else
             {
-                World = new World(WorldSerializer.LoadWorld(WorldData.WorldPath), worldData.WorldSeed);
+                World = new World(WorldSerializer.LoadWorld(WorldData.WorldPath), WorldData);
                 var ppraw = File.ReadAllLines(WorldSerializer.SavesLocation + @"\" + WorldData.WorldName + @"\" + "playerData.dat");
                 var pp = ppraw[0].Split(';');
                 var pcf = ppraw[1].Split(';');
@@ -58,6 +58,7 @@ namespace Minecraft.Misc
             worldData.WriteLine(WorldData.WorldName);
             worldData.WriteLine(WorldData.WorldSeed);
             worldData.WriteLine(DateTime.Now);
+            worldData.WriteLine(WorldData.IsFlat);
             worldData.Close();
 
             StreamWriter playerData = new StreamWriter(WorldSerializer.SavesLocation + @"\" + WorldData.WorldName + @"\" + "playerData.dat");

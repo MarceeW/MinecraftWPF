@@ -3,6 +3,7 @@ using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Game;
 using Minecraft.Logic;
 using Minecraft.Terrain;
+using Minecraft.UI.Logic;
 using OpenTK.Mathematics;
 using System;
 using System.Diagnostics;
@@ -59,8 +60,6 @@ namespace Minecraft.Controller
         public event ChunkGeneratorHandler? ChangedChunk;
         public event Action<Vector2>? Moved;
 
-        public static bool CanMove = true;
-
         private IPlayer player;
         private IPlayerLogic playerLogic;
         public float MouseSpeed { get => mouseSpeed; set => SetProperty(ref mouseSpeed, (float)Math.Round(value, 2)); }
@@ -78,7 +77,7 @@ namespace Minecraft.Controller
         }
         public void Update(float delta)
         {
-            if (CanMove)
+            if (!Ioc.Default.GetService<IUILogic>().IsGamePaused)
             {
                 if (Keyboard.IsKeyDown(Key.LeftCtrl))
                     playerLogic.Sprint = true;

@@ -9,9 +9,12 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Wpf;
 using System;
+using System.ComponentModel;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
+using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
 namespace Minecraft
@@ -33,7 +36,6 @@ namespace Minecraft
             InitializeComponent();
 
             WindowState = System.Windows.WindowState.Maximized;
-            WindowStyle = WindowStyle.None;
 
             var settings = new GLWpfControlSettings
             {
@@ -113,6 +115,13 @@ namespace Minecraft
         {
             if (e.ChangedButton == System.Windows.Input.MouseButton.Left && e.ClickCount == 2)
                 Ioc.Default.GetService<IUILogic>().EnterWorld();
+        }
+
+        private void BorderlessOption_Click(object sender, RoutedEventArgs e)
+        {
+            WindowState = System.Windows.WindowState.Normal;
+            WindowStyle = BorderlessOption.IsChecked == true ? WindowStyle.None : WindowStyle.SingleBorderWindow;
+            WindowState = System.Windows.WindowState.Maximized;
         }
     }
 }

@@ -75,7 +75,7 @@
 
   <ItemGroup>
     <Resource Include="Assets\HUD\Toolbar.png" />
-    <Resource Include="Assets\Textures\terrain.png" />
+    <Resource Include="Assets\TexturePacks\terrain.png" />
   </ItemGroup>
 
 </Project>

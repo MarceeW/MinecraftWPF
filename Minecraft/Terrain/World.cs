@@ -1,4 +1,5 @@
 ﻿using Minecraft.Graphics;
+using Minecraft.Misc;
 using OpenTK.Mathematics;
 using System.Collections.Generic;
 
@@ -9,20 +10,20 @@ namespace Minecraft.Terrain
         public Dictionary<Vector2, IChunk> Chunks { get; set; }
         public IWorldGenerator? WorldGenerator { get; set; }
         public Queue<Vector2> ChunksNeedsToBeRegenerated { get; }
-        public int Seed { get; }
+        public WorldData WorldData { get; }
 
         private Dictionary<Vector2, List<Block>> blockQueue;
 
-        public World(int seed)
+        public World(WorldData worldData)
         {
-            Seed = seed;
+            WorldData = worldData;
             Chunks = new Dictionary<Vector2, IChunk>();
             ChunksNeedsToBeRegenerated = new Queue<Vector2>();
             blockQueue = new Dictionary<Vector2, List<Block>>();
         }
-        public World(Dictionary<Vector2, IChunk> chunks, int seed)
+        public World(Dictionary<Vector2, IChunk> chunks, WorldData worldData)
         {
-            Seed = seed;
+            WorldData = worldData;
             Chunks = chunks;
             ChunksNeedsToBeRegenerated = new Queue<Vector2>();
             blockQueue = new Dictionary<Vector2, List<Block>>();
@@ -125,9 +126,6 @@ namespace Minecraft.Terrain
                     if (Chunks.ContainsKey(whereShouldBlockBe))
                     {
                         Chunks[whereShouldBlockBe].AddBlock(block.Position + position, block.Type, true);
-
-                        //if (blockIndex == entity.Blocks.Length - 1)
-                        //ChunksNeedsToBeRegenerated.Enqueue(whereShouldBlockBe);
                     }
                     else
                     {

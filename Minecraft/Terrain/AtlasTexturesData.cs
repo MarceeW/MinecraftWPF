@@ -30,7 +30,7 @@ namespace Minecraft.Terrain
                 CurrentTexture = new BitmapImage(new Uri(texturePath, UriKind.RelativeOrAbsolute));
             }
         }
-        private static string texturePath = @"..\..\..\Assets\Textures\terrain.png";
+        private static string texturePath = @"..\..\..\Assets\TexturePacks\terrain.png";
         public static BitmapImage CurrentTexture { get; private set; } = new BitmapImage(new Uri(texturePath, UriKind.RelativeOrAbsolute));
         //Top = 1st Bot = 2nd Other = 3rd
         public static readonly Position2D[][] TexturePositions =
