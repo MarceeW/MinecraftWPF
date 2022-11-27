@@ -1,18 +1,18 @@
-﻿using Minecraft.Controller;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Controller;
+using Minecraft.Misc;
 using Minecraft.Render;
+using Minecraft.Rendering.ViewModel;
+using Minecraft.UI.Logic;
+using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using OpenTK.Windowing.Common;
 using OpenTK.Wpf;
 using System;
-using OpenTK.Windowing.Common;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Media.Imaging;
-using OpenTK.Graphics.OpenGL;
-using Minecraft.UI.Logic;
-using Minecraft.Rendering.ViewModel;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using Minecraft.Misc;
 
 namespace Minecraft
 {
@@ -54,7 +54,7 @@ namespace Minecraft
             float hudScale = 0.6f;
 
             MouseListener = new MouseListener(this);
-            
+
             HotbarGrid.Width *= hudScale;
             HotbarGrid.Height *= hudScale;
 
@@ -111,10 +111,10 @@ namespace Minecraft
         {
             var img = e.Source as Image;
             img.Source = (BitmapSource)Resources["MenuButtonFrame"];
-        }  
+        }
         private void WorldSelector_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if(e.ChangedButton == System.Windows.Input.MouseButton.Left && e.ClickCount == 2)
+            if (e.ChangedButton == System.Windows.Input.MouseButton.Left && e.ClickCount == 2)
                 Ioc.Default.GetService<IUILogic>().EnterWorld();
         }
     }

@@ -1,15 +1,11 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Game;
-using Minecraft.Graphics;
-using Minecraft.Misc;
-using Minecraft.Render;
 using Minecraft.Terrain;
 using Minecraft.UI;
 using OpenTK.Mathematics;
 using System;
 using System.Globalization;
 using System.IO;
-using System.Windows.Media;
 
 namespace Minecraft.Misc
 {
@@ -20,7 +16,7 @@ namespace Minecraft.Misc
         public WorldData WorldData { get; private set; }
         public bool IsNew { get; }
 
-        public GameSession(WorldData worldData,bool isNewWorld)
+        public GameSession(WorldData worldData, bool isNewWorld)
         {
             IsNew = isNewWorld;
             WorldData = worldData;
@@ -33,7 +29,7 @@ namespace Minecraft.Misc
             }
             else
             {
-                World = new World(WorldSerializer.LoadWorld(WorldData.WorldPath),worldData.WorldSeed);
+                World = new World(WorldSerializer.LoadWorld(WorldData.WorldPath), worldData.WorldSeed);
                 var ppraw = File.ReadAllLines(WorldSerializer.SavesLocation + @"\" + WorldData.WorldName + @"\" + "playerData.dat");
                 var pp = ppraw[0].Split(';');
                 var pcf = ppraw[1].Split(';');

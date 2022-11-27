@@ -101,7 +101,7 @@ namespace Minecraft.Graphics.Shapes
 
             return shader;
         }
-        public static void Render(Vector3 position,Vector3? color,Texture? texture = null)
+        public static void Render(Vector3 position, Vector3? color, Texture? texture = null)
         {
             shader?.Use();
             shader?.SetMat4("model", Matrix4.CreateTranslation(position));

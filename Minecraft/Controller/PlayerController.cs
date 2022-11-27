@@ -1,16 +1,16 @@
-﻿using Minecraft.Game;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Game;
 using Minecraft.Logic;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
-using System.Windows.Input;
 using System.Diagnostics;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using System.Windows.Input;
 
 namespace Minecraft.Controller
 {
-    delegate void ChunkGeneratorHandler(Direction dir,Vector2 position);
+    delegate void ChunkGeneratorHandler(Direction dir, Vector2 position);
     internal class PlayerController : ObservableObject
     {
         class DoubleKeyPressChecker
@@ -63,7 +63,7 @@ namespace Minecraft.Controller
 
         private IPlayer player;
         private IPlayerLogic playerLogic;
-        public float MouseSpeed { get => mouseSpeed; set => SetProperty(ref mouseSpeed, (float)Math.Round(value,2)); }
+        public float MouseSpeed { get => mouseSpeed; set => SetProperty(ref mouseSpeed, (float)Math.Round(value, 2)); }
         private DoubleKeyPressChecker jumpListener;
         private float mouseSpeed;
 
@@ -71,7 +71,7 @@ namespace Minecraft.Controller
         {
             this.player = player;
             playerLogic = Ioc.Default.GetService<IPlayerLogic>();
-            playerLogic.Init(player,world);
+            playerLogic.Init(player, world);
 
             jumpListener = new DoubleKeyPressChecker(Key.Space);
             jumpListener.OnDoublePress += () => player.IsFlying = !player.IsFlying;

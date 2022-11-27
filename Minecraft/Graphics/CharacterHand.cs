@@ -1,5 +1,4 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using Minecraft.Controller;
 using Minecraft.Logic;
 using Minecraft.Terrain;
 using Minecraft.UI;
@@ -7,9 +6,6 @@ using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
-using System.Windows.Markup;
 
 namespace Minecraft.Graphics
 {
@@ -38,7 +34,7 @@ namespace Minecraft.Graphics
         private bool isHandEmpty;
         public CharacterHand()
         {
-            position = new Vector3(0.5f,-1.15f,-1.05f);
+            position = new Vector3(0.5f, -1.15f, -1.05f);
             modelMatrix = Matrix4.CreateRotationY(MathHelper.DegreesToRadians(40));
             modelMatrix *= Matrix4.CreateScale(0.6f);
 
@@ -65,7 +61,7 @@ namespace Minecraft.Graphics
             {
                 AtlasTexturesData.Atlas.Use();
                 Shader.SetInt("tex", AtlasTexturesData.Atlas.GetTexUnitId());
-                Shader.Use();   
+                Shader.Use();
             }
             else
             {
@@ -122,9 +118,9 @@ namespace Minecraft.Graphics
         }
         private void UpdatePosition(float delta)
         {
-            if(animation == AnimationType.BlockChange)
+            if (animation == AnimationType.BlockChange)
             {
-                if(currentAnimationStep >= Math.PI)
+                if (currentAnimationStep >= Math.PI)
                 {
                     ResetAnimation();
                     ResetViewMatrix();
@@ -133,7 +129,7 @@ namespace Minecraft.Graphics
                 }
                 else
                 {
-                    if(!blockChangeHandled && Math.PI / 2 <= currentAnimationStep)
+                    if (!blockChangeHandled && Math.PI / 2 <= currentAnimationStep)
                     {
                         UpdateVBOData();
                         blockChangeHandled = true;
@@ -147,7 +143,7 @@ namespace Minecraft.Graphics
             }
             else if (animation == AnimationType.Place || animation == AnimationType.Hit)
             {
-                if(animation == AnimationType.Hit && isHandEmpty)
+                if (animation == AnimationType.Hit && isHandEmpty)
                 {
                     if (currentAnimationStep >= Math.PI)
                     {
@@ -190,9 +186,9 @@ namespace Minecraft.Graphics
                         int animationSpeed = 5;
                         currentAnimationStep += Math.PI * delta * animationSpeed;
                     }
-                }      
+                }
             }
-            else if(animation == AnimationType.Walk)
+            else if (animation == AnimationType.Walk)
             {
                 UpdateViewMatrix(new Vector3((float)Math.Cos(currentAnimationWalkingStep / 2) / 10, -(float)Math.Sin(currentAnimationWalkingStep) / 15, 0));
                 animation = AnimationType.None;
@@ -220,15 +216,15 @@ namespace Minecraft.Graphics
                 ResetModel();
                 UpdateModelMatrix();
             }
-            if(!isHandEmpty || hotbar.GetSelectedBlock() != BlockType.Air)
+            if (!isHandEmpty || hotbar.GetSelectedBlock() != BlockType.Air)
             {
                 animation = AnimationType.BlockChange;
                 blockChangeHandled = false;
-            }   
+            }
         }
         public void OnWalking(float delta)
         {
-            if(animation == AnimationType.None)
+            if (animation == AnimationType.None)
             {
                 animation = AnimationType.Walk;
 
@@ -277,13 +273,13 @@ namespace Minecraft.Graphics
                 isHandEmpty = false;
 
                 if (BlockData.IsVegetationBlock(type))
-                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Left, new Vector3(0, .5f, 0),false,0));
+                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Left, new Vector3(0, .5f, 0), false, 0));
                 else
                 {
-                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Bot, Vector3.Zero,false,0));
-                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Front, Vector3.Zero,false, 0));
-                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Left, Vector3.Zero,false, 0));
-                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Top, Vector3.Zero,false, 0));
+                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Bot, Vector3.Zero, false, 0));
+                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Front, Vector3.Zero, false, 0));
+                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Left, Vector3.Zero, false, 0));
+                    data.AddRange(Face.GetBlockFaceVertices(type, FaceDirection.Top, Vector3.Zero, false, 0));
                 }
 
             }
@@ -299,9 +295,9 @@ namespace Minecraft.Graphics
                 Vector3 pos = new Vector3(0.75f, 0.5f, -0.5f);
 
                 float thickness = 0.5f;
-                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Front,pos, thickness));
-                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Left,pos, thickness));
-                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Top,pos, thickness));
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Front, pos, thickness));
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Left, pos, thickness));
+                data.AddRange(Face.GetHandFaceVertices(FaceDirection.Top, pos, thickness));
             }
             GL.BufferData(BufferTarget.ArrayBuffer, sizeof(float) * data.Count, data.ToArray(), BufferUsageHint.StaticDraw);
         }

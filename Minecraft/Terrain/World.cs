@@ -1,6 +1,5 @@
 ﻿using Minecraft.Graphics;
 using OpenTK.Mathematics;
-using System;
 using System.Collections.Generic;
 
 namespace Minecraft.Terrain
@@ -21,7 +20,7 @@ namespace Minecraft.Terrain
             ChunksNeedsToBeRegenerated = new Queue<Vector2>();
             blockQueue = new Dictionary<Vector2, List<Block>>();
         }
-        public World(Dictionary<Vector2, IChunk> chunks,int seed)
+        public World(Dictionary<Vector2, IChunk> chunks, int seed)
         {
             Seed = seed;
             Chunks = chunks;

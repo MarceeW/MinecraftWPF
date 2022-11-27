@@ -14,7 +14,7 @@ namespace Minecraft.Graphics
         private int handle;
         private bool disposeValue;
         private List<int> shaders;
-        public Shader(string vertexPath,string fragmentPath)
+        public Shader(string vertexPath, string fragmentPath)
         {
             shaders = new List<int>();
             handle = GL.CreateProgram();
@@ -49,7 +49,7 @@ namespace Minecraft.Graphics
             }
             else
                 shaders.Add(shader);
-            
+
             GL.AttachShader(handle, shader);
             GL.LinkProgram(handle);
 

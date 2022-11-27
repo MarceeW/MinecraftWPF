@@ -1,12 +1,9 @@
-﻿using Minecraft.Graphics;
-using OpenTK.Mathematics;
-using Minecraft.Terrain;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Graphics;
 using Minecraft.Graphics.Shapes;
-using System;
-using System.Diagnostics;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using System.ComponentModel;
 using Minecraft.UI.Logic;
+using OpenTK.Mathematics;
+using System.ComponentModel;
 
 namespace Minecraft.Render
 {
@@ -54,7 +51,7 @@ namespace Minecraft.Render
         }
         public void OnProjectionMatrixChange()
         {
-            Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(camera.Fov), 16f/9f, near, far);
+            Projection = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(camera.Fov), 16f / 9f, near, far);
             ProjectionMatrixChange.Invoke("projection", Projection);
         }
         public void Render(float delta)
@@ -65,7 +62,7 @@ namespace Minecraft.Render
             skybox.Render();
             worldRenderer.RenderWorld();
 
-            if(UILogic.IsHudVisible)
+            if (UILogic.IsHudVisible)
                 characterHand.Render(delta);
         }
     }

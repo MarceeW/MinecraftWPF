@@ -1,8 +1,4 @@
-﻿using OpenTK.Mathematics;
-using System.Collections.Generic;
-using System.Xml.Linq;
-
-namespace Minecraft.Terrain
+﻿namespace Minecraft.Terrain
 {
     class VoxelEntity
     {

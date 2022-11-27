@@ -1,7 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Graphics;
 using Minecraft.Logic;
-using Minecraft.Terrain;
 using Minecraft.UI;
 using OpenTK.Mathematics;
 

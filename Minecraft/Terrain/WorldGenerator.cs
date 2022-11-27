@@ -1,12 +1,8 @@
-﻿using Minecraft.Render;
-using Minecraft.Logic;
+﻿using Minecraft.Logic;
+using Minecraft.Terrain.Noise;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using Minecraft.Terrain.Noise;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using Minecraft.Game;
-using OpenTK.Platform.Windows;
 
 namespace Minecraft.Terrain
 {
@@ -27,7 +23,7 @@ namespace Minecraft.Terrain
         private static Random random = new Random();
         private bool worldInit = false;
 
-        public WorldGenerator(IWorld world,int renderDistance)
+        public WorldGenerator(IWorld world, int renderDistance)
         {
             generatorQueue = new PriorityQueue<Vector2, float>();
             generatedChunks = new Queue<KeyValuePair<Vector2, IChunk>>();
@@ -58,7 +54,7 @@ namespace Minecraft.Terrain
                 world.AddChunk(chunk.Key, chunk.Value);
                 ChunkAdded?.Invoke(chunk.Key);
             }
-            if(generatedChunks.Count == 0 && !worldInit)
+            if (generatedChunks.Count == 0 && !worldInit)
             {
                 worldInit = true;
                 WorldInitalized?.Invoke();
@@ -92,7 +88,7 @@ namespace Minecraft.Terrain
                     return BlockType.IronOre;
                 else if (depth > 15 && random.NextDouble() > 0.98)
                     return BlockType.GoldOre;
-                else if(depth > 25)
+                else if (depth > 25)
                 {
                     if (random.NextDouble() > 0.98)
                         return BlockType.DiamondOre;
@@ -100,7 +96,7 @@ namespace Minecraft.Terrain
                         return BlockType.EmeraldOre;
                 }
                 return BlockType.Stone;
-            }   
+            }
             else if (y < worldDepth - 8)
                 return BlockType.Sand;
             else if (depth >= 1)
@@ -247,7 +243,7 @@ namespace Minecraft.Terrain
             int finalSeed = 0;
 
             for (int i = 0; i < seed.Length; i++)
-                finalSeed += (i + 1) * seed[i]; 
+                finalSeed += (i + 1) * seed[i];
 
             return finalSeed;
         }

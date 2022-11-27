@@ -11,7 +11,7 @@ namespace Minecraft.Terrain
         public static string SavesLocation = @"..\..\..\Saves";
         public static void SaveWorld(string path)
         {
-            if(World != null)
+            if (World != null)
             {
                 Stream stream = File.OpenWrite(path + @"\world.bin");
 
@@ -19,17 +19,17 @@ namespace Minecraft.Terrain
 
                 formatter.Serialize(stream, World.Chunks);
                 stream.Close();
-            }  
+            }
         }
         public static Dictionary<Vector2, IChunk> LoadWorld(string path)
         {
-                BinaryFormatter formatter = new BinaryFormatter();
+            BinaryFormatter formatter = new BinaryFormatter();
 
-                FileStream stream = File.OpenRead(path + @"\world.bin");
+            FileStream stream = File.OpenRead(path + @"\world.bin");
 
-                var world = formatter.Deserialize(stream) as Dictionary<Vector2,IChunk>;
+            var world = formatter.Deserialize(stream) as Dictionary<Vector2, IChunk>;
 
-                return world;
+            return world;
 
             return null;
         }

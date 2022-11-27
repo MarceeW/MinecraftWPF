@@ -1,5 +1,4 @@
-﻿using Assimp.Unmanaged;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
 using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.Game;
 using Minecraft.Graphics;
@@ -7,7 +6,6 @@ using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using Chunk = Minecraft.Terrain.Chunk;
 
 namespace Minecraft.Render
@@ -19,7 +17,7 @@ namespace Minecraft.Render
         public int RenderDistance { get => renderDistance; set { SetProperty(ref renderDistance, value); OnRenderSizeChanged(); } }
         private int renderDistance;
 
-        private PriorityQueue<Vector2,float> renderQueue;
+        private PriorityQueue<Vector2, float> renderQueue;
         private ICamera camera;
         public Shader Shader { get; }
         private IWorld world;
@@ -27,7 +25,7 @@ namespace Minecraft.Render
         {
             camera = Ioc.Default.GetService<ICamera>();
 
-            renderQueue = new PriorityQueue<Vector2,float>();
+            renderQueue = new PriorityQueue<Vector2, float>();
             Shader = new Shader(@"..\..\..\Graphics\Shaders\Block\blockVert.glsl", @"..\..\..\Graphics\Shaders\Block\blockFrag.glsl");
             Shader.SetDouble("renderDistance", renderDistance);
         }
@@ -40,7 +38,7 @@ namespace Minecraft.Render
         {
             this.world = world;
 
-            if(world.Chunks.Count > 0)
+            if (world.Chunks.Count > 0)
             {
                 foreach (var chunk in world.Chunks)
                 {
@@ -58,7 +56,7 @@ namespace Minecraft.Render
             AtlasTexturesData.Atlas.Use();
 
             foreach (var chunk in world.Chunks.Values)
-                if(IsChunkInRange(chunk.Position))
+                if (IsChunkInRange(chunk.Position))
                     chunk.Mesh.RenderSolidMesh(Shader);
 
             foreach (var chunk in world.Chunks.Values)

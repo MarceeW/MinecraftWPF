@@ -9,7 +9,7 @@ namespace Minecraft.Game
     internal static class Ray
     {
         public static int MaxDistance { get; } = 6;
-        public static Vector3 Cast(IWorld world, out bool hit,out FaceDirection hitFace, out double rayDistance)
+        public static Vector3 Cast(IWorld world, out bool hit, out FaceDirection hitFace, out double rayDistance)
         {
             var camera = Ioc.Default.GetService<ICamera>();
 
@@ -27,7 +27,7 @@ namespace Minecraft.Game
 
             int stepX, stepY, stepZ;
 
-            if(camera.Front.X > 0)
+            if (camera.Front.X > 0)
             {
                 stepX = 1;
                 xRayDist = Math.Abs((mapX + 1 - camera.Position.X)) * xDeltaDist;
@@ -77,7 +77,7 @@ namespace Minecraft.Game
 
             while (!hit && (camera.Position - currentBlock).Length < MaxDistance)
             {
-                if(xRayDist < yRayDist && xRayDist < zRayDist)
+                if (xRayDist < yRayDist && xRayDist < zRayDist)
                 {
                     xRayDist += xDeltaDist;
                     rayDistance = xRayDist;

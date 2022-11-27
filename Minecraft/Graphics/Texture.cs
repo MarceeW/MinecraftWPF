@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using OpenTK.Graphics.OpenGL;
-
+﻿using OpenTK.Graphics.OpenGL;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using System.IO;
 
 namespace Minecraft.Graphics
 {
@@ -17,7 +14,7 @@ namespace Minecraft.Graphics
         public int Height { get; private set; }
 
         private bool isCubemap;
-        public Texture(string path, bool _isCubeMap, bool needToFlip = true,TextureUnit textureUnit = TextureUnit.Texture0)
+        public Texture(string path, bool _isCubeMap, bool needToFlip = true, TextureUnit textureUnit = TextureUnit.Texture0)
         {
             Handle = GL.GenTexture();
             isCubemap = _isCubeMap;
@@ -29,10 +26,10 @@ namespace Minecraft.Graphics
 
                 Width = image.Width;
                 Height = image.Height;
-            
-                if(needToFlip)
+
+                if (needToFlip)
                     image.Mutate(x => x.Flip(FlipMode.Vertical));
-            
+
                 byte[] pixels = new byte[4 * image.Width * image.Height];
                 image.CopyPixelDataTo(pixels);
 
@@ -54,18 +51,18 @@ namespace Minecraft.Graphics
 
                 var fileNames = Directory.GetFiles(path);
                 GL.BindTexture(TextureTarget.TextureCubeMap, Handle);
-            
+
                 int i = 0;
                 foreach (var f in fileNames)
                 {
                     Image<Rgba32> image = Image.Load<Rgba32>(f);
-            
-                    if(needToFlip)
+
+                    if (needToFlip)
                         image.Mutate(x => x.Flip(FlipMode.Vertical));
-            
+
                     byte[] pixels = new byte[4 * image.Width * image.Height];
                     image.CopyPixelDataTo(pixels);
-            
+
                     GL.TexImage2D(TextureTarget.TextureCubeMapPositiveX + i,
                         0, PixelInternalFormat.Rgba,
                         image.Width, image.Height, 0,

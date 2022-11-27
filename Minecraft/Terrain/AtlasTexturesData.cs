@@ -18,17 +18,17 @@ namespace Minecraft.Terrain
     internal static class AtlasTexturesData
     {
         public static string TexturePath
-        {   
-            get => texturePath; 
+        {
+            get => texturePath;
 
-            set 
-            { 
-                texturePath = value; 
-                atlas = new Texture(texturePath, false); 
+            set
+            {
+                texturePath = value;
+                atlas = new Texture(texturePath, false);
                 TextureSize = atlas.Width / 16;
 
                 CurrentTexture = new BitmapImage(new Uri(texturePath, UriKind.RelativeOrAbsolute));
-            } 
+            }
         }
         private static string texturePath = @"..\..\..\Assets\Textures\terrain.png";
         public static BitmapImage CurrentTexture { get; private set; } = new BitmapImage(new Uri(texturePath, UriKind.RelativeOrAbsolute));
@@ -211,7 +211,7 @@ namespace Minecraft.Terrain
 
         public static Int32Rect GetTextureRect(BlockType type)
         {
-            if(TexturePositions[(int)type].Length > 1)
+            if (TexturePositions[(int)type].Length > 1)
                 return new Int32Rect(TexturePositions[(int)type][2].column * TextureSize, TexturePositions[(int)type][2].row * TextureSize, TextureSize, TextureSize);
 
             return new Int32Rect(TexturePositions[(int)type][0].column * TextureSize, TexturePositions[(int)type][0].row * TextureSize, TextureSize, TextureSize);

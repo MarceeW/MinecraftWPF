@@ -1,9 +1,6 @@
-﻿using OpenTK.Mathematics;
-using OpenTK.Input;
-using Minecraft.Controller;
-using Minecraft.Game;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using OpenTK.Mathematics;
 using System;
-using Microsoft.Toolkit.Mvvm.ComponentModel;
 
 namespace Minecraft.Graphics
 {

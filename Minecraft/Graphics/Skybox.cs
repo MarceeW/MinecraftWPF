@@ -9,7 +9,7 @@ namespace Minecraft.Graphics
         public Shader Shader { get; private set; }
         public Texture? Texture { get; private set; }
         public Vector3? Color { get; private set; }
-        public Skybox(Shader shader,Texture texture)
+        public Skybox(Shader shader, Texture texture)
         {
             Texture = texture;
             Shader = shader;

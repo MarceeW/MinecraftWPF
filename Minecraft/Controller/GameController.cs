@@ -3,17 +3,11 @@ using Minecraft.Game;
 using Minecraft.Graphics;
 using Minecraft.Misc;
 using Minecraft.Render;
-using Minecraft.Rendering;
 using Minecraft.Terrain;
-using Minecraft.UI;
 using Minecraft.UI.Logic;
-using OpenTK.Mathematics;
 using System;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
-using System.Windows;
-using System.Windows.Input;
 
 namespace Minecraft.Controller
 {
@@ -57,7 +51,7 @@ namespace Minecraft.Controller
 
             Session.Player.Camera.Init(Session.Player.Position);
 
-            
+
 
             gameWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
             renderer.SetupRenderer((int)gameWindow.Width, (int)gameWindow.Height);

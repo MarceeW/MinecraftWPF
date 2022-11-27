@@ -1,4 +1,7 @@
-﻿using Minecraft.Controller;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Controller;
+using Minecraft.Graphics;
+using Minecraft.Misc;
 using Minecraft.Render;
 using Minecraft.Terrain;
 using System;
@@ -6,9 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using Minecraft.Graphics;
-using Minecraft.Misc;
 using System.Windows.Input;
 using System.Windows.Media.Effects;
 

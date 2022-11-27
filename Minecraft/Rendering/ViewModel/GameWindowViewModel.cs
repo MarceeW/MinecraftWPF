@@ -1,19 +1,10 @@
-﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
-using Microsoft.Toolkit.Mvvm.DependencyInjection;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Input;
-using Minecraft.Controller;
 using Minecraft.Misc;
 using Minecraft.Terrain;
 using Minecraft.UI.Logic;
-using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -79,7 +70,7 @@ namespace Minecraft.Rendering.ViewModel
                 }
             });
 
-            Create = new RelayCommand(() => uiLogic.CreateWorld(gameWindow.WorldName.Text,gameWindow.WorldSeed.Text));
+            Create = new RelayCommand(() => uiLogic.CreateWorld(gameWindow.WorldName.Text, gameWindow.WorldSeed.Text));
 
             WorldDetailsCancel = new RelayCommand(() => uiLogic.OpenCloseWorldCreationMenu());
             CreateNewWorld = new RelayCommand(() => uiLogic.OpenCloseWorldCreationMenu());

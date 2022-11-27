@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Windows.Documents;
+﻿using System.Collections.Generic;
 
 namespace Minecraft.Terrain
 {
@@ -18,11 +16,11 @@ namespace Minecraft.Terrain
                    type == BlockType.BrownStainedGlass ||
                    type == BlockType.CyanStainedGlass ||
                    type == BlockType.GreenStainedGlass ||
-                   type == BlockType.MagentaStainedGlass||
+                   type == BlockType.MagentaStainedGlass ||
                    type == BlockType.PurpleStainedGlass ||
                    type == BlockType.RedStainedGlass ||
                    type == BlockType.LimeStainedGlass ||
-                   type == BlockType.OakLeaves||
+                   type == BlockType.OakLeaves ||
                    type == BlockType.BirchLeaves ||
                    type == BlockType.AcaciaLeaves ||
                    type == BlockType.SpruceLeaves ||
@@ -65,13 +63,13 @@ namespace Minecraft.Terrain
             int i = 0;
             foreach (var character in name)
             {
-                if(char.IsUpper(character))
+                if (char.IsUpper(character))
                     upperIndexes.Add(i);
                 i++;
             }
             var indexArray = upperIndexes.ToArray();
 
-            for (i=0; i < indexArray.Length - 1; i++)
+            for (i = 0; i < indexArray.Length - 1; i++)
                 ret += name.Substring(indexArray[i], (indexArray[i + 1]) - indexArray[i]) + " ";
 
             if (indexArray.Length == 1)

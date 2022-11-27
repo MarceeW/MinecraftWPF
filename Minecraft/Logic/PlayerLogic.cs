@@ -1,14 +1,7 @@
-﻿using Minecraft.Controller;
-using Minecraft.Game;
-using Minecraft.Graphics;
+﻿using Minecraft.Game;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Xml.Serialization;
-using static System.Windows.Forms.DataFormats;
 
 namespace Minecraft.Logic
 {
@@ -24,7 +17,7 @@ namespace Minecraft.Logic
     internal class PlayerLogic : IPlayerLogic
     {
         public bool CollisionEnabled = true;
-        public event Action<float>? Walking; 
+        public event Action<float>? Walking;
 
         private IWorld world;
         private IPlayer player;
@@ -97,8 +90,8 @@ namespace Minecraft.Logic
             switch (dir)
             {
                 case Direction.Front:
-                    if(grounded && !player.IsFlying)
-                        Walking?.Invoke(Crouch ? delta * crouchSpeed : Sprint ? delta * sprintSpeed : delta); 
+                    if (grounded && !player.IsFlying)
+                        Walking?.Invoke(Crouch ? delta * crouchSpeed : Sprint ? delta * sprintSpeed : delta);
 
                     deltaPos = Vector3.Normalize(new Vector3(player.Camera.Front.X, 0, player.Camera.Front.Z)) * speed * delta;
                     break;

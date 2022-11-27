@@ -1,10 +1,5 @@
-﻿using Assimp;
-using Minecraft.Controller;
-using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
+﻿using OpenTK.Graphics.OpenGL;
 using System;
-using System.Diagnostics;
-using System.Windows;
 
 namespace Minecraft.Render
 {
@@ -13,7 +8,7 @@ namespace Minecraft.Render
         public event Action<float>? OnRendering;
 
         public IScene? Scene { get; set; }
-        public void SetupRenderer(int width,int height)
+        public void SetupRenderer(int width, int height)
         {
             GL.Enable(EnableCap.Multisample);
 

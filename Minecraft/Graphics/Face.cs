@@ -1,9 +1,7 @@
-﻿using Assimp;
-using Minecraft.Terrain;
+﻿using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
-using System.Windows.Documents;
 
 namespace Minecraft.Graphics
 {
@@ -39,7 +37,7 @@ namespace Minecraft.Graphics
         public static int SingleVertexFloats = 9;
         public static float[] GetBlockFaceVertices(BlockType? block, FaceDirection face, Vector3 position, bool needsToShade, int topBlockDifference, float? shadeValue = null)
         {
-            if(block == BlockType.Air || block == null)
+            if (block == BlockType.Air || block == null)
                 return new float[0];
 
             var texCoords = AtlasTexturesData.GetTextureCoords((BlockType)block, face);
@@ -63,7 +61,7 @@ namespace Minecraft.Graphics
                     -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[0],  texCoords[1], needsToShade ? shade : 1.0f,
                     -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  1.0f,  0.0f,  texCoords[0],  texCoords[3], needsToShade ? shade : 1.0f
                 };
-            }     
+            }
             else if (face == FaceDirection.Bot)
                 return
                 new float[SingleFaceVertexCount]
@@ -73,7 +71,7 @@ namespace Minecraft.Graphics
                      0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[2],  texCoords[1], shadeValue == null ? 0.5f : (float)shadeValue,
                      0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[2],  texCoords[1], shadeValue == null ? 0.5f : (float)shadeValue,
                      0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[2],  texCoords[3], shadeValue == null ? 0.5f : (float)shadeValue,
-                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[0],  texCoords[3], shadeValue == null ? 0.5f : (float)shadeValue   
+                    -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f, -1.0f,  0.0f,  texCoords[0],  texCoords[3], shadeValue == null ? 0.5f : (float)shadeValue
                 };
             else if (face == FaceDirection.Right)
                 return
@@ -120,7 +118,7 @@ namespace Minecraft.Graphics
                     -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z,  0.0f,  0.0f,  1.0f,  texCoords[0],  texCoords[1],  shadeValue == null ?  0.7f : (float)shadeValue
                 };
         }
-        public static float[] GetHandFaceVertices(FaceDirection face,Vector3 position, float thickness)
+        public static float[] GetHandFaceVertices(FaceDirection face, Vector3 position, float thickness)
         {
             if (face == FaceDirection.Top)
             {
@@ -171,12 +169,12 @@ namespace Minecraft.Graphics
         }
         public static float[] GetVegetationFaceVertices(BlockType block, Vector3 position, bool needsToShade, int topBlockDifference)
         {
-            var texCoords = AtlasTexturesData.GetTextureCoords(block,null);
+            var texCoords = AtlasTexturesData.GetTextureCoords(block, null);
 
             position += new Vector3(0.5f);
 
             float shade = Math.Clamp(1 - topBlockDifference * 0.065f, 0.4f, 1.0f);
-            
+
             return
                 new float[]
                 {
@@ -186,22 +184,22 @@ namespace Minecraft.Graphics
                     -0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3], needsToShade? shade : 1.0f,
                      0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3], needsToShade? shade : 1.0f,
                      0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1], needsToShade? shade : 1.0f,
-                                                                                                                                   
+
                     -0.5f + position.X, -0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[1], needsToShade? shade : 1.0f,
                      0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1], needsToShade? shade : 1.0f,
                     -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3], needsToShade? shade : 1.0f,
                     -0.5f + position.X,  0.5f + position.Y, -0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[0],  texCoords[3], needsToShade? shade : 1.0f,
                      0.5f + position.X,  0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[3], needsToShade? shade : 1.0f,
-                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1], needsToShade? shade : 1.0f,            
+                     0.5f + position.X, -0.5f + position.Y,  0.5f + position.Z,  0.0f,  0.0f,  0.0f,  texCoords[2],  texCoords[1], needsToShade? shade : 1.0f,
                 };
         }
-        public static float[] GetBlockFaceWireFrames(Vector3 position,Vector3 color)
+        public static float[] GetBlockFaceWireFrames(Vector3 position, Vector3 color)
         {
             position += new Vector3(0.5f);
 
-                return
-                new float[]
-                {  //Positions                                                
+            return
+            new float[]
+            {  //Positions                                                
                     -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
@@ -210,7 +208,7 @@ namespace Minecraft.Graphics
                     -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
-                                                                                 
+
                     -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
@@ -219,7 +217,7 @@ namespace Minecraft.Graphics
                     -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
-                                                                                 
+
                      0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
@@ -228,7 +226,7 @@ namespace Minecraft.Graphics
                      0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
-                                                                                 
+
                     -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
@@ -237,7 +235,7 @@ namespace Minecraft.Graphics
                     -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
-                                                                                 
+
                     -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X,  0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
@@ -246,7 +244,7 @@ namespace Minecraft.Graphics
                      0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X, -0.5f + position.Y,   0.5f + position.Z, color.X, color.Y, color.Z,
-                                                                                 
+
                     -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X,  0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
@@ -255,7 +253,7 @@ namespace Minecraft.Graphics
                      0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                      0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z,
                     -0.5f + position.X, -0.5f + position.Y,  -0.5f + position.Z, color.X, color.Y, color.Z
-                };
+            };
         }
     }
 }

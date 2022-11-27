@@ -1,7 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Minecraft.UI.Logic;
 using System;
-using System.Diagnostics;
 using System.Windows.Input;
 
 namespace Minecraft.Controller

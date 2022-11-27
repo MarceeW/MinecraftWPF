@@ -1,9 +1,6 @@
 ﻿using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows.Documents;
 
 namespace Minecraft.Logic
 {

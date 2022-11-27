@@ -1,12 +1,6 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using Minecraft.Controller;
 using Minecraft.Render;
 using Minecraft.Terrain;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -177,7 +171,7 @@ namespace Minecraft.UI.Logic
                 uiLogic.PauseGame();
             }
         }
-        public void OnMouseWheel(object sender,MouseWheelEventArgs e)
+        public void OnMouseWheel(object sender, MouseWheelEventArgs e)
         {
             if (Hotbar != null)
             {
