@@ -10,6 +10,7 @@ using OpenTK.Windowing.Common;
 using OpenTK.Wpf;
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
@@ -98,7 +99,7 @@ namespace Minecraft
             }
             else
             {
-                MainMenuTitleText.Width += Math.Sin(mainMenuTitleAnim += 0.04);
+                SplashText.FontSize += Math.Sin(mainMenuTitleAnim += 0.05) * 0.03;
             }
         }
         private void Button_MouseEnter(object sender, System.Windows.Input.MouseEventArgs e)

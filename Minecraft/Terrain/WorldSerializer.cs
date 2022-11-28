@@ -28,7 +28,7 @@ namespace Minecraft.Terrain
             FileStream stream = File.OpenRead(path + @"\world.bin");
 
             var world = formatter.Deserialize(stream) as Dictionary<Vector2, IChunk>;
-
+            stream.Close();
             return world;
         }
     }

@@ -27,6 +27,8 @@ namespace Minecraft.UI.Logic
             {
                 gameWindow = value;
                 gameWindow.PreviewKeyDown += OnKeyDown;
+
+                LoadSplashText();
                 LoadSettingsIntoControls();
                 SetupBindings();
             }
@@ -41,7 +43,21 @@ namespace Minecraft.UI.Logic
 
         private GameWindow? gameWindow;
         private UserSettings userSettings = new UserSettings();
-        GameController gameController;
+        private GameController gameController;
+        private void LoadSplashText()
+        {
+            var splashes = File.ReadAllLines(@"..\..\..\Assets\Splashes.txt");
+
+            Random r = new Random();
+            string text = splashes[r.Next(0, splashes.Length)];
+
+            GameWindow.SplashText.Text = text;
+
+            var margin = GameWindow.SplashText.Margin;
+            margin.Right -= text.Length * 8;
+            margin.Top += text.Length * 3;
+            GameWindow.SplashText.Margin = margin;
+        }
         public void OnKeyDown(object sender, KeyEventArgs e)
         {
             switch (e.Key)

@@ -9,7 +9,7 @@
         mc:Ignorable="d"
         Icon="..\Assets\Icon\oecraft.ico"
         Title="OECraft" Height="1080"  Width="1920">
-  
+
     <Window.Resources>
 
         <BitmapImage x:Key="BlockAtlas" UriSource="..\Assets\TexturePacks\terrain.png"/>
@@ -187,7 +187,7 @@
                                 <Rectangle x:Name="Background"
                             Fill="{StaticResource CustomSliderThumBrush}" Stroke="Black"
                             RadiusX="3" RadiusY="3"/>
-                            <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Value, RelativeSource={RelativeSource AncestorType={x:Type Slider}}, StringFormat={}{0:N1}}" Foreground="White" FontSize="12" Style="{StaticResource McText}"/>
+                                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Value, RelativeSource={RelativeSource AncestorType={x:Type Slider}}, StringFormat={}{0:N1}}" Foreground="White" FontSize="12" Style="{StaticResource McText}"/>
                             </Grid>
                         </Canvas>
                         <ControlTemplate.Triggers>
@@ -249,7 +249,7 @@
         </Style>
 
     </Window.Resources>
-    
+
     <Grid x:Name="RenderCanvas">
 
         <glWpfControl:GLWpfControl 
@@ -399,13 +399,13 @@
                         <TextBlock IsHitTestVisible="False" Text="Back" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
                     </Grid>
                 </Button>
-     
+
             </Grid>
         </Grid>
 
         <Grid x:Name="MainMenu" Visibility="Visible">
             <Grid.RowDefinitions>
-                <RowDefinition Height="9*"/>
+                <RowDefinition Height="7*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
@@ -413,7 +413,13 @@
             </Grid.RowDefinitions>
 
             <Image x:Name="MainMenuTitle" Width="800" Source="{StaticResource MainMenuTitle}" Grid.Row="0"/>
-            <Image x:Name="MainMenuTitleText" VerticalAlignment="Bottom" Margin="0,150" Width="500" Source="{StaticResource MainMenuTitleText}" Grid.Row="0"/>
+            <Image x:Name="MainMenuTitleText" VerticalAlignment="Top" Margin="785,324,785,0" Width="350" Source="{StaticResource MainMenuTitleText}" Grid.Row="0"/>
+
+            <TextBlock x:Name="SplashText" Margin="0,255,570,0" Grid.Row="0" IsHitTestVisible="False" VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="Yellow" FontSize="30" Style="{StaticResource McText}" Height="34">
+                <TextBlock.RenderTransform>
+                    <RotateTransform Angle="-20" />
+                </TextBlock.RenderTransform>
+            </TextBlock>
 
             <Button Command="{Binding Play}" Grid.Row="1" Width="400" Height="60" BorderThickness="0,0,0,0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" IsTabStop="False">
                 <Grid>
@@ -435,7 +441,7 @@
                     <TextBlock IsHitTestVisible="False" Text="Quit Game" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
                 </Grid>
             </Button>
-            
+
             <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Left" Margin="30,10" Grid.Row="4" IsHitTestVisible="False" Text="Alpha 1.0" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
             <TextBlock VerticalAlignment="Bottom" HorizontalAlignment="Right" Margin="30,10" Grid.Row="4" IsHitTestVisible="False" Text="Copyright OEProgrammers, Do not distribute!" Foreground="White" FontSize="20" Style="{StaticResource McText}"/>
         </Grid>
@@ -451,7 +457,7 @@
                 </ListBox.Effect>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <Grid Margin="0,5" VerticalAlignment="Top" Background="#3F000000" MouseDown="WorldSelector_MouseDoubleClick">
+                        <Grid Margin="0,5" VerticalAlignment="Top" Background="#0FFFFFFF" MouseDown="WorldSelector_MouseDoubleClick">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="1*"/>
                                 <ColumnDefinition Width="2*"/>
@@ -526,11 +532,11 @@
 
             <StackPanel Grid.Row="1">
                 <TextBlock Text="World name" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5" Foreground="White" FontSize="28" Style="{StaticResource McText}"/>
-                <TextBox Text="New World" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" x:Name="WorldName" Height="50" FontSize="28" Style="{StaticResource McTextBox}" SelectionTextBrush="Black" SelectionBrush="White" BorderBrush="{x:Null}" Background="#59000000"/>
+                <TextBox Text="New World" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" x:Name="WorldName" Height="50" FontSize="28" Style="{StaticResource McTextBox}" SelectionTextBrush="Black" SelectionBrush="White" BorderBrush="{x:Null}" Background="#1FFFFFFF"/>
             </StackPanel>
             <StackPanel Grid.Row="2">
                 <TextBlock Text="Seed (optional)" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,5" Foreground="White" FontSize="28" Style="{StaticResource McText}"/>
-                <TextBox Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" x:Name="WorldSeed" Height="50" FontSize="28" Style="{StaticResource McTextBox}" SelectionTextBrush="Black" SelectionBrush="White" BorderBrush="{x:Null}" Background="#59000000"/>
+                <TextBox Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" x:Name="WorldSeed" Height="50" FontSize="28" Style="{StaticResource McTextBox}" SelectionTextBrush="Black" SelectionBrush="White" BorderBrush="{x:Null}" Background="#1FFFFFFF"/>
             </StackPanel>
 
             <StackPanel HorizontalAlignment="Center" Grid.Row="3" Orientation="Horizontal">
