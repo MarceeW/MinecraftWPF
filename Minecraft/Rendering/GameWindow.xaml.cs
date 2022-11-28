@@ -24,14 +24,17 @@ namespace Minecraft
     public delegate void GameUpdateHandler();
     partial class GameWindow : Window
     {
+
         public Vector2 CenterPosition;
         public event Action? RenderSizeChange;
         public bool ShowWireFrames = false;
-
+        public double WinWidth { get { return this.ActualWidth; } }
+        public double WinHeight { get { return this.ActualHeight; } }
         public MouseListener MouseListener { get; private set; }
 
         internal Renderer renderer;
         private double mainMenuTitleAnim = 0;
+        
         public GameWindow()
         {
             InitializeComponent();
@@ -63,8 +66,12 @@ namespace Minecraft
 
             DataContext = vm;
 
+
             Ioc.Default.GetService<IUILogic>().GameWindow = this;
             Ioc.Default.GetService<IInventoryLogic>().GameWindow = this;
+
+            
+            
         }
         protected override void OnLocationChanged(EventArgs e)
         {
@@ -84,6 +91,8 @@ namespace Minecraft
 
             RenderSizeChange?.Invoke();
         }
+
+
         private void OpenTkControl_OnRender(TimeSpan delta)
         {
             if (!UILogic.IsInMainMenu)
@@ -124,5 +133,20 @@ namespace Minecraft
             WindowStyle = BorderlessOption.IsChecked == true ? WindowStyle.None : WindowStyle.SingleBorderWindow;
             WindowState = System.Windows.WindowState.Maximized;
         }
+
+        
+        private void MainMenu_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            foreach (var c in this.MainMenu.Children)
+            {
+                if (c is System.Windows.Controls.Button b)
+                {
+                    b.Width = this.ActualWidth * 0.2083333333;
+                    b.Height = this.ActualHeight * 0.05555555556;
+                }
+            }
+        }
+
+        
     }
 }

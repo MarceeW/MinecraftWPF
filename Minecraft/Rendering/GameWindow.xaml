@@ -247,6 +247,7 @@
             <Setter Property="SelectionEnd" Value="{Binding Path=Value, RelativeSource={RelativeSource Self}}" />
             <Setter Property="Stylus.IsPressAndHoldEnabled" Value="false" />
         </Style>
+        
 
     </Window.Resources>
 
@@ -403,7 +404,7 @@
             </Grid>
         </Grid>
 
-        <Grid x:Name="MainMenu" Visibility="Visible">
+        <Grid x:Name="MainMenu" Visibility="Visible" SizeChanged="MainMenu_SizeChanged">
             <Grid.RowDefinitions>
                 <RowDefinition Height="7*"/>
                 <RowDefinition Height="1*"/>
@@ -412,7 +413,7 @@
                 <RowDefinition Height="4*"/>
             </Grid.RowDefinitions>
 
-            <Image x:Name="MainMenuTitle" Width="800" Source="{StaticResource MainMenuTitle}" Grid.Row="0"/>
+            <Image x:Name="MainMenuTitle" Width="800" Source="{StaticResource MainMenuTitle}" Grid.Row="0" />
             <Image x:Name="MainMenuTitleText" VerticalAlignment="Top" Margin="785,324,785,0" Width="350" Source="{StaticResource MainMenuTitleText}" Grid.Row="0"/>
 
             <TextBlock x:Name="SplashText" Margin="0,255,570,0" Grid.Row="0" IsHitTestVisible="False" VerticalAlignment="Top" HorizontalAlignment="Right" Foreground="Yellow" FontSize="30" Style="{StaticResource McText}" Height="34">
