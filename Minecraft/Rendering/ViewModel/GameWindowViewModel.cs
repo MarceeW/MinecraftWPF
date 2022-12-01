@@ -1,4 +1,5 @@
-﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+﻿using Microsoft.Toolkit.Mvvm.ComponentModel;
+using Microsoft.Toolkit.Mvvm.DependencyInjection;
 using Microsoft.Toolkit.Mvvm.Input;
 using Minecraft.Misc;
 using Minecraft.Terrain;
@@ -10,7 +11,7 @@ using System.Windows.Input;
 
 namespace Minecraft.Rendering.ViewModel
 {
-    internal class GameWindowViewModel
+    internal class GameWindowViewModel: ObservableRecipient
     {
         public ICommand BackToGame { get; private set; }
         public ICommand Settings { get; private set; }
@@ -43,6 +44,8 @@ namespace Minecraft.Rendering.ViewModel
             uiLogic = Ioc.Default.GetService<IUILogic>();
             inventoryLogic = Ioc.Default.GetService<IInventoryLogic>();
 
+     
+
             BackToGame = new RelayCommand(() => uiLogic.OpenClosePauseMenu());
 
             Settings = new RelayCommand(() => uiLogic.OpenCloseSettingsMenu());
@@ -50,6 +53,7 @@ namespace Minecraft.Rendering.ViewModel
             MainMenuSettings = Settings;
 
             ExitGame = new RelayCommand(() => gameWindow.Close());
+
 
             SaveAndExit = new RelayCommand(() =>
             {

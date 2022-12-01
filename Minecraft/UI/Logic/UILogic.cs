@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Effects;
 
@@ -283,5 +284,8 @@ namespace Minecraft.UI.Logic
 
             GameWindow.WorldCreatorMenu.Visibility = GameWindow.WorldCreatorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
+
+
+       
     }
 }
