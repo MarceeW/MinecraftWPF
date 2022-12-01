@@ -80,18 +80,6 @@ namespace Minecraft.UI.Logic
                         e.Handled = true;
                     }
                     break;
-                case Key.P:
-                    {
-                        NeedsToResetMouse = !NeedsToResetMouse;
-
-                        if (NeedsToResetMouse)
-                            MouseController.HideMouse();
-                        else
-                            ResetMousePosition();
-
-                        MouseController.ShowMouse();
-                    }
-                    break;
                 case Key.Escape:
                     {
 

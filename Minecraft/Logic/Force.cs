@@ -16,7 +16,7 @@ namespace Minecraft.Logic
         private double currentStep;
         public Force()
         {
-            int steps = 20;
+            int steps = 25;
             forceGraphStep = Math.PI / steps;
             currentStep = 0;
         }

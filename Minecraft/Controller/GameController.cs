@@ -68,7 +68,7 @@ namespace Minecraft.Controller
                 {
                     var blockHit = Ray.Cast(Session.World, out bool hit, out FaceDirection hitFace, out double rayDistance);
 
-                    if (rayDistance > 2.3 && hit && !uiLogic.IsGamePaused)
+                    if (rayDistance > 3 && hit && !uiLogic.IsGamePaused)
                     {
                         if (Session.World.GetBlock(blockHit) != BlockType.Grass && Session.World.GetBlock(blockHit) != BlockType.SparseGrass)
                         {
