@@ -16,5 +16,5 @@ void main(void){
     if(textureColor.w == 0.0)
         discard;
 
-    fragColor = vec4(textureColor.xyz * shade,textureColor.w) * visibility;
+    fragColor = vec4(textureColor.xyz * shade,textureColor.w);// * visibility;
 }

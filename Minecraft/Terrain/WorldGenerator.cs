@@ -42,7 +42,7 @@ namespace Minecraft.Terrain
             noise.SetFractalType(FastNoise.FractalType.FBM);
 
             if (world.Chunks.Count == 0)
-                InitWorld(renderDistance);
+                InitWorld(renderDistance / 2);
             else
                 worldInit = true;
         }
@@ -124,22 +124,24 @@ namespace Minecraft.Terrain
             int x = (int)position.X;
             int z = (int)position.Y;
 
+            int halfRenderDist = RenderDistance / 2;
+
             if (dir == Direction.Left)
             {
-                AddChunkRange(0, RenderDistance, -RenderDistance, RenderDistance, x, z, -1, 1);
+                AddChunkRange(0, halfRenderDist, -halfRenderDist, halfRenderDist, x, z, -1, 1);
             }
             else if (dir == Direction.Right)
             {
-                AddChunkRange(0, RenderDistance, -RenderDistance, RenderDistance, x, z, 1, 1);
+                AddChunkRange(0, halfRenderDist, -halfRenderDist, halfRenderDist, x, z, 1, 1);
             }
             else if (dir == Direction.Down)
             {
-                AddChunkRange(-RenderDistance, RenderDistance, 0, RenderDistance, x, z, 1, -1);
+                AddChunkRange(-halfRenderDist, halfRenderDist, 0, halfRenderDist, x, z, 1, -1);
 
             }
             else if (dir == Direction.Up)
             {
-                AddChunkRange(-RenderDistance, RenderDistance, 0, RenderDistance, x, z, 1, 1);
+                AddChunkRange(-halfRenderDist, halfRenderDist, 0, halfRenderDist, x, z, 1, 1);
             }
         }
         private void InitWorld(int renderDistance)
@@ -149,9 +151,9 @@ namespace Minecraft.Terrain
                     lock (world)
                         AddChunk(new Vector2(x, z));
         }
-        private void AddChunkRange(int fromXRange, int toXRgange, int fromZRange, int toZRange, int x, int z, int xSign, int zSign)
+        private void AddChunkRange(int fromXRange, int toXRange, int fromZRange, int toZRange, int x, int z, int xSign, int zSign)
         {
-            for (int xs = fromXRange; xs < toXRgange; xs++)
+            for (int xs = fromXRange; xs < toXRange; xs++)
                 for (int zs = fromZRange; zs < toZRange; zs++)
                 {
                     Vector2 pos = new Vector2(x + xs * xSign, z + zs * zSign);
