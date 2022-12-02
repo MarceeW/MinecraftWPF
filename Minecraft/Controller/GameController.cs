@@ -42,7 +42,6 @@ namespace Minecraft.Controller
             PlayerController = new PlayerController(Session.Player, Session.World);
             PlayerController.ChangedChunk += worldGenerator.ExpandWorld;
 
-            renderer.OnRendering += WorldRendererer.CreateMeshesInQueue;
             renderer.OnRendering += worldGenerator.AddGeneratedChunksToWorld;
 
             var characterHand = new CharacterHand();

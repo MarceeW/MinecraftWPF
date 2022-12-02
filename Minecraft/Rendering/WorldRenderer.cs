@@ -6,6 +6,7 @@ using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 using Chunk = Minecraft.Terrain.Chunk;
 
 namespace Minecraft.Render
@@ -70,12 +71,30 @@ namespace Minecraft.Render
 
             RenderSelectedBlockFrame();
 
-            CreateMeshesInQueue(0);
+            for (int generation = 0; generation < 2; generation++)
+                CreateMeshesInQueue(rangeCenter);
         }
-        public void CreateMeshesInQueue(float delta)
+        public void CreateMeshesInQueue(Vector2 rangeCenter)
         {
             if (renderQueue.Count > 0)
-                ChunkMesh.CreateMesh(world, renderQueue.Dequeue());
+            {
+                List<Vector2> toPlaceBack = new List<Vector2>();
+                
+                while(renderQueue.Count > 0)
+                {
+                    var chunkPos = renderQueue.Dequeue();
+
+                    if(IsChunkInRange(chunkPos, rangeCenter))
+                    {
+                        ChunkMesh.CreateMesh(world, chunkPos);
+                        break;
+                    }
+                    else
+                        toPlaceBack.Add(chunkPos);
+                }
+                foreach (var chunk in toPlaceBack)
+                    AddToQueue(chunk);
+            }     
 
             if (world.ChunksNeedsToBeRegenerated.Count > 0)
                 ChunkMesh.CreateMesh(world, world.ChunksNeedsToBeRegenerated.Dequeue());
