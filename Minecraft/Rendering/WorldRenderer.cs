@@ -6,6 +6,7 @@ using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.ProgressBar;
 using Chunk = Minecraft.Terrain.Chunk;
 
@@ -57,22 +58,33 @@ namespace Minecraft.Render
             AtlasTexturesData.Atlas.Use();
 
             var frontNorm = camera.Front.Xz;
-            frontNorm.NormalizeFast();
+            frontNorm.Normalize();
 
-            Vector2 rangeCenter = frontNorm * (renderDistance + (int)Math.Round(camera.Front.Y) * (camera.Position.Y / Chunk.Size + 1)) * Chunk.Size + camera.Position.Xz;
+            Vector2 rangeCenter = frontNorm * (renderDistance - renderDistance < 4 ? 0 : (float)Math.Round(Math.Abs(camera.Front.Y),2) * camera.Position.Y / (2 * Chunk.Size)) * Chunk.Size + camera.Position.Xz;
+
+            if (frontNorm.X > 0)
+                rangeCenter.X -= Chunk.Size;
+            if (frontNorm.Y > 0)
+                rangeCenter.Y -= Chunk.Size;
+
+            int chunksRendered = 0;
 
             foreach (var chunk in world.Chunks.Values)
                 if (IsChunkInRange(chunk.Position, rangeCenter))
+                {
                     chunk.Mesh.RenderSolidMesh(Shader);
+                    chunksRendered++;
+                }
 
             foreach (var chunk in world.Chunks.Values)
                 if (IsChunkInRange(chunk.Position, rangeCenter))
                     chunk.Mesh.RenderTransparentMesh(Shader);
 
+            //Debug.WriteLine(chunksRendered);
+
             RenderSelectedBlockFrame();
 
-            for (int generation = 0; generation < 2; generation++)
-                CreateMeshesInQueue(rangeCenter);
+            CreateMeshesInQueue(rangeCenter);
         }
         public void CreateMeshesInQueue(Vector2 rangeCenter)
         {

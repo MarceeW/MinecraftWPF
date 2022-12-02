@@ -270,7 +270,7 @@ namespace Minecraft.UI.Logic
 
                     Hotbar.ChangeBlock((int)pos.X, toChange);
                 }
-                else if (pickedItem == null)
+                else if (e.LeftButton == MouseButtonState.Pressed && pickedItem == null)
                 {
                     pickedItem = new PickedItem((CroppedBitmap)clickedImage.Source, Hotbar.Items[(int)pos.X]);
 
