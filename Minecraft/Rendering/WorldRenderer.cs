@@ -57,7 +57,7 @@ namespace Minecraft.Render
         {
             AtlasTexturesData.Atlas.Use();
 
-            var frontNorm = camera.Front.Xz;
+            var frontNorm = -camera.Front.Xz;
             frontNorm.Normalize();
 
             Vector2 rangeCenter = frontNorm * (renderDistance - renderDistance < 4 ? 0 : (float)Math.Round(Math.Abs(camera.Front.Y),2) * camera.Position.Y / (2 * Chunk.Size)) * Chunk.Size + camera.Position.Xz;

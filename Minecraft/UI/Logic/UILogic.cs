@@ -151,8 +151,7 @@ namespace Minecraft.UI.Logic
             GameSession session = null;
 
             if (GameWindow.WorldSelector.SelectedIndex >= 0)
-                session = new GameSession(gameWindow.WorldSelector.SelectedItem as WorldData, false);
-            
+                session = new GameSession(gameWindow.WorldSelector.SelectedItem as WorldData, false);   
 
             if (gameSession != null)
                 session = gameSession;

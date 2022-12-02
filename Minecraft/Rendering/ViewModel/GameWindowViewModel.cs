@@ -6,6 +6,7 @@ using Minecraft.Terrain;
 using Minecraft.UI.Logic;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Input;
 
@@ -30,21 +31,10 @@ namespace Minecraft.Rendering.ViewModel
 
         private IUILogic uiLogic;
         private IInventoryLogic inventoryLogic;
-        private GameWindow gameWindow;
-
-        public GameWindow GameWindow
-        {
-            set
-            {
-                gameWindow = value;
-            }
-        }
-        public GameWindowViewModel()
+        public GameWindowViewModel(GameWindow gameWindow)
         {
             uiLogic = Ioc.Default.GetService<IUILogic>();
             inventoryLogic = Ioc.Default.GetService<IInventoryLogic>();
-
-     
 
             BackToGame = new RelayCommand(() => uiLogic.OpenClosePauseMenu());
 
@@ -53,7 +43,6 @@ namespace Minecraft.Rendering.ViewModel
             MainMenuSettings = Settings;
 
             ExitGame = new RelayCommand(() => gameWindow.Close());
-
 
             SaveAndExit = new RelayCommand(() =>
             {
@@ -95,21 +84,33 @@ namespace Minecraft.Rendering.ViewModel
             EnterSelectedWorld = new RelayCommand(() =>
             {
                 uiLogic.EnterWorld();
-            });
+            },
+            () => gameWindow.WorldSelector.SelectedIndex >= 0);
+
             DeleteSelectedWorld = new RelayCommand(() =>
             {
-                if (gameWindow.WorldSelector.SelectedIndex >= 0)
-                {
-                    var world = gameWindow.WorldSelector.SelectedItem as WorldData;
+                var world = gameWindow.WorldSelector.SelectedItem as WorldData;
 
-                    if (world != null)
-                    {
-                        Directory.Delete(world.WorldPath, true);
-                        (gameWindow.WorldSelector.ItemsSource as List<WorldData>)?.Remove(world);
-                        gameWindow.WorldSelector.Items.Refresh();
-                    }
+                if (world != null)
+                {
+                    Directory.Delete(world.WorldPath, true);
+                    (gameWindow.WorldSelector.ItemsSource as List<WorldData>)?.Remove(world);
+                    gameWindow.WorldSelector.Items.Refresh();
                 }
-            });
+            },
+            () => gameWindow.WorldSelector.SelectedIndex >= 0);
+
+            gameWindow.EnterSelectedWorldButton.Opacity = gameWindow.WorldSelector.SelectedIndex >= 0 ? 1 : 0.5;
+            gameWindow.DeleteSelectedWorldButton.Opacity = gameWindow.WorldSelector.SelectedIndex >= 0 ? 1 : 0.5;
+
+            gameWindow.WorldSelector.SelectionChanged += (object sender, SelectionChangedEventArgs e) =>
+            {
+                (DeleteSelectedWorld as RelayCommand).NotifyCanExecuteChanged();
+                (EnterSelectedWorld as RelayCommand).NotifyCanExecuteChanged();
+
+                gameWindow.EnterSelectedWorldButton.Opacity = gameWindow.WorldSelector.SelectedIndex >= 0 ? 1 : 0.5;
+                gameWindow.DeleteSelectedWorldButton.Opacity = gameWindow.WorldSelector.SelectedIndex >= 0 ? 1 : 0.5;
+            };
         }
     }
 }

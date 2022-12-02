@@ -61,8 +61,7 @@ namespace Minecraft
             HotbarGrid.Width *= hudScale;
             HotbarGrid.Height *= hudScale;
 
-            var vm = new GameWindowViewModel();
-            vm.GameWindow = this;
+            var vm = new GameWindowViewModel(this);
 
             DataContext = vm;
 
