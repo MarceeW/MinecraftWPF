@@ -14,13 +14,13 @@ namespace Minecraft.Graphics
     {
         public bool ShouldRun { get; set; }
         private Thread generatorThread;
-        //public static PriorityQueue<Vector2, float> GeneratorQueue { get; } = new PriorityQueue<Vector2, float>();
-        public static Queue<Vector2> GeneratorQueue { get; } = new Queue<Vector2>();
+        public static PriorityQueue<Vector2, float> GeneratorQueue { get; } = new PriorityQueue<Vector2, float>();
         internal int RenderDistance { get; set; }
         private Queue<ChunkMeshRawData> createdMeshes;
 
         private IWorld world;
         private static ICamera camera;
+        private static bool canAccessGeneratorQueue = true;
 
         public MeshGenerator(IWorld world, Queue<ChunkMeshRawData> createdMeshes, ICamera _camera,int renderDistance)
         {
@@ -58,41 +58,33 @@ namespace Minecraft.Graphics
         }
         public static void AddToQueue(Vector2 toRender)
         {
-            //GeneratorQueue.Enqueue(toRender, (toRender - camera.Position.Xz / Chunk.Size).Length);
-            GeneratorQueue.Enqueue(toRender);
+            canAccessGeneratorQueue = false;
+            GeneratorQueue.Enqueue(toRender, (toRender - camera.Position.Xz / Chunk.Size).Length);
+            canAccessGeneratorQueue = true;
         }
         private void CreateMeshes(Vector2 rangeCenter)
         {
-            //if (GeneratorQueue.Count > 0 && world.ChunksNeedsToBeRegenerated.Count == 0)
-            //{
-            //    List<Vector2> toPlaceBack = new List<Vector2>();
-            //
-            //    while (GeneratorQueue.Count > 0)
-            //    {
-            //        var chunkPos = GeneratorQueue.Dequeue();
-            //
-            //        if (WorldRenderer.IsChunkInRange(chunkPos, rangeCenter, RenderDistance))
-            //        {
-            //            CreateMesh(chunkPos);
-            //            break;
-            //        }
-            //        else
-            //            toPlaceBack.Add(chunkPos);
-            //    }
-            //    foreach (var chunk in toPlaceBack)
-            //        AddToQueue(chunk);
-            //}
-            //else if (world.ChunksNeedsToBeRegenerated.Count > 0)
-            //    CreateMesh(world.ChunksNeedsToBeRegenerated.Dequeue()); 
-
-            if(GeneratorQueue.Count > 0)
+            if (GeneratorQueue.Count > 0)
             {
-                CreateMesh(GeneratorQueue.Dequeue());
+                List<Vector2> toPlaceBack = new List<Vector2>();
+            
+                while (canAccessGeneratorQueue && GeneratorQueue.Count > 0)
+                {
+                    var chunkPos = GeneratorQueue.Dequeue();
+            
+                    if (WorldRenderer.IsChunkInRange(chunkPos, rangeCenter, RenderDistance))
+                    {
+                        CreateMesh(chunkPos);
+                        break;
+                    }
+                    else
+                        toPlaceBack.Add(chunkPos);
+                }
+                foreach (var chunk in toPlaceBack)
+                    GeneratorQueue.Enqueue(chunk, (chunk - camera.Position.Xz / Chunk.Size).Length);
             }
-
             if (world.ChunksNeedsToBeRegenerated.Count > 0)
                 CreateMesh(world.ChunksNeedsToBeRegenerated.Dequeue()); 
-
         }
         private void GeneratorLoop()
         {
