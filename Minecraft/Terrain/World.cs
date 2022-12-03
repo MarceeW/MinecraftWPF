@@ -1,7 +1,6 @@
 ﻿using Minecraft.Graphics;
 using Minecraft.Misc;
 using OpenTK.Mathematics;
-using System;
 using System.Collections.Generic;
 
 namespace Minecraft.Terrain
@@ -73,7 +72,7 @@ namespace Minecraft.Terrain
             if (chunk != null)
             {
                 chunk.RemoveBlock(pos);
-                ChunkMesh.CreateMesh(this, chunk.Position);
+                ChunksNeedsToBeRegenerated.Enqueue(chunk.Position);
 
                 var left = new Vector3(-1, 0, 0);
                 var right = new Vector3(1, 0, 0);
@@ -86,16 +85,16 @@ namespace Minecraft.Terrain
                 GetChunk(pos + front, out Vector2 chunkPosFront);
 
                 if (chunkPosLeft != chunkPos)
-                    ChunkMesh.CreateMesh(this, chunkPosLeft);
+                    ChunksNeedsToBeRegenerated.Enqueue(chunkPosLeft);
 
                 if (chunkPosRight != chunkPos)
-                    ChunkMesh.CreateMesh(this, chunkPosRight);
+                    ChunksNeedsToBeRegenerated.Enqueue(chunkPosRight);
 
                 if (chunkPosBack != chunkPos)
-                    ChunkMesh.CreateMesh(this, chunkPosBack);
+                    ChunksNeedsToBeRegenerated.Enqueue(chunkPosBack);
 
                 if (chunkPosFront != chunkPos)
-                    ChunkMesh.CreateMesh(this, chunkPosFront);
+                    ChunksNeedsToBeRegenerated.Enqueue(chunkPosFront);
             }
         }
         public void AddBlock(Vector3 pos, BlockType block)
@@ -105,7 +104,7 @@ namespace Minecraft.Terrain
             if (chunk != null)
             {
                 chunk.AddBlock(pos, block, true);
-                ChunkMesh.CreateMesh(this, chunk.Position);
+                ChunksNeedsToBeRegenerated.Enqueue(chunk.Position);
             }
         }
         public void AddEntity(Vector3 position, EntityType entityType, IChunk chunk)

@@ -288,8 +288,6 @@ namespace Minecraft.UI.Logic
 
             GameWindow.WorldCreatorMenu.Visibility = GameWindow.WorldCreatorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
-
-
        
     }
 }

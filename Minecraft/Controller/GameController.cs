@@ -35,7 +35,7 @@ namespace Minecraft.Controller
             WorldSerializer.World = Session.World;
 
             worldGenerator = new WorldGenerator(Session.World, renderDistance);
-            worldGenerator.ChunkAdded += WorldRendererer.AddToQueue;
+            worldGenerator.ChunkAdded += MeshGenerator.AddToQueue;
             worldGenerator.WorldInitalized += () => session.Player.Position = worldGenerator.GetSpawnPosition(renderDistance);
             WorldRendererer.RenderDistanceChanged += (int rd) => worldGenerator.RenderDistance = rd;
 
@@ -180,6 +180,7 @@ namespace Minecraft.Controller
             IsGameRunning = false;
             Session.Save();
             Session = null;
+            WorldRendererer.Dispose();
             WorldRendererer = null;
             PlayerController = null;
             gameWindow.MouseListener.Reset();

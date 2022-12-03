@@ -201,13 +201,11 @@ namespace Minecraft.Terrain
         {
             get
             {
-                if (atlas == null)
-                    atlas = new Texture(texturePath, false);
                 return atlas;
             }
         }
 
-        private static Texture? atlas;
+        private static Texture atlas = new Texture(texturePath, false);
 
         public static Int32Rect GetTextureRect(BlockType type)
         {
