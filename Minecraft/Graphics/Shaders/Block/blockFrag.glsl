@@ -16,5 +16,7 @@ void main(void){
     if(textureColor.w == 0.0)
         discard;
 
-    fragColor = vec4(textureColor.xyz * shade,textureColor.w) * visibility;
+    vec4 baseColor = vec4(textureColor.xyz * shade,textureColor.w);
+    
+    fragColor =  mix(vec4(0.7,0.8,1.0,1.0),baseColor,visibility);
 }

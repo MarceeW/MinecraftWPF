@@ -38,6 +38,7 @@ namespace Minecraft
         public GameWindow()
         {
             InitializeComponent();
+            Thread.CurrentThread.Priority = ThreadPriority.Highest;
 
             WindowState = System.Windows.WindowState.Maximized;
 
@@ -65,11 +66,8 @@ namespace Minecraft
 
             DataContext = vm;
 
-
             Ioc.Default.GetService<IUILogic>().GameWindow = this;
-            Ioc.Default.GetService<IInventoryLogic>().GameWindow = this;
-
-            
+            Ioc.Default.GetService<IInventoryLogic>().GameWindow = this;         
             
         }
         protected override void OnLocationChanged(EventArgs e)

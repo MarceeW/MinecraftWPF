@@ -89,6 +89,11 @@ namespace Minecraft.Controller
                 int lastChunkX = (int)(lastPlayerPos.X / Chunk.Size);
                 int lastChunkZ = (int)(lastPlayerPos.Y / Chunk.Size);
 
+                if (lastPlayerPos.X < 0 && (int)lastPlayerPos.X % Chunk.Size != 0)
+                    lastChunkX--;
+                if (lastPlayerPos.Y < 0 && (int)lastPlayerPos.Y % Chunk.Size != 0)
+                    lastChunkZ--;
+
                 if (Keyboard.IsKeyDown(Key.W))
                     playerLogic.Move(Direction.Front, delta);
                 if (Keyboard.IsKeyDown(Key.D))
@@ -119,6 +124,11 @@ namespace Minecraft.Controller
                 int currChunkX = (int)(playerPos.X / Chunk.Size);
                 int currChunkZ = (int)(playerPos.Y / Chunk.Size);
 
+                if (playerPos.X < 0 && (int)playerPos.X % Chunk.Size != 0)
+                    currChunkX--;
+                if (playerPos.Y < 0 && (int)playerPos.Y % Chunk.Size != 0)
+                    currChunkZ--;
+
                 if (playerPos != lastPlayerPos)
                 {
                     if (currChunkX != lastChunkX || currChunkZ != lastChunkZ)
@@ -138,7 +148,7 @@ namespace Minecraft.Controller
                         else
                             dir = Direction.Up;
 
-                        ChangedChunk?.Invoke(dir, playerPos / Chunk.Size);
+                        ChangedChunk?.Invoke(dir, new Vector2(currChunkX, currChunkZ));
                     }
                     Moved?.Invoke(playerPos);
                 }

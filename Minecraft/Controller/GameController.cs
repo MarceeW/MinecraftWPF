@@ -49,16 +49,15 @@ namespace Minecraft.Controller
             renderer.Scene = new Scene(WorldRendererer, characterHand);
 
             Session.Player.Camera.Init(Session.Player.Position);
-
-
-
             gameWindow.RenderSizeChange += renderer.Scene.OnProjectionMatrixChange;
-            renderer.SetupRenderer((int)gameWindow.Width, (int)gameWindow.Height);
+            renderer.SetupRenderer();
             gameWindow.PreviewKeyDown += PlayerController.OnKeyDown;
             gameWindow.PreviewKeyUp += PlayerController.OnKeyUp;
 
             updateThread = new Thread(UpdateGameState);
             updateThread.SetApartmentState(ApartmentState.STA);
+            updateThread.Priority = ThreadPriority.AboveNormal;
+
             gameStopwatch = new Stopwatch();
 
             gameWindow.MouseListener.RightMouseClick += () =>

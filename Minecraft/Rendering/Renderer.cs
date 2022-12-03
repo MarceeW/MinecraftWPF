@@ -8,7 +8,7 @@ namespace Minecraft.Render
         public event Action<float>? OnRendering;
 
         public IScene? Scene { get; set; }
-        public void SetupRenderer(int width, int height)
+        public void SetupRenderer()
         {
             GL.Enable(EnableCap.Multisample);
 
@@ -21,6 +21,8 @@ namespace Minecraft.Render
 
             GL.Enable(EnableCap.Blend);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+
+            GL.Enable(EnableCap.Multisample);
 
             Scene?.OnProjectionMatrixChange();
         }

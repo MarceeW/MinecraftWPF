@@ -57,10 +57,10 @@ namespace Minecraft.Render
         {
             AtlasTexturesData.Atlas.Use();
 
-            var frontNorm = -camera.Front.Xz;
+            var frontNorm = camera.Front.Xz;
             frontNorm.Normalize();
 
-            Vector2 rangeCenter = frontNorm * (renderDistance - renderDistance < 4 ? 0 : (float)Math.Round(Math.Abs(camera.Front.Y),2) * camera.Position.Y / (2 * Chunk.Size)) * Chunk.Size + camera.Position.Xz;
+            Vector2 rangeCenter = frontNorm * (renderDistance - (camera.Position.Y / (2 * Chunk.Size))) * Chunk.Size + camera.Position.Xz;
 
             if (frontNorm.X > 0)
                 rangeCenter.X -= Chunk.Size;
@@ -80,15 +80,13 @@ namespace Minecraft.Render
                 if (IsChunkInRange(chunk.Position, rangeCenter))
                     chunk.Mesh.RenderTransparentMesh(Shader);
 
-            //Debug.WriteLine(chunksRendered);
-
             RenderSelectedBlockFrame();
 
             CreateMeshesInQueue(rangeCenter);
         }
         public void CreateMeshesInQueue(Vector2 rangeCenter)
         {
-            if (renderQueue.Count > 0)
+            if (renderQueue.Count > 0 && world.ChunksNeedsToBeRegenerated.Count == 0)
             {
                 List<Vector2> toPlaceBack = new List<Vector2>();
                 
@@ -107,8 +105,7 @@ namespace Minecraft.Render
                 foreach (var chunk in toPlaceBack)
                     AddToQueue(chunk);
             }     
-
-            if (world.ChunksNeedsToBeRegenerated.Count > 0)
+            else if(world.ChunksNeedsToBeRegenerated.Count > 0)
                 ChunkMesh.CreateMesh(world, world.ChunksNeedsToBeRegenerated.Dequeue());
         }
         private bool IsChunkInRange(in Vector2 chunkPos,Vector2 rangeCenter)
