@@ -8,7 +8,7 @@ namespace Minecraft.Terrain
     internal class Chunk : IChunk
     {
         public const int Size = 16;
-        public const int Height = 256;
+        public const int Height = 128;
         public Vector2 Position { get; private set; }
         public ChunkMesh Mesh
         {
@@ -32,6 +32,12 @@ namespace Minecraft.Terrain
             TopBlockPositions = new int[Size, Size];
 
             mesh = new ChunkMesh();
+        }
+        ~Chunk()
+        {
+            Mesh = null;
+            Blocks = null;
+            TopBlockPositions = null;
         }
         public void AddBlock(Vector3 pos, BlockType block, bool overWrite)
         {

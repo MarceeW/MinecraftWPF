@@ -1,6 +1,7 @@
 ﻿using Minecraft.Graphics;
 using Minecraft.Misc;
 using OpenTK.Mathematics;
+using System;
 using System.Collections.Generic;
 
 namespace Minecraft.Terrain
@@ -144,6 +145,11 @@ namespace Minecraft.Terrain
                 }
                 blockIndex++;
             }
+        }
+
+        public void Dispose()
+        {
+            Chunks = null;
         }
     }
 }

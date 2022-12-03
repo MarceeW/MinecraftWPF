@@ -15,7 +15,6 @@ namespace Minecraft.Misc
         internal IWorld World { get; private set; }
         public WorldData WorldData { get; private set; }
         public bool IsNew { get; }
-
         public GameSession(WorldData worldData, bool isNewWorld)
         {
             IsNew = isNewWorld;
@@ -68,6 +67,8 @@ namespace Minecraft.Misc
             playerData.Close();
 
             WorldSerializer.SaveWorld(WorldData.WorldPath);
+
+            World.Dispose();
         }
     }
 }

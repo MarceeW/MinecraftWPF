@@ -193,8 +193,13 @@ namespace Minecraft.UI.Logic
             var worldData = new WorldData() { LastPlayed = DateTime.Now, WorldName = name, WorldSeed = WorldGenerator.GenerateSeed(seed), WorldPath = worldSaveDir, IsFlat = GameWindow.NormalFlatOption.IsChecked == true };
 
             IsInMainMenu = false;
-            GameWindow.WorldName.Text = "";
+            GameWindow.WorldName.Text = "New World";
             GameWindow.WorldSeed.Text = "";
+            GameWindow.NormalFlatOption.IsChecked = false;
+
+            GameWindow.WorldSelector.SelectedItem = null;
+            GameWindow.WorldSelector.SelectedIndex = -1;
+
             OpenCloseWorldCreationMenu();
 
             EnterWorld(new GameSession(worldData, true));
