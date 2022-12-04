@@ -1,15 +1,9 @@
 ﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
-using Minecraft.Render;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace Minecraft.Graphics
 {
@@ -20,11 +14,11 @@ namespace Minecraft.Graphics
 
         private static ConcurrentQueue<Vector2> GeneratorQueue = new ConcurrentQueue<Vector2>();
         internal int RenderDistance { get; set; }
-        private Queue<ChunkMeshRawData> createdMeshes;
+        private ConcurrentQueue<ChunkMeshRawData> createdMeshes;
 
         private IWorld world;
 
-        public MeshGenerator(IWorld world, Queue<ChunkMeshRawData> createdMeshes, int renderDistance)
+        public MeshGenerator(IWorld world, ConcurrentQueue<ChunkMeshRawData> createdMeshes, int renderDistance)
         {
             this.world = world;
             this.createdMeshes = createdMeshes;
@@ -35,7 +29,7 @@ namespace Minecraft.Graphics
             if (world.Chunks.Count > 0)
             {
                 var cameraPos = Ioc.Default.GetService<ICamera>().Position.Xz / 16;
-                PriorityQueue<Vector2,float> renderPriorityQueue= new PriorityQueue<Vector2,float>();
+                PriorityQueue<Vector2, float> renderPriorityQueue = new PriorityQueue<Vector2, float>();
 
                 foreach (var chunk in world.Chunks)
                 {
@@ -69,14 +63,14 @@ namespace Minecraft.Graphics
         private void CreateMeshes()
         {
 
-            if (GeneratorQueue.Count > 0)
+            if (GeneratorQueue.Count > 0 && world.ChunksNeedsToBeRegenerated.Count == 0)
             {
-                if(GeneratorQueue.TryDequeue(out Vector2 chunk))
+                if (GeneratorQueue.TryDequeue(out Vector2 chunk))
                     CreateMesh(chunk);
             }
 
             if (world.ChunksNeedsToBeRegenerated.Count > 0)
-                CreateMesh(world.ChunksNeedsToBeRegenerated.Dequeue()); 
+                CreateMesh(world.ChunksNeedsToBeRegenerated.Dequeue());
         }
         private void GeneratorLoop()
         {
@@ -213,7 +207,7 @@ namespace Minecraft.Graphics
                         }
                     }
 
-            createdMeshes.Enqueue(new ChunkMeshRawData(nVertices, tVertices, vVertices, chunk,nFaceCount,tFaceCount,vFaceCount));
+            createdMeshes.Enqueue(new ChunkMeshRawData(nVertices, tVertices, vVertices, chunk, nFaceCount, tFaceCount, vFaceCount));
         }
         private bool BlockNeedsShadow(int x, int y, int z, IChunk chunk)
         {

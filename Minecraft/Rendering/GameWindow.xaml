@@ -354,7 +354,6 @@
 
             <StackPanel Grid.Row="2" VerticalAlignment="Center">
                 <TextBlock IsHitTestVisible="False" Text="Fov" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <!--<TextBlock IsHitTestVisible="False" Text="{Binding ElementName=FovSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>-->
                 <Slider Style="{StaticResource CustomSliderStyle}" Margin="5" x:Name="FovSlider" IsSnapToTickEnabled="True" Value="{Binding Fov, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="65" Maximum="99" Cursor="Hand" Width="400" Foreground="Black">
                     <Slider.Effect>
                         <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>
@@ -364,7 +363,6 @@
 
             <StackPanel Grid.Row="3" VerticalAlignment="Center">
                 <TextBlock IsHitTestVisible="False" Text="Render Distance (Chunks)" VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>
-                <!--<TextBlock IsHitTestVisible="False" Text="{Binding ElementName=RenderDistanceSlider, Path=Value, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="White" FontSize="20" Grid.Row="2" Style="{StaticResource McText}"/>-->
                 <Slider Style="{StaticResource CustomSliderStyle}" Margin="5" x:Name="RenderDistanceSlider" IsSnapToTickEnabled="True" Value="{Binding RenderDistance, UpdateSourceTrigger=PropertyChanged, Mode=OneWayToSource}" HorizontalAlignment="Center" VerticalAlignment="Center" Minimum="2" Maximum="32" Cursor="Hand" Width="400" Foreground="Black">
                     <Slider.Effect>
                         <DropShadowEffect BlurRadius="0" Opacity=".5" Direction="-90" ShadowDepth="4"/>

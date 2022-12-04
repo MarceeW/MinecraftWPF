@@ -9,13 +9,10 @@ using OpenTK.Mathematics;
 using OpenTK.Windowing.Common;
 using OpenTK.Wpf;
 using System;
-using System.ComponentModel;
-using System.IO;
 using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
-using System.Windows.Interop;
 using System.Windows.Media.Imaging;
 
 namespace Minecraft
@@ -34,7 +31,7 @@ namespace Minecraft
 
         internal Renderer renderer;
         private double mainMenuTitleAnim = 0;
-        
+
         public GameWindow()
         {
             InitializeComponent();
@@ -67,8 +64,8 @@ namespace Minecraft
             DataContext = vm;
 
             Ioc.Default.GetService<IUILogic>().GameWindow = this;
-            Ioc.Default.GetService<IInventoryLogic>().GameWindow = this;         
-            
+            Ioc.Default.GetService<IInventoryLogic>().GameWindow = this;
+
         }
         protected override void OnLocationChanged(EventArgs e)
         {
@@ -131,7 +128,7 @@ namespace Minecraft
             WindowState = System.Windows.WindowState.Maximized;
         }
 
-        
+
         private void MainMenu_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             foreach (var c in this.MainMenu.Children)
@@ -144,6 +141,6 @@ namespace Minecraft
             }
         }
 
-        
+
     }
 }

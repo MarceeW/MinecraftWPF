@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Effects;
 
@@ -151,7 +150,7 @@ namespace Minecraft.UI.Logic
             GameSession session = null;
 
             if (GameWindow.WorldSelector.SelectedIndex >= 0)
-                session = new GameSession(gameWindow.WorldSelector.SelectedItem as WorldData, false);   
+                session = new GameSession(gameWindow.WorldSelector.SelectedItem as WorldData, false);
 
             if (gameSession != null)
                 session = gameSession;
@@ -288,6 +287,6 @@ namespace Minecraft.UI.Logic
 
             GameWindow.WorldCreatorMenu.Visibility = GameWindow.WorldCreatorMenu.Visibility == Visibility.Visible ? Visibility.Hidden : Visibility.Visible;
         }
-       
+
     }
 }

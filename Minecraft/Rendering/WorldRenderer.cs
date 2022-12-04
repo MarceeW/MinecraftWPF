@@ -5,7 +5,7 @@ using Minecraft.Graphics;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
-using System.Collections.Generic;
+using System.Collections.Concurrent;
 using Chunk = Minecraft.Terrain.Chunk;
 
 namespace Minecraft.Render
@@ -15,7 +15,7 @@ namespace Minecraft.Render
         public static BlockType? CurrentTarget { get; private set; }
         public Action<int>? RenderDistanceChanged;
         public static Vector2 RenderFrustumCenter;
-        public int RenderDistance { get => renderDistance; set { SetProperty(ref renderDistance, value); if(meshGenerator != null) meshGenerator.RenderDistance = renderDistance; OnRenderSizeChanged(); } }
+        public int RenderDistance { get => renderDistance; set { SetProperty(ref renderDistance, value); if (meshGenerator != null) meshGenerator.RenderDistance = renderDistance; OnRenderSizeChanged(); } }
         private int renderDistance;
 
         private ICamera camera;
@@ -23,7 +23,7 @@ namespace Minecraft.Render
         private IWorld world;
         private MeshGenerator meshGenerator;
 
-        private Queue<ChunkMeshRawData> finishedChunkMeshes;
+        private ConcurrentQueue<ChunkMeshRawData> finishedChunkMeshes;
         public WorldRenderer()
         {
             camera = Ioc.Default.GetService<ICamera>();
@@ -31,7 +31,7 @@ namespace Minecraft.Render
             Shader = new Shader(@"..\..\..\Graphics\Shaders\Block\blockVert.glsl", @"..\..\..\Graphics\Shaders\Block\blockFrag.glsl");
             Shader.SetDouble("renderDistance", renderDistance);
 
-            finishedChunkMeshes = new Queue<ChunkMeshRawData>();
+            finishedChunkMeshes = new ConcurrentQueue<ChunkMeshRawData>();
         }
         public void OnRenderSizeChanged()
         {
@@ -74,7 +74,7 @@ namespace Minecraft.Render
             RenderSelectedBlockFrame();
             LoadFinishedChunksToGPU();
         }
-        public static bool IsChunkInRange(in Vector2 chunkPos, Vector2 rangeCenter,int renderDistance)
+        public static bool IsChunkInRange(in Vector2 chunkPos, Vector2 rangeCenter, int renderDistance)
         {
             float xDistance = Math.Abs(rangeCenter.X - chunkPos.X * Chunk.Size);
             float zDistance = Math.Abs(rangeCenter.Y - chunkPos.Y * Chunk.Size);
@@ -89,10 +89,10 @@ namespace Minecraft.Render
         }
         private void LoadFinishedChunksToGPU()
         {
-            while(finishedChunkMeshes.Count > 0)
+            while (finishedChunkMeshes.Count > 0)
             {
-                var rawData = finishedChunkMeshes.Dequeue();
-                rawData.Owner.Mesh.LoadToGPU(rawData);
+                if (finishedChunkMeshes.TryDequeue(out var chunkData))
+                    chunkData.Owner.Mesh.LoadToGPU(chunkData);
             }
         }
         private void RenderSelectedBlockFrame()

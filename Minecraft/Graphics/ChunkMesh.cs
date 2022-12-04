@@ -1,7 +1,5 @@
 ﻿using Minecraft.Terrain;
 using OpenTK.Graphics.OpenGL;
-using OpenTK.Mathematics;
-using System.Collections.Generic;
 
 namespace Minecraft.Graphics
 {
@@ -40,7 +38,7 @@ namespace Minecraft.Graphics
         }
         public void LoadToGPU(ChunkMeshRawData rawData)
         {
-            vFaceCount=  rawData.vFaceCount;
+            vFaceCount = rawData.vFaceCount;
             tFaceCount = rawData.tFaceCount;
             nFaceCount = rawData.nFaceCount;
 

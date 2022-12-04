@@ -9,7 +9,7 @@ namespace Minecraft.Terrain
     {
         Dictionary<Vector2, IChunk> Chunks { get; set; }
         Queue<Vector2> ChunksNeedsToBeRegenerated { get; }
-        WorldData WorldData{ get; }
+        WorldData WorldData { get; }
         IWorldGenerator? WorldGenerator { get; set; }
 
         void AddBlock(Vector3 pos, BlockType block);

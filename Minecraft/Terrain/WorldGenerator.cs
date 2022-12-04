@@ -21,7 +21,7 @@ namespace Minecraft.Terrain
 
         private IWorld world;
         private PriorityQueue<Vector2, float> generatorQueue;
-        private PriorityQueue<KeyValuePair<Vector2, IChunk>,float> generatedChunks;
+        private PriorityQueue<KeyValuePair<Vector2, IChunk>, float> generatedChunks;
         private static Random random = new Random();
         private bool worldInit = false;
 
@@ -85,11 +85,11 @@ namespace Minecraft.Terrain
         {
             if (world.WorldData.IsFlat)
             {
-                if(y == 0)
+                if (y == 0)
                     return BlockType.Bedrock;
-                else if(y == 1 || y == 2)
+                else if (y == 1 || y == 2)
                     return BlockType.Dirt;
-                
+
                 return BlockType.GrassBlock;
             }
             else
@@ -166,7 +166,7 @@ namespace Minecraft.Terrain
             {
                 Chunk chunk = new Chunk(position);
                 CreateChunk(chunk, position * Chunk.Size);
-                generatedChunks.Enqueue(new KeyValuePair<Vector2, IChunk>(position, chunk),(Ioc.Default.GetService<ICamera>().Position.Xz - position * Chunk.Size).Length);
+                generatedChunks.Enqueue(new KeyValuePair<Vector2, IChunk>(position, chunk), (Ioc.Default.GetService<ICamera>().Position.Xz - position * Chunk.Size).Length);
             }
         }
         private void CreateChunk(IChunk chunk, Vector2 offset)
@@ -251,12 +251,12 @@ namespace Minecraft.Terrain
                     }
                     else
                     {
-                        for (; y >= 0 ; y--)
+                        for (; y >= 0; y--)
                         {
                             chunk.AddBlock(new Vector3(x, y, z), GetBlockAtHeight(y), true);
                             depth++;
                         }
-                    }            
+                    }
                 }
             }
         }

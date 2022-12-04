@@ -1,10 +1,5 @@
 ﻿using Minecraft.Terrain;
-using OpenTK.Mathematics;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Minecraft.Graphics
 {
@@ -19,7 +14,7 @@ namespace Minecraft.Graphics
         internal int nFaceCount;
         internal int tFaceCount;
         internal int vFaceCount;
-        public ChunkMeshRawData(List<float> nVerticesList, List<float> tVerticesList, List<float> vVerticesList,IChunk owner,int nFaceCount, int tFaceCount, int vFaceCount)
+        public ChunkMeshRawData(List<float> nVerticesList, List<float> tVerticesList, List<float> vVerticesList, IChunk owner, int nFaceCount, int tFaceCount, int vFaceCount)
         {
             nVertices = nVerticesList.ToArray();
             tVertices = tVerticesList.ToArray();

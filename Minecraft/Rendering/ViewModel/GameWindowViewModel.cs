@@ -12,7 +12,7 @@ using System.Windows.Input;
 
 namespace Minecraft.Rendering.ViewModel
 {
-    internal class GameWindowViewModel: ObservableRecipient
+    internal class GameWindowViewModel : ObservableRecipient
     {
         public ICommand BackToGame { get; private set; }
         public ICommand Settings { get; private set; }
@@ -80,7 +80,7 @@ namespace Minecraft.Rendering.ViewModel
                 gameWindow.WorldSelector.Items.Refresh();
             });
 
-            
+
             EnterSelectedWorld = new RelayCommand(() =>
             {
                 uiLogic.EnterWorld();
