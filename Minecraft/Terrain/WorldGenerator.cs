@@ -52,9 +52,18 @@ namespace Minecraft.Terrain
         {
             while (generatedChunks.Count > 0)
             {
-                var chunk = generatedChunks.Dequeue();
-                world.AddChunk(chunk.Key, chunk.Value);
-                ChunkAdded?.Invoke(chunk.Key);
+                if(generatedChunks.TryDequeue(out KeyValuePair<Vector2, IChunk> chunk,out float priority))
+                {
+                    if (chunk.Value == null)
+                    {
+                        generatorQueue.Enqueue(chunk.Key, 0);
+                    }
+                    else
+                    {
+                        world.AddChunk(chunk.Key, chunk.Value);
+                        ChunkAdded?.Invoke(chunk.Key);
+                    }
+                }     
             }
             if (generatedChunks.Count == 0 && !worldInit)
             {

@@ -41,6 +41,7 @@ namespace Minecraft.Graphics
             }
 
             generatorThread = new Thread(GeneratorLoop);
+            generatorThread.Priority = ThreadPriority.BelowNormal;
             generatorThread.Start();
         }
         public static bool BlockIsOnBorder(Vector2 chunkPos, Vector3 blockPos)
