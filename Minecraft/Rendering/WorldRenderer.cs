@@ -41,7 +41,7 @@ namespace Minecraft.Render
         public void SetWorld(IWorld world)
         {
             this.world = world;
-            meshGenerator = new MeshGenerator(world, finishedChunkMeshes, camera, renderDistance);
+            meshGenerator = new MeshGenerator(world, finishedChunkMeshes, renderDistance);
         }
 
         public void RenderWorld()

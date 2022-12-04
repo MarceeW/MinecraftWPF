@@ -1,8 +1,11 @@
-﻿using Minecraft.Render;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Render;
 using Minecraft.Terrain;
 using OpenTK.Mathematics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -14,30 +17,33 @@ namespace Minecraft.Graphics
     {
         public bool ShouldRun { get; set; }
         private Thread generatorThread;
-        public static PriorityQueue<Vector2, float> GeneratorQueue { get; } = new PriorityQueue<Vector2, float>();
+
+        private static ConcurrentQueue<Vector2> GeneratorQueue = new ConcurrentQueue<Vector2>();
         internal int RenderDistance { get; set; }
         private Queue<ChunkMeshRawData> createdMeshes;
 
         private IWorld world;
-        private static ICamera camera;
-        private static bool canAccessGeneratorQueue = true;
 
-        public MeshGenerator(IWorld world, Queue<ChunkMeshRawData> createdMeshes, ICamera _camera,int renderDistance)
+        public MeshGenerator(IWorld world, Queue<ChunkMeshRawData> createdMeshes, int renderDistance)
         {
             this.world = world;
             this.createdMeshes = createdMeshes;
-            camera = _camera;
             RenderDistance = renderDistance;
 
             ShouldRun = true;
 
             if (world.Chunks.Count > 0)
             {
+                var cameraPos = Ioc.Default.GetService<ICamera>().Position.Xz / 16;
+                PriorityQueue<Vector2,float> renderPriorityQueue= new PriorityQueue<Vector2,float>();
+
                 foreach (var chunk in world.Chunks)
                 {
                     chunk.Value.Mesh = new ChunkMesh();
-                    AddToQueue(chunk.Key);
+                    renderPriorityQueue.Enqueue(chunk.Key, (chunk.Key - cameraPos).Length);
                 }
+                while (renderPriorityQueue.Count > 0)
+                    AddToQueue(renderPriorityQueue.Dequeue());
             }
 
             generatorThread = new Thread(GeneratorLoop);
@@ -58,31 +64,17 @@ namespace Minecraft.Graphics
         }
         public static void AddToQueue(Vector2 toRender)
         {
-            canAccessGeneratorQueue = false;
-            GeneratorQueue.Enqueue(toRender, (toRender - camera.Position.Xz / Chunk.Size).Length);
-            canAccessGeneratorQueue = true;
+            GeneratorQueue.Enqueue(toRender);
         }
-        private void CreateMeshes(Vector2 rangeCenter)
+        private void CreateMeshes()
         {
+
             if (GeneratorQueue.Count > 0)
             {
-                List<Vector2> toPlaceBack = new List<Vector2>();
-            
-                while (canAccessGeneratorQueue && GeneratorQueue.Count > 0)
-                {
-                    var chunkPos = GeneratorQueue.Dequeue();
-            
-                    if (WorldRenderer.IsChunkInRange(chunkPos, rangeCenter, RenderDistance))
-                    {
-                        CreateMesh(chunkPos);
-                        break;
-                    }
-                    else
-                        toPlaceBack.Add(chunkPos);
-                }
-                foreach (var chunk in toPlaceBack)
-                    GeneratorQueue.Enqueue(chunk, (chunk - camera.Position.Xz / Chunk.Size).Length);
+                if(GeneratorQueue.TryDequeue(out Vector2 chunk))
+                    CreateMesh(chunk);
             }
+
             if (world.ChunksNeedsToBeRegenerated.Count > 0)
                 CreateMesh(world.ChunksNeedsToBeRegenerated.Dequeue()); 
         }
@@ -90,10 +82,7 @@ namespace Minecraft.Graphics
         {
             while (ShouldRun)
             {
-                if(GeneratorQueue.Count > 0)
-                {
-                    CreateMeshes(WorldRenderer.RenderFrustumCenter);
-                }
+                CreateMeshes();
             }
         }
         private void CreateMesh(Vector2 target)
@@ -102,6 +91,7 @@ namespace Minecraft.Graphics
 
             if (chunk == null)
                 return;
+
 
             List<float> nVertices = new List<float>();
             List<float> tVertices = new List<float>();

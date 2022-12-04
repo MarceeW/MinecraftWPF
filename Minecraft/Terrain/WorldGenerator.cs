@@ -1,4 +1,6 @@
-﻿using Minecraft.Logic;
+﻿using Microsoft.Toolkit.Mvvm.DependencyInjection;
+using Minecraft.Graphics;
+using Minecraft.Logic;
 using Minecraft.Terrain.Noise;
 using OpenTK.Mathematics;
 using System;
@@ -19,14 +21,14 @@ namespace Minecraft.Terrain
 
         private IWorld world;
         private PriorityQueue<Vector2, float> generatorQueue;
-        private Queue<KeyValuePair<Vector2, IChunk>> generatedChunks;
+        private PriorityQueue<KeyValuePair<Vector2, IChunk>,float> generatedChunks;
         private static Random random = new Random();
         private bool worldInit = false;
 
         public WorldGenerator(IWorld world, int renderDistance)
         {
             generatorQueue = new PriorityQueue<Vector2, float>();
-            generatedChunks = new Queue<KeyValuePair<Vector2, IChunk>>();
+            generatedChunks = new PriorityQueue<KeyValuePair<Vector2, IChunk>, float>();
 
             this.world = world;
             this.world.WorldGenerator = this;
@@ -64,7 +66,7 @@ namespace Minecraft.Terrain
         {
             if (generatorQueue.Count > 0)
             {
-                for (int maxGenerationInSingleRender = 0; maxGenerationInSingleRender < 16; maxGenerationInSingleRender++)
+                for (int maxGenerationInSingleRender = 0; maxGenerationInSingleRender < 32; maxGenerationInSingleRender++)
                 {
                     AddChunk(generatorQueue.Dequeue());
                     if (generatorQueue.Count == 0)
@@ -164,7 +166,7 @@ namespace Minecraft.Terrain
             {
                 Chunk chunk = new Chunk(position);
                 CreateChunk(chunk, position * Chunk.Size);
-                generatedChunks.Enqueue(new KeyValuePair<Vector2, IChunk>(position, chunk));
+                generatedChunks.Enqueue(new KeyValuePair<Vector2, IChunk>(position, chunk),(Ioc.Default.GetService<ICamera>().Position.Xz - position * Chunk.Size).Length);
             }
         }
         private void CreateChunk(IChunk chunk, Vector2 offset)
