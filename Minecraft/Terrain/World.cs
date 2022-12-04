@@ -1,5 +1,6 @@
 ﻿using Minecraft.Misc;
 using OpenTK.Mathematics;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Minecraft.Terrain
@@ -8,7 +9,7 @@ namespace Minecraft.Terrain
     {
         public Dictionary<Vector2, IChunk> Chunks { get; set; }
         public IWorldGenerator? WorldGenerator { get; set; }
-        public Queue<Vector2> ChunksNeedsToBeRegenerated { get; }
+        public ConcurrentQueue<Vector2> ChunksNeedsToBeRegenerated { get; }
         public WorldData WorldData { get; }
 
         private Dictionary<Vector2, List<Block>> blockQueue;
@@ -17,14 +18,14 @@ namespace Minecraft.Terrain
         {
             WorldData = worldData;
             Chunks = new Dictionary<Vector2, IChunk>();
-            ChunksNeedsToBeRegenerated = new Queue<Vector2>();
+            ChunksNeedsToBeRegenerated = new ConcurrentQueue<Vector2>();
             blockQueue = new Dictionary<Vector2, List<Block>>();
         }
         public World(Dictionary<Vector2, IChunk> chunks, WorldData worldData)
         {
             WorldData = worldData;
             Chunks = chunks;
-            ChunksNeedsToBeRegenerated = new Queue<Vector2>();
+            ChunksNeedsToBeRegenerated = new ConcurrentQueue<Vector2>();
             blockQueue = new Dictionary<Vector2, List<Block>>();
         }
         public IChunk? GetChunk(Vector3 pos, out Vector2 chunkPos)
@@ -71,7 +72,6 @@ namespace Minecraft.Terrain
             if (chunk != null)
             {
                 chunk.RemoveBlock(pos);
-                ChunksNeedsToBeRegenerated.Enqueue(chunk.Position);
 
                 var left = new Vector3(-1, 0, 0);
                 var right = new Vector3(1, 0, 0);
@@ -94,6 +94,8 @@ namespace Minecraft.Terrain
 
                 if (chunkPosFront != chunkPos)
                     ChunksNeedsToBeRegenerated.Enqueue(chunkPosFront);
+
+                ChunksNeedsToBeRegenerated.Enqueue(chunk.Position);
             }
         }
         public void AddBlock(Vector3 pos, BlockType block)

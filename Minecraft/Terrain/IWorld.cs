@@ -1,6 +1,7 @@
 ﻿using Minecraft.Misc;
 using OpenTK.Mathematics;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 
 namespace Minecraft.Terrain
@@ -8,7 +9,7 @@ namespace Minecraft.Terrain
     internal interface IWorld : IDisposable
     {
         Dictionary<Vector2, IChunk> Chunks { get; set; }
-        Queue<Vector2> ChunksNeedsToBeRegenerated { get; }
+        ConcurrentQueue<Vector2> ChunksNeedsToBeRegenerated { get; }
         WorldData WorldData { get; }
         IWorldGenerator? WorldGenerator { get; set; }
 

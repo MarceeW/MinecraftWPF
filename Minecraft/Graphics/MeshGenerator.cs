@@ -65,13 +65,12 @@ namespace Minecraft.Graphics
         {
 
             if (GeneratorQueue.Count > 0 && world.ChunksNeedsToBeRegenerated.Count == 0)
-            {
                 if (GeneratorQueue.TryDequeue(out Vector2 chunk))
                     CreateMesh(chunk);
-            }
 
             if (world.ChunksNeedsToBeRegenerated.Count > 0)
-                CreateMesh(world.ChunksNeedsToBeRegenerated.Dequeue());
+                if (world.ChunksNeedsToBeRegenerated.TryDequeue(out Vector2 chunk))
+                    CreateMesh(chunk);
         }
         private void GeneratorLoop()
         {
