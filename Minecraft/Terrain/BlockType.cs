@@ -22,6 +22,5 @@
         NoteBlock, RedstoneLamp, TNT, Scaffolding, Cactus, Furnace, GlowStone, QuartzBlock,
         PurpurBlock, PurpurPillarBlock, BookShelf,
         Bricks, PolishedBlackstoneBricks, StoneBricks, NetherBricks
-
     }
 }
